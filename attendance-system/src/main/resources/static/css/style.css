@@ -1,0 +1,868 @@
+/* ======================================
+   全体のカラーガイド
+   #DFEFED  ... ページ背景
+   #7DD3C9  ... ヘッダー背景/アクセント
+   #517D99  ... メインアクションボタン色
+   #BFE9DB  ... 補助色（hover時やフィードバックで使いたい）
+   #E2B1B1  ... エラー表示用の赤み
+====================================== */
+
+/* bodyの共通ベース */
+.page-body {
+    background-color: #DFEFED;
+    margin: 0;
+    min-height: 100vh;
+
+    display: flex;
+    flex-direction: column;
+    color: #222;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Noto Sans JP", "Meiryo", sans-serif;
+}
+
+/* ==========================
+   共通ヘッダー部分
+========================== */
+.main-header {
+    width: 100%;
+    background-color: #7DD3C9;
+    /* ← パレットのティファニーブルー */
+    font-family: "Meiryo", "Noto Sans JP", sans-serif;
+    color: #222;
+}
+
+/* タイトルとナビ全体を横並びにする */
+.header-inner {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    width: 100%;
+    padding: 8px 24px;
+    box-sizing: border-box;
+}
+
+/* 左端タイトル */
+.header-title {
+    font-family: "Noto Sans JP", "Meiryo", sans-serif;
+    font-size: 18px;
+    font-weight: 500;
+    /* ← Boldから中太に変更 */
+    color: #333;
+    /* ← 真っ黒より柔らかい印象に */
+    letter-spacing: 0.05em;
+    /* ← 少し文字間を空ける */
+    margin-right: 40px;
+    /* タイトルとメニューの間に余白 */
+    line-height: 1.6;
+    /* ← 高さに少しゆとりを */
+}
+
+/* ナビゲーションを横いっぱいに均等配置 */
+.header-nav {
+    display: flex;
+    justify-content: space-evenly;
+    /* 均等配置 */
+    align-items: center;
+    flex-grow: 1;
+    /* タイトルの右側いっぱいに広げる */
+    text-align: center;
+}
+
+/* 各リンク */
+.nav-item {
+    text-decoration: none;
+    color: #222;
+    font-size: 14px;
+    flex: 1;
+    /* 幅を均等に割り当てる */
+}
+
+/* ログアウトだけは強調色にして目立たせる */
+.nav-item.logout {
+    color: #517D99;
+    /* ← アクセントカラー（青系） */
+    font-weight: bold;
+}
+
+.nav-item:hover {
+    text-decoration: underline;
+}
+
+/* 下線（ヘッダーの下の黒いライン） */
+
+
+
+/* mainの共通センタリングレイアウト */
+.page-main {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding-top: 60px;
+    padding-bottom: 40px;
+    box-sizing: border-box;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+/*各ページのタイトル*/
+.page-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: #000;
+}
+
+/* ======================================
+   2. カードコンポーネント（共通）
+   - 真ん中に出てくる白い角丸のパネル
+====================================== */
+
+.form-card {
+    background-color: #fff;
+    border: 2px solid #bfbfbf;
+    border-radius: 16px;
+    box-sizing: border-box;
+    color: #000;
+
+    /* デフォ幅（単列フォーム系） */
+    width: 360px;
+    padding: 24px 28px 32px;
+}
+
+/* 2カラム入力する大きいカード用（新規ユーザー登録 / ユーザー編集など） */
+.form-card.wide {
+    width: 780px;
+    max-width: 90vw;
+}
+
+/* カードのタイトル行 */
+.form-card-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #000;
+    margin: 0 0 24px 0;
+    text-align: left;
+}
+
+
+/* ======================================
+   3. 入力フォームレイアウト（共通）
+====================================== */
+
+/* 単一列フォーム(連絡先登録など)で使うブロック */
+.form-field-block {
+    margin-bottom: 24px;
+}
+
+/* ラベル */
+.form-field-label {
+    display: block;
+    font-size: 14px;
+    font-weight: 500;
+    color: #000;
+    margin-bottom: 8px;
+}
+
+/* テキストボックスやパスワード欄 */
+.form-field-input {
+    width: 100%;
+    font-size: 14px;
+    line-height: 1.4;
+    padding: 6px 8px;
+    border: 2px solid #999;
+    border-radius: 0;
+    box-sizing: border-box;
+    outline: none;
+    font-family: inherit;
+    background-color: #fff;
+    color: #000;
+}
+
+.form-field-input:focus {
+    border-color: #517D99;
+    box-shadow: 0 0 0 2px rgba(81, 125, 153, 0.2);
+}
+
+/* ボタン行（カード下部の真ん中に青いボタン） */
+.form-button-row {
+    margin-top: 16px;
+    text-align: center;
+}
+
+/* メインアクションボタン（登録・編集・ログインなど） */
+.primary-action-button {
+    width: 180px;
+    background-color: #517D99;
+    color: #fff;
+    border: none;
+    border-radius: 0;
+    font-size: 14px;
+    font-weight: 500;
+    padding: 10px 12px;
+    cursor: pointer;
+    font-family: inherit;
+    text-align: center;
+    box-sizing: border-box;
+}
+
+.primary-action-button:hover {
+    background-color: #3f6176;
+}
+
+.primary-action-button:active {
+    background-color: #364f60;
+}
+
+
+/* ======================================
+   4. ラジオボタンリスト（勤務場所登録など）
+====================================== */
+
+.workplace-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* 横方向中央寄せ */
+    width: 100%;
+    /* ← 必須 */
+}
+
+.radio-list {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* ラジオ項目全体の中央寄せ */
+    margin-bottom: 32px;
+}
+
+.radio-line {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 16px;
+    margin-bottom: 16px;
+}
+
+.radio-line input[type="radio"] {
+    margin-right: 12px;
+    cursor: pointer;
+}
+
+
+/* ======================================
+   5. 2カラムフォーム（新規ユーザー登録 / ユーザー編集）
+   左右に項目を並べる用
+====================================== */
+
+.form-grid-2col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 24px;
+    row-gap: 24px;
+    margin-bottom: 24px;
+}
+
+.form-grid-item {
+    display: flex;
+    flex-direction: column;
+}
+
+/* ラベル＋その下にinput、という並び */
+.form-grid-item .form-field-label {
+    margin-bottom: 8px;
+}
+
+/* 権限ラジオ（管理者・一般）みたいな横並び */
+.inline-radio-group {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 16px;
+    font-size: 14px;
+    line-height: 1.4;
+    color: #000;
+}
+
+.inline-radio-option {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 14px;
+}
+
+.inline-radio-option input[type="radio"] {
+    cursor: pointer;
+}
+
+
+/* ======================================
+   6. ログイン画面専用のちょい差分
+====================================== */
+
+/* パスワードの「👁 表示」などを横並びにするエリア */
+.password-row {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.password-row .form-field-input {
+    flex: 1 1 auto;
+    min-width: 80%;
+}
+
+/* ログインカードだけ幅を360pxでOKなので .form-card 単体で流用可能
+   ※ログイン画面タイトルにバーを付けたいならここで指定してもいい */
+.login-visibility-hint {
+    font-size: 12px;
+    color: #000;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    user-select: none;
+    cursor: pointer;
+}
+
+
+/* ======================================
+   7. 勤怠入力画面レイアウト（以前作ったやつ）
+   これも共通CSSに入れてOK
+====================================== */
+
+/* 勤怠入力のメイン部分 */
+.attendance-main {
+    padding: 16px 24px 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    box-sizing: border-box;
+}
+
+.attendance-layout {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px;
+    align-items: flex-start;
+}
+
+/* 左カラム（勤怠テーブル） */
+.attendance-table-card {
+    flex: 1 1 600px;
+    min-width: 400px;
+    max-width: 800px;
+}
+
+.attendance-info-top {
+    margin-bottom: 16px;
+}
+
+.attendance-status-row {
+    display: flex;
+    gap: 16px;
+    font-size: 14px;
+    line-height: 1.6;
+    margin-bottom: 4px;
+}
+
+.label-gray {
+    color: #9aa0a6;
+    font-weight: 500;
+}
+
+.value-gray {
+    color: #9aa0a6;
+}
+
+/* 黒枠テーブル */
+.attendance-table-wrapper {
+    border: 3px solid #000;
+    background-color: #fff;
+    padding: 0;
+    box-sizing: border-box;
+    min-height: 360px;
+}
+
+.attendance-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+    min-width: 100%;
+}
+
+.attendance-table thead th {
+    border-bottom: 2px solid #000;
+    border-right: 1px solid #000;
+    background-color: #fff;
+    font-weight: 500;
+    color: #000;
+    text-align: left;
+    padding: 8px;
+    white-space: nowrap;
+}
+
+.attendance-table thead th:last-child {
+    border-right: none;
+}
+
+.attendance-table tbody td {
+    border-bottom: 1px solid #000;
+    border-right: 1px solid #000;
+    padding: 8px;
+    color: #000;
+    vertical-align: top;
+}
+
+.attendance-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.attendance-table tbody td:last-child {
+    border-right: none;
+}
+
+/* 右カラム（ユーザ・時刻・ボタン） */
+.attendance-side {
+    display: flex;
+    flex-direction: column;
+    flex: 0 0 260px;
+    gap: 24px;
+    min-width: 220px;
+    max-width: 320px;
+}
+
+.attendance-user-block {
+    font-size: 14px;
+    line-height: 1.5;
+    color: #000;
+}
+
+.attendance-user-block .welcome-line {
+    font-weight: 500;
+}
+
+.attendance-user-block .dept-line {
+    font-weight: 500;
+}
+
+.attendance-clock-block {
+    text-align: center;
+}
+
+.clock-date {
+    font-size: 14px;
+    color: #000;
+    margin-bottom: 8px;
+    font-weight: 500;
+}
+
+.clock-time {
+    font-size: 48px;
+    font-weight: 600;
+    color: #000;
+    line-height: 1.2;
+}
+
+.attendance-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    align-items: center;
+    margin-top: 16px;
+}
+
+.time-button {
+    min-width: 160px;
+    min-height: 80px;
+    padding: 16px;
+    background-color: #fff;
+    border: 2px solid #000;
+    border-radius: 16px;
+    font-size: 20px;
+    font-weight: 500;
+    line-height: 1.2;
+    color: #000;
+    text-align: center;
+    cursor: pointer;
+    font-family: inherit;
+}
+
+.time-button:active {
+    background-color: #BFE9DB;
+}
+
+/* ==========================
+   ユーザー情報一覧 (user_list)
+========================== */
+
+/* 画面エリア全体 */
+.user-list-main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 16px 24px 40px;
+    box-sizing: border-box;
+    gap: 16px;
+    font-size: 14px;
+    line-height: 1.5;
+    color: #000;
+}
+
+/* 検索行 */
+.user-list-search-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+/* 検索ボックス（枠線まるめてあるやつ） */
+.user-list-search-box {
+    display: flex;
+    align-items: center;
+    border: 2px solid #000;
+    border-radius: 4px;
+    padding: 4px 8px;
+    line-height: 1.2;
+    min-height: 28px;
+    box-sizing: border-box;
+    background-color: #fff;
+    font-family: inherit;
+    font-size: 14px;
+    color: #000;
+    gap: 6px;
+}
+
+.user-list-search-icon {
+    font-size: 14px;
+    line-height: 1;
+}
+
+.user-list-search-input {
+    border: none;
+    outline: none;
+    font-size: 14px;
+    line-height: 1.4;
+    font-family: inherit;
+    color: #000;
+    background-color: transparent;
+    padding: 0;
+    min-width: 140px;
+}
+
+/* 黒い太枠で全体を囲ってる領域 */
+.user-list-table-frame {
+    border: 3px solid #000;
+    background-color: #fff;
+    box-sizing: border-box;
+    min-height: 300px;
+    overflow-x: auto;
+    padding: 0;
+    /* テーブルと枠がほぼ密着するデザイン */
+}
+
+/* 表そのもの */
+.user-list-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+    color: #000;
+    table-layout: fixed;
+}
+
+/* ヘッダー行 */
+.user-list-table thead th {
+    font-weight: 600;
+    color: #000;
+    text-align: left;
+    vertical-align: middle;
+    padding: 6px 8px;
+    border-bottom: 2px solid #000;
+    border-right: 1px solid #000;
+    white-space: nowrap;
+}
+
+.user-list-table thead th:last-child {
+    border-right: none;
+}
+
+/* データ行 */
+.user-list-table tbody td {
+    padding: 6px 8px;
+    vertical-align: top;
+    color: #000;
+    border-bottom: 1px solid #000;
+    border-right: 1px solid #000;
+    word-break: break-word;
+}
+
+.user-list-table tbody td:last-child {
+    border-right: none;
+}
+
+.user-list-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* 操作ボタンセル */
+.user-list-actions-cell {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+}
+
+/* 操作ボタン（集計／編集／削除） */
+.user-list-action-pill {
+    border: 1px solid #000;
+    background-color: #fff;
+    border-radius: 3px;
+    padding: 2px 6px;
+    font-size: 12px;
+    line-height: 1.2;
+    cursor: pointer;
+    font-family: inherit;
+}
+
+.user-list-action-pill-main {
+    /* 「集計」ボタンとかを少し目立たせたい場合 */
+    background-color: #BFE9DB;
+    /* ミントグリーン（BFE9DB） */
+    border-color: #000;
+    font-weight: 500;
+}
+
+.user-list-action-danger {
+    border-color: #E2B1B1;
+    /* 薄い赤(E2B1B1) */
+    color: #E2B1B1;
+}
+
+
+/* ========== 勤怠状況一覧（シンプル表） ========== */
+.status-main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 16px 24px 40px;
+    box-sizing: border-box;
+    gap: 16px;
+    font-size: 14px;
+    line-height: 1.5;
+    color: #000;
+}
+
+.status-title-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 10px;
+}
+
+.dept-badge {
+    font-size: 14px;
+    color: #333;
+}
+
+/* テーブルの外枠を中央寄せ・縮小 */
+.status-list-table-frame {
+    border: 3px solid #000;
+    background-color: #fff;
+    box-sizing: border-box;
+
+    width: 95%;
+    /* ←テーブル枠の幅を縮小（中央寄せに重要） */
+    margin: 0 auto 40px;
+    /* ←中央寄せ + 下に余白 */
+    min-height: 300px;
+
+    overflow-x: auto;
+    padding: 0;
+}
+
+/* 表そのもの */
+.status-list-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+    color: #000;
+    table-layout: fixed;
+}
+
+/* ヘッダー行 */
+.status-list-table thead th {
+    font-weight: 600;
+    color: #000;
+    text-align: left;
+    vertical-align: middle;
+    padding: 6px 10px;
+    border-bottom: 2px solid #000;
+    border-right: 1px solid #000;
+    white-space: nowrap;
+}
+
+.status-list-table thead th:last-child {
+    border-right: none;
+}
+
+/* データ行 */
+.status-list-table tbody td {
+    padding: 6px 10px;
+    vertical-align: top;
+    color: #000;
+    border-bottom: 1px solid #000;
+    border-right: 1px solid #000;
+    word-break: break-word;
+}
+
+.status-list-table tbody td:last-child {
+    border-right: none;
+}
+
+.status-list-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+
+/* 見た目の昇降アイコン（ダミー） */
+.sort-indicator {
+    display: inline-block;
+    width: 12px;
+    height: 16px;
+    position: relative;
+    margin-left: 6px;
+}
+
+.sort-indicator::before,
+.sort-indicator::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+}
+
+.sort-indicator::before {
+    /* 上三角 */
+    top: 1px;
+    border-bottom: 6px solid #222;
+}
+
+.sort-indicator::after {
+    /* 下三角 */
+    bottom: 1px;
+    border-top: 6px solid #222;
+}
+
+/* レスポンシブ（横狭時） */
+@media (max-width: 900px) {
+    .status-table thead th {
+        font-size: 14px;
+    }
+
+    .status-table tbody td {
+        font-size: 16px;
+    }
+
+    .search-input {
+        min-width: 140px;
+    }
+}
+
+/* ============ 勤怠実績一覧 ============ */
+.report-main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 16px 24px 40px;
+    box-sizing: border-box;
+    gap: 16px;
+    font-size: 14px;
+    line-height: 1.5;
+    color: #000;
+}
+
+/* 左右2カラム。中央寄せで表示 */
+.report-grid {
+    max-width: 1120px;
+    margin: 12px auto 40px;
+    display: grid;
+    grid-template-columns: 1fr 360px;
+    /* 左広め / 右細め */
+    gap: 28px;
+}
+
+/* 外側の太い黒枠 */
+.report-card,
+.report-summary-card {
+    border: 3px solid #000;
+    background: #fff;
+    box-sizing: border-box;
+    padding: 0;
+    /* サンプル通り、枠と表は密着 */
+}
+
+/* 共通テーブル体裁（黒縁・太見出し線） */
+.report-table,
+.report-summary-table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+    color: #000;
+}
+
+.report-table th,
+.report-table td,
+.report-summary-table th,
+.report-summary-table td {
+    border-right: 1px solid #000;
+    border-bottom: 1px solid #000;
+    padding: 10px 12px;
+    font-size: 18px;
+    vertical-align: middle;
+}
+
+.report-table thead th,
+.report-summary-table thead th {
+    font-weight: 700;
+    border-bottom: 3px solid #000;
+    /* 見出しの太線 */
+}
+
+.report-table th:last-child,
+.report-table td:last-child,
+.report-summary-table th:last-child,
+.report-summary-table td:last-child {
+    border-right: none;
+}
+
+.report-table tbody tr:last-child td,
+.report-summary-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* 列幅調整（サンプル感に寄せる） */
+.report-table .w-date {
+    width: 34%;
+}
+
+.report-summary-table .w-month {
+    width: 70px;
+}
+
+/* 左テーブルの大きな余白を再現する行 */
+.fill-row td {
+    height: 420px;
+    /* 画像の空き領域感 */
+    padding: 0;
+}
+
+/* 小さめ画面の折り返し */
+@media (max-width: 980px) {
+    .report-grid {
+        grid-template-columns: 1fr;
+        /* 縦並び */
+        gap: 20px;
+        max-width: 720px;
+    }
+}

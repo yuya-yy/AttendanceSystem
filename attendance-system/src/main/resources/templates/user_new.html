@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <title>新規ユーザー登録</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+
+<body class="page-body">
+
+    <!-- 共通ヘッダー -->
+    <div th:replace="~{fragments/header :: header}"></div>
+
+    <main class="page-main">
+
+        <section class="form-card wide">
+            <h2 class="form-card-title">新規ユーザー登録</h2>
+
+            <form action="#" method="post">
+
+                <div class="form-grid-2col">
+                    <!-- ユーザー名 -->
+                    <div class="form-grid-item">
+                        <label for="username" class="form-field-label">ユーザー名</label>
+                        <input id="username" name="username" type="text" class="form-field-input" />
+                    </div>
+
+                    <!-- 氏名（表示名） -->
+                    <div class="form-grid-item">
+                        <label for="displayName" class="form-field-label">氏名（表示名）</label>
+                        <input id="displayName" name="displayName" type="text" class="form-field-input" />
+                    </div>
+
+                    <!-- パスワード（👁 表示ヒントを右側に配置したい場合ここに入れてOK） -->
+                    <div class="form-grid-item">
+                        <label for="password" class="form-field-label">パスワード</label>
+                        <div class="password-row" style="margin-bottom:8px;">
+                            <!-- 左側:実際のパスワード入力 -->
+                            <input id="password" name="password" type="password" class="form-field-input" />
+                            <!-- 右側: 👁 表示 -->
+                            <div class="login-visibility-hint">
+                                <span role="img" aria-label="eye">👁</span> 表示
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- メールアドレス -->
+                    <div class="form-grid-item">
+                        <label for="mail" class="form-field-label">メールアドレス</label>
+                        <input id="mail" name="mail" type="email" class="form-field-input" />
+                    </div>
+
+                    <!-- 所属部署 -->
+                    <div class="form-grid-item">
+                        <label for="department" class="form-field-label">所属部署</label>
+                        <input id="department" name="department" type="text" class="form-field-input" />
+                    </div>
+
+                    <!-- 電話番号 -->
+                    <div class="form-grid-item">
+                        <label for="phone" class="form-field-label">電話番号</label>
+                        <input id="phone" name="phone" type="text" class="form-field-input" />
+                    </div>
+
+                    <!-- 権限（ラジオボタン：管理者 / 一般） -->
+                    <div class="form-grid-item">
+                        <span class="form-field-label">権限</span>
+                        <div class="inline-radio-group">
+                            <label class="inline-radio-option">
+                                <input type="radio" name="role" value="admin" />
+                                <span>管理者</span>
+                            </label>
+                            <label class="inline-radio-option">
+                                <input type="radio" name="role" value="user" />
+                                <span>一般</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- 右側の空きスペース（デザイン上の余白） -->
+                    <div class="form-grid-item"></div>
+                </div>
+
+                <div class="form-button-row">
+                    <button type="submit" class="primary-action-button">
+                        登録
+                    </button>
+                </div>
+
+            </form>
+        </section>
+
+    </main>
+
+</body>
+
+</html>
