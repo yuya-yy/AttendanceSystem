@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <title>ユーザー情報一覧</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+
+<body class="page-body">
+
+    <!-- 共通ヘッダー -->
+    <div th:replace="~{fragments/header :: header}"></div>
+
+    <main class="user-list-main">
+
+        <!-- タイトル -->
+        <div class="page-title">ユーザー情報一覧</div>
+
+        <!-- 検索ボックス -->
+        <div class="user-list-search-row">
+            <div class="user-list-search-box">
+                <span class="user-list-search-icon">🔍</span>
+                <input class="user-list-search-input" type="text" name="q" placeholder="ユーザー検索" />
+            </div>
+        </div>
+
+        <!-- 一覧テーブル枠全体 -->
+        <div class="user-list-table-frame">
+
+            <table class="user-list-table">
+                <thead>
+                    <tr>
+                        <th>名前</th>
+                        <th>メールアドレス</th>
+                        <th>電話番号</th>
+                        <th>勤務場所</th>
+                        <th>部署</th>
+                        <th>権限</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>〇〇〇〇〇〇</td>
+                        <td>taguchi@gmail.com</td>
+                        <td>090-0808-080</td>
+                        <td>会社</td>
+                        <td>システム部</td>
+                        <td>管理者</td>
+                        <td class="user-list-actions-cell">
+                            <button class="user-list-action-pill user-list-action-pill-main">集計</button>
+                            <button class="user-list-action-pill">✏</button>
+                            <button class="user-list-action-pill user-list-action-danger">🗑</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>〇〇〇〇〇〇</td>
+                        <td>example@example.com</td>
+                        <td>090-1111-2222</td>
+                        <td>会社</td>
+                        <td>システム部</td>
+                        <td>一般</td>
+                        <td class="user-list-actions-cell">
+                            <button class="user-list-action-pill user-list-action-pill-main">集計</button>
+                            <button class="user-list-action-pill">✏</button>
+                            <button class="user-list-action-pill user-list-action-danger">🗑</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+        </div>
+    </main>
+
+</body>
+
+</html>

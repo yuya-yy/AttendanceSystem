@@ -1,0 +1,765 @@
+/* ======================================
+   全体のテーマ設定（色・余白・影など）
+====================================== */
+
+:root {
+    /* カラー */
+    --color-bg: #DFEFED;
+    /* ページ全体の背景 */
+    --color-surface: #FFFFFF;
+    /* カード・フォームの背景 */
+    --color-surface-subtle: #F5FBF8;
+    /* ちょっとだけ色付き背景 */
+    --color-header: #7DD3C9;
+    /* ヘッダー背景 */
+    --color-accent: #517D99;
+    /* メインボタンなど */
+    --color-accent-soft: #BFE9DB;
+    /* 補助色（ホバーなど） */
+    --color-danger: #E2B1B1;
+    /* エラー系 */
+    --color-border: #D3E2DD;
+    /* 枠線 */
+    --color-text-main: #1F2933;
+    --color-text-muted: #6B7280;
+
+    /* 角丸・影・余白 */
+    --radius-lg: 18px;
+    --radius-md: 12px;
+    --radius-pill: 999px;
+
+    --shadow-soft: 0 14px 40px rgba(15, 23, 42, 0.12);
+    --shadow-subtle: 0 6px 18px rgba(15, 23, 42, 0.06);
+
+    --spacing-xs: 6px;
+    --spacing-sm: 10px;
+    --spacing-md: 16px;
+    --spacing-lg: 24px;
+    --spacing-xl: 32px;
+
+    --font-size-xs: 11px;
+    --font-size-sm: 13px;
+    --font-size-md: 14px;
+    --font-size-lg: 18px;
+}
+
+/* ======================================
+   リセット & ベース
+====================================== */
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    margin: 0;
+    padding: 0;
+}
+
+body.page-body {
+    min-height: 100vh;
+    margin: 0;
+    background-color: var(--color-bg);
+    color: var(--color-text-main);
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Noto Sans JP", "Meiryo", sans-serif;
+    display: flex;
+    flex-direction: column;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: none;
+}
+
+main {
+    flex: 1;
+}
+
+/* 共通コンテナ（画面ごとに max-width をそろえる） */
+.page-main,
+.attendance-main,
+.status-main,
+.user-list-main,
+.report-main,
+.page-container {
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: var(--spacing-lg) var(--spacing-md) var(--spacing-xl);
+}
+
+/* 画面タイトル共通 */
+.page-title {
+    font-size: 22px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    margin-bottom: var(--spacing-md);
+}
+
+/* ======================================
+   ヘッダー（共通ナビ）
+====================================== */
+
+.main-header {
+    background-color: var(--color-header);
+    box-shadow: 0 2px 10px rgba(15, 23, 42, 0.12);
+    position: sticky;
+    top: 0;
+    z-index: 50;
+}
+
+.header-inner {
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: 10px var(--spacing-md);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--spacing-md);
+}
+
+.header-title {
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: #0F172A;
+}
+
+.header-nav {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.nav-item {
+    font-size: var(--font-size-sm);
+    padding: 6px 12px;
+    border-radius: var(--radius-pill);
+    background-color: rgba(255, 255, 255, 0.0);
+    border: 1px solid transparent;
+    cursor: pointer;
+    transition: background-color 120ms ease, box-shadow 120ms ease, transform 80ms ease, border-color 120ms ease;
+    white-space: nowrap;
+}
+
+.nav-item:hover {
+    background-color: rgba(255, 255, 255, 0.55);
+    border-color: rgba(255, 255, 255, 0.8);
+    box-shadow: var(--shadow-subtle);
+    transform: translateY(-1px);
+}
+
+.nav-item.logout {
+    background-color: var(--color-accent);
+    color: #FFFFFF;
+    border-color: rgba(0, 0, 0, 0.04);
+    box-shadow: var(--shadow-soft);
+}
+
+.nav-item.logout:hover {
+    background-color: #3e617c;
+}
+
+.header-line {
+    border-top: 1px solid rgba(15, 23, 42, 0.1);
+}
+
+/* ======================================
+   共通カード / フォームの枠
+====================================== */
+
+.form-card,
+.attendance-table-card,
+.status-list-table-frame,
+.user-list-table-frame,
+.report-card,
+.report-summary-card {
+    background-color: var(--color-surface);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-lg);
+    box-shadow: var(--shadow-soft);
+    border: 1px solid var(--color-border);
+}
+
+/* フォームカードのタイトル（見出し） */
+.form-card-title {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: var(--spacing-md);
+    padding-left: 10px;
+    border-left: 4px solid var(--color-accent);
+}
+
+/* フォームの中身 */
+.form-field-block {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-bottom: var(--spacing-md);
+}
+
+.form-field-label {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-muted);
+}
+
+.form-field-input,
+.form-field-input[type="text"],
+.form-field-input[type="email"],
+.form-field-input[type="password"],
+.form-field-input[type="tel"],
+.form-field-input[type="number"],
+.form-field-input[type="date"],
+.form-field-input[type="time"],
+.form-field-input[type="datetime-local"],
+select.form-field-input {
+    width: 100%;
+    min-height: 38px;
+    padding: 8px 10px;
+    border-radius: 10px;
+    border: 1.5px solid var(--color-border);
+    background-color: #F9FAFB;
+    font-size: var(--font-size-md);
+    outline: none;
+    transition: border-color 120ms ease, box-shadow 120ms ease, background-color 120ms ease;
+}
+
+.form-field-input:focus {
+    border-color: var(--color-accent);
+    background-color: #FFFFFF;
+    box-shadow: 0 0 0 1px rgba(81, 125, 153, 0.4);
+}
+
+/* 2カラムのフォームレイアウト（ユーザー編集/新規） */
+.form-grid-2col {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--spacing-md) var(--spacing-lg);
+}
+
+.form-grid-item {
+    min-width: 0;
+}
+
+/* ラジオボタンを横並びにする行 */
+.inline-radio-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.inline-radio-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    border-radius: var(--radius-pill);
+    background-color: #F3F4F6;
+    font-size: var(--font-size-sm);
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: background-color 120ms ease, border-color 120ms ease;
+}
+
+.inline-radio-label input[type="radio"] {
+    accent-color: var(--color-accent);
+}
+
+.inline-radio-label:hover {
+    background-color: var(--color-accent-soft);
+    border-color: var(--color-accent);
+}
+
+/* パスワード行（入力＋表示ボタンなど想定） */
+.password-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.password-row .form-field-input {
+    flex: 1;
+}
+
+/* ボタン行（右寄せ） */
+.form-button-row {
+    margin-top: var(--spacing-lg);
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+/* ======================================
+   ボタン（共通 / 強調 / サブ）
+====================================== */
+
+button {
+    font-family: inherit;
+}
+
+/* メインボタン */
+.primary-action-button {
+    min-width: 140px;
+    padding: 10px 18px;
+    border-radius: var(--radius-pill);
+    border: none;
+    background-color: var(--color-accent);
+    color: #FFFFFF;
+    font-size: var(--font-size-md);
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: var(--shadow-soft);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    transition: background-color 120ms ease, box-shadow 120ms ease, transform 80ms ease;
+}
+
+.primary-action-button:hover {
+    background-color: #3e617c;
+    box-shadow: 0 10px 30px rgba(15, 23, 42, 0.2);
+    transform: translateY(-1px);
+}
+
+.primary-action-button:active {
+    transform: translateY(0);
+    box-shadow: var(--shadow-subtle);
+}
+
+/* 勤怠画面の出勤 / 退勤ボタン */
+.time-button {
+    min-width: 120px;
+    padding: 10px 18px;
+    border-radius: var(--radius-pill);
+    border: 1.5px solid var(--color-accent);
+    background-color: #FFFFFF;
+    color: var(--color-accent);
+    font-size: var(--font-size-md);
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: var(--shadow-subtle);
+    transition: background-color 120ms ease, color 120ms ease, box-shadow 120ms ease, transform 80ms ease;
+}
+
+.time-button:hover {
+    background-color: var(--color-accent-soft);
+    color: #0F172A;
+    transform: translateY(-1px);
+}
+
+.time-button:active {
+    transform: translateY(0);
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.25);
+}
+
+/* ユーザー情報一覧の操作ボタン */
+.user-list-action-pill {
+    padding: 6px 10px;
+    border-radius: var(--radius-pill);
+    border: 1px solid var(--color-border);
+    background-color: #FFFFFF;
+    font-size: var(--font-size-xs);
+    cursor: pointer;
+    transition: background-color 120ms ease, border-color 120ms ease, color 120ms ease;
+    margin-right: 4px;
+}
+
+.user-list-action-pill-main {
+    background-color: var(--color-accent);
+    color: #FFFFFF;
+    border-color: transparent;
+}
+
+.user-list-action-pill-main:hover {
+    background-color: #3e617c;
+}
+
+.user-list-action-danger {
+    border-color: var(--color-danger);
+    color: #9b2c2c;
+}
+
+.user-list-action-danger:hover {
+    background-color: var(--color-danger);
+    color: #FFFFFF;
+}
+
+/* ======================================
+   テーブル共通（勤怠一覧・ユーザー一覧など）
+====================================== */
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: var(--font-size-sm);
+}
+
+thead {
+    background-color: #F3F4F6;
+}
+
+th,
+td {
+    padding: 8px 10px;
+    border-bottom: 1px solid rgba(209, 213, 219, 0.7);
+    text-align: left;
+}
+
+th {
+    font-weight: 600;
+    color: #374151;
+    white-space: nowrap;
+}
+
+tbody tr:hover {
+    background-color: #F9FAFB;
+}
+
+/* テーブルを枠でくくるフレーム */
+.attendance-table-wrapper,
+.status-list-table-frame,
+.user-list-table-frame {
+    border-radius: 14px;
+    overflow: hidden;
+}
+
+/* ======================================
+   検索ボックス・一覧ヘッダー（S0105/S0106）
+====================================== */
+
+.user-list-search-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: var(--spacing-md);
+    flex-wrap: wrap;
+}
+
+/* 左側の検索ボックス */
+.user-list-search-box {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 12px;
+    border-radius: var(--radius-pill);
+    background-color: #FFFFFF;
+    border: 1px solid var(--color-border);
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.5);
+}
+
+.user-list-search-icon {
+    font-size: 14px;
+    color: var(--color-text-muted);
+}
+
+.user-list-search-input {
+    border: none;
+    outline: none;
+    background: transparent;
+    min-width: 160px;
+    font-size: var(--font-size-sm);
+}
+
+/* 右側の「○件表示中」等の領域 */
+.status-title-row,
+.user-list-title-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--spacing-sm);
+}
+
+/* ======================================
+   勤怠入力画面（S0102）
+====================================== */
+
+.welcome-line {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+
+.dept-line {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--color-text-muted);
+    font-size: var(--font-size-sm);
+    margin-bottom: var(--spacing-md);
+}
+
+.dept-badge {
+    padding: 3px 10px;
+    border-radius: var(--radius-pill);
+    background-color: #E0F2FE;
+    font-size: var(--font-size-xs);
+}
+
+/* メインの2カラムレイアウト */
+.attendance-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 2.1fr) minmax(280px, 0.9fr);
+    gap: var(--spacing-lg);
+    align-items: flex-start;
+}
+
+/* 左：過去30日テーブル */
+.attendance-table-card {
+    padding: var(--spacing-lg);
+}
+
+/* 右：今日の情報 */
+.attendance-side {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-lg);
+}
+
+/* 時計・ユーザー情報のブロック */
+.attendance-user-block {
+    padding: var(--spacing-md);
+    border-radius: var(--radius-lg);
+    background: radial-gradient(circle at top left, #FFFFFF 0, #F5FBF8 50%, #DFEFED 100%);
+    box-shadow: var(--shadow-soft);
+}
+
+.clock-date {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-muted);
+    margin-bottom: 4px;
+}
+
+.clock-time {
+    font-size: 36px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    margin-bottom: 10px;
+}
+
+.attendance-info-top {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    font-size: var(--font-size-sm);
+}
+
+/* 勤務状態行 */
+.attendance-status-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: var(--spacing-md);
+    font-size: var(--font-size-sm);
+}
+
+/* ボタンブロック */
+.attendance-buttons {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+}
+
+/* ======================================
+   勤怠状況一覧（S0105）
+====================================== */
+
+.status-main {
+    /* page-container と同じイメージ */
+}
+
+/* タイトル行 & 件数表示などはすでに上で共通定義 */
+
+/* 一覧テーブル自体は共通 table スタイルを使用 */
+
+/* ======================================
+   ユーザー情報一覧（S0106）
+====================================== */
+
+.user-list-main {
+    /* 基本は共通コンテナのレイアウトでOK */
+}
+
+/* 操作列 */
+.user-list-actions-cell {
+    white-space: nowrap;
+}
+
+/* ======================================
+   勤怠実績一覧（S0107）
+====================================== */
+
+.report-main {
+    /* 共通コンテナに準拠 */
+}
+
+/* 日別＋月別の2カラム */
+.report-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 2fr) minmax(260px, 0.9fr);
+    gap: var(--spacing-lg);
+    margin-top: var(--spacing-md);
+}
+
+/* 日別テーブル用カード */
+.report-card {
+    padding: var(--spacing-lg);
+}
+
+/* 月別サマリカード */
+.report-summary-card {
+    padding: var(--spacing-lg);
+}
+
+/* 月別サマリのテーブル */
+.report-summary-table {
+    width: 100%;
+}
+
+/* 「○時間△分」などを薄めに表示したいとき */
+.value-gray {
+    color: var(--color-text-muted);
+}
+
+/* 日付と月を少し幅広く */
+.w-date {
+    width: 110px;
+    white-space: nowrap;
+}
+
+.w-month {
+    width: 80px;
+}
+
+/* 横いっぱい使いたいセル */
+.wide {
+    width: 100%;
+}
+
+/* 表の中でスペースを空けるためのダミー行など */
+.fill-row td {
+    padding-top: 14px;
+    padding-bottom: 14px;
+}
+
+/* ======================================
+   勤務場所・連絡先・ユーザー編集/新規（S0103/S0104/S0108/S0109）
+====================================== */
+
+.page-main {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-lg);
+}
+
+/* 勤務場所・連絡先・ユーザー編集/新規は form-card 共通スタイルでOK */
+
+
+/* ======================================
+   ログイン画面（S0101）
+====================================== */
+
+/* ログイン画面だけ中央寄せにしたい場合 */
+body.page-body>header.main-header+main,
+body.page-body>main:first-of-type {
+    /* 何もなければ通常レイアウト：ログインも form-card で揃える想定 */
+}
+
+/* ======================================
+   細かいユーティリティ
+====================================== */
+
+.text-muted {
+    color: var(--color-text-muted);
+}
+
+.text-danger {
+    color: #B91C1C;
+}
+
+.badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 8px;
+    border-radius: var(--radius-pill);
+    font-size: var(--font-size-xs);
+    background-color: #E5E7EB;
+}
+
+/* ======================================
+   レスポンシブ対応
+====================================== */
+
+@media (max-width: 960px) {
+
+    .header-inner {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 6px;
+    }
+
+    .header-nav {
+        justify-content: flex-start;
+        row-gap: 4px;
+    }
+
+    .attendance-layout,
+    .report-grid {
+        grid-template-columns: minmax(0, 1fr);
+    }
+}
+
+@media (max-width: 720px) {
+
+    .page-main,
+    .attendance-main,
+    .status-main,
+    .user-list-main,
+    .report-main,
+    .page-container {
+        padding-inline: 12px;
+    }
+
+    .form-card,
+    .attendance-table-card,
+    .status-list-table-frame,
+    .user-list-table-frame,
+    .report-card,
+    .report-summary-card {
+        padding: var(--spacing-md);
+    }
+
+    .form-grid-2col {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .attendance-buttons {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .primary-action-button,
+    .time-button {
+        width: 100%;
+    }
+
+    .user-list-search-row {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .user-list-search-box {
+        width: 100%;
+    }
+}

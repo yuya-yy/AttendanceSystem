@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <title>勤務場所登録</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+
+<body class="page-body">
+
+    <!-- 共通ヘッダー -->
+    <div th:replace="~{fragments/header :: header}"></div>
+
+    <main class="page-main">
+
+        <section class="form-card">
+            <h2 class="form-card-title">勤務場所登録</h2>
+
+            <form action="#" method="post" class="workplace-form">
+                <div class="radio-list">
+                    <label class="radio-line"><input type="radio" name="workLocation" value="office">会社</label>
+
+                    <label class="radio-line">
+                        <input type="radio" name="workLocation" value="home" />
+                        <span>在宅</span>
+                    </label>
+
+                    <label class="radio-line">
+                        <input type="radio" name="workLocation" value="trip" />
+                        <span>出張</span>
+                    </label>
+
+                    <label class="radio-line">
+                        <input type="radio" name="workLocation" value="client" />
+                        <span>客先</span>
+                    </label>
+
+                    <label class="radio-line">
+                        <input type="radio" name="workLocation" value="other" />
+                        <span>その他</span>
+                    </label>
+                </div>
+
+                <div class="form-button-row">
+                    <button type="submit" class="primary-action-button">
+                        登録
+                    </button>
+                </div>
+            </form>
+        </section>
+
+    </main>
+
+</body>
+
+</html>

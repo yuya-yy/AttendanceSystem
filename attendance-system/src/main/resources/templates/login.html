@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <title>ログイン</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+
+<body class="page-body">
+
+    <header class="main-header">
+        <div class="header-inner">
+            <div class="header-title">勤怠管理システム</div>
+        </div>
+        <div class="header-line"></div>
+    </header>
+    <!-- ログイン画面はヘッダー無しの場合、mainだけでOK -->
+    <main class="page-main">
+
+        <section class="form-card">
+            <h2 class="form-card-title">ログイン</h2>
+
+            <form action="#" method="post">
+
+                <!-- ユーザー名 -->
+                <div class="form-field-block">
+                    <label for="loginUser" class="form-field-label">ユーザー名</label>
+                    <input id="loginUser" name="username" type="text" class="form-field-input" />
+                </div>
+
+                <!-- パスワード + 表示アイコン -->
+                <div class="form-field-block">
+                    <div class="password-row">
+                        <label for="loginPass" class="form-field-label" style="margin-bottom:0;">パスワード</label>
+                        <div class="login-visibility-hint">
+                            <span role="img" aria-label="eye">👁</span> 表示
+                        </div>
+                    </div>
+                    <input id="loginPass" name="password" type="password" class="form-field-input" />
+                </div>
+
+                <!-- ボタン -->
+                <div class="form-button-row">
+                    <button type="submit" class="primary-action-button">
+                        ログインする →
+                    </button>
+                </div>
+
+            </form>
+        </section>
+
+    </main>
+</body>
+
+</html>

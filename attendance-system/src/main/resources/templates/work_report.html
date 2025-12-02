@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ja">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>勤怠実績一覧</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
+</head>
+
+<body class="page-body">
+
+    <!-- 共通ヘッダー -->
+    <div th:replace="~{fragments/header :: header}"></div>
+
+    <main class="report-main">
+        <div class="page-title">勤怠実績一覧</div>
+
+        <div class="report-grid">
+            <!-- 左：日別の実績テーブル（太い黒枠） -->
+            <section class="report-card">
+                <table class="report-table">
+                    <thead>
+                        <tr>
+                            <th class="w-date">日付</th>
+                            <th>出勤時刻</th>
+                            <th>退勤時刻</th>
+                            <th>勤務時間</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>10月11日 (水)</td>
+                            <td>8:00</td>
+                            <td>22:00</td>
+                            <td>8:00</td>
+                        </tr>
+                        <!-- 画面サンプルの白い大きな余白を再現 -->
+                        <tr class="fill-row">
+                            <td colspan="4"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <!-- 右：月ごとの総勤務時間（太い黒枠） -->
+            <aside class="report-summary-card">
+                <table class="report-summary-table">
+                    <thead>
+                        <tr>
+                            <th class="w-month">月</th>
+                            <th>総勤務時間</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>9月</td>
+                            <td>321時間</td>
+                        </tr>
+                        <tr>
+                            <td>8月</td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </aside>
+        </div>
+    </main>
+</body>
+
+</html>

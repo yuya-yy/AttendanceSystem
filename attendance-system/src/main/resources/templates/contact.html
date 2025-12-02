@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <title>連絡先登録</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+
+<body class="page-body">
+
+    <!-- 共通ヘッダー -->
+    <div th:replace="~{fragments/header :: header}"></div>
+
+    <main class="page-main">
+        <section class="form-card">
+            <h2 class="form-card-title">連絡先登録</h2>
+
+            <form action="#" method="post">
+
+                <!-- メールアドレス -->
+                <div class="form-field-block">
+                    <label for="email" class="form-field-label">メールアドレス</label>
+                    <input type="email" id="email" name="email" class="form-field-input" />
+                </div>
+
+                <!-- 電話番号 -->
+                <div class="form-field-block">
+                    <label for="phoneNumber" class="form-field-label">電話番号</label>
+                    <input type="text" id="phoneNumber" name="phoneNumber" class="form-field-input" />
+                </div>
+
+                <!-- 登録ボタン -->
+                <div class="form-button-row">
+                    <button type="submit" class="primary-action-button">
+                        登録
+                    </button>
+                </div>
+
+            </form>
+        </section>
+    </main>
+
+</body>
+
+</html>
