@@ -1,4 +1,4 @@
-package repository;
+package com.example.attendance.repository;
 
 import java.util.List;
 
