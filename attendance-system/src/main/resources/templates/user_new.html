@@ -17,28 +17,34 @@
         <section class="form-card wide">
             <h2 class="form-card-title">新規ユーザー登録</h2>
 
-            <form action="#" method="post">
+            <!-- ★ 業務エラー（BusinessException）のメッセージを表示 -->
+            <div th:if="${flashError}" class="form-error-message">
+                <span th:text="${flashError}"></span>
+            </div>
+
+            <!-- ★ POST先を /users/new に変更 -->
+            <form th:action="@{/users/new}" method="post">
 
                 <div class="form-grid-2col">
                     <!-- ユーザー名 -->
                     <div class="form-grid-item">
                         <label for="username" class="form-field-label">ユーザー名</label>
-                        <input id="username" name="username" type="text" class="form-field-input" />
+                        <input id="username" name="username" type="text" class="form-field-input"
+                            th:value="${username}" />
                     </div>
 
                     <!-- 氏名（表示名） -->
                     <div class="form-grid-item">
                         <label for="displayName" class="form-field-label">氏名（表示名）</label>
-                        <input id="displayName" name="displayName" type="text" class="form-field-input" />
+                        <input id="displayName" name="displayName" type="text" class="form-field-input"
+                            th:value="${displayName}" />
                     </div>
 
-                    <!-- パスワード（👁 表示ヒントを右側に配置したい場合ここに入れてOK） -->
+                    <!-- パスワード -->
                     <div class="form-grid-item">
                         <label for="password" class="form-field-label">パスワード</label>
                         <div class="password-row" style="margin-bottom:8px;">
-                            <!-- 左側:実際のパスワード入力 -->
                             <input id="password" name="password" type="password" class="form-field-input" />
-                            <!-- 右側: 👁 表示 -->
                             <div class="login-visibility-hint">
                                 <span role="img" aria-label="eye">👁</span> 表示
                             </div>
@@ -47,38 +53,43 @@
 
                     <!-- メールアドレス -->
                     <div class="form-grid-item">
-                        <label for="mail" class="form-field-label">メールアドレス</label>
-                        <input id="mail" name="mail" type="email" class="form-field-input" />
+                        <label for="email" class="form-field-label">メールアドレス</label>
+                        <input id="email" name="email" type="email" class="form-field-input" th:value="${email}" />
                     </div>
 
-                    <!-- 所属部署 -->
+                    <!-- 所属部署（プルダウン） -->
                     <div class="form-grid-item">
-                        <label for="department" class="form-field-label">所属部署</label>
-                        <input id="department" name="department" type="text" class="form-field-input" />
+                        <label for="departmentId" class="form-field-label">所属部署</label>
+                        <select id="departmentId" name="departmentId" class="form-field-input">
+                            <option value="">選択してください</option>
+                            <option th:each="dept : ${departments}" th:value="${dept.id}"
+                                th:text="${dept.departmentName}" th:selected="${departmentIdValue} == ${dept.id}">
+                            </option>
+                        </select>
                     </div>
 
                     <!-- 電話番号 -->
                     <div class="form-grid-item">
                         <label for="phone" class="form-field-label">電話番号</label>
-                        <input id="phone" name="phone" type="text" class="form-field-input" />
+                        <input id="phone" name="phone" type="text" class="form-field-input" th:value="${phone}" />
                     </div>
 
-                    <!-- 権限（ラジオボタン：管理者 / 一般） -->
+                    <!-- 権限（ラジオボタン） -->
                     <div class="form-grid-item">
                         <span class="form-field-label">権限</span>
                         <div class="inline-radio-group">
                             <label class="inline-radio-option">
-                                <input type="radio" name="role" value="admin" />
+                                <input type="radio" name="role" value="1" th:checked="${roleValue} == '1'" />
                                 <span>管理者</span>
                             </label>
                             <label class="inline-radio-option">
-                                <input type="radio" name="role" value="user" />
+                                <input type="radio" name="role" value="2" th:checked="${roleValue} == '2'" />
                                 <span>一般</span>
                             </label>
                         </div>
                     </div>
 
-                    <!-- 右側の空きスペース（デザイン上の余白） -->
+                    <!-- レイアウト用の空き -->
                     <div class="form-grid-item"></div>
                 </div>
 

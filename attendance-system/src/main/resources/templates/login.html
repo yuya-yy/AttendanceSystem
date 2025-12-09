@@ -15,18 +15,30 @@
         </div>
         <div class="header-line"></div>
     </header>
-    <!-- ログイン画面はヘッダー無しの場合、mainだけでOK -->
+
     <main class="page-main">
 
         <section class="form-card">
             <h2 class="form-card-title">ログイン</h2>
 
-            <form action="#" method="post">
+            <!-- フラッシュメッセージ（エラー） -->
+            <div th:if="${flashError}" class="flash-message flash-error">
+                <p th:text="${flashError}">エラーメッセージが入ります</p>
+            </div>
+
+            <!-- フラッシュメッセージ（情報） -->
+            <div th:if="${flashInfo}" class="flash-message flash-info">
+                <p th:text="${flashInfo}">お知らせメッセージが入ります</p>
+            </div>
+
+            <!-- ログインフォーム -->
+            <form th:action="@{/auth/login}" method="post" novalidate>
 
                 <!-- ユーザー名 -->
                 <div class="form-field-block">
                     <label for="loginUser" class="form-field-label">ユーザー名</label>
-                    <input id="loginUser" name="username" type="text" class="form-field-input" />
+                    <input id="loginUser" name="username" type="text" class="form-field-input" autocomplete="username"
+                        th:value="${loginUsername}" />
                 </div>
 
                 <!-- パスワード + 表示アイコン -->
@@ -37,7 +49,8 @@
                             <span role="img" aria-label="eye">👁</span> 表示
                         </div>
                     </div>
-                    <input id="loginPass" name="password" type="password" class="form-field-input" />
+                    <input id="loginPass" name="password" type="password" class="form-field-input"
+                        autocomplete="current-password" />
                 </div>
 
                 <!-- ボタン -->
