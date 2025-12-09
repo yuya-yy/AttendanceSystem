@@ -4,7 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <title>勤怠状況一覧</title>
-    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/base.css}">
+    <link rel="stylesheet" th:href="@{/css/style_status_list.css}">
 </head>
 
 <body class="page-body">
@@ -27,26 +28,18 @@
             </div>
         </div>
 
+        <!-- （将来）フィルタ UI を足すならこのあたりに filter-section を置く -->
+
         <!-- テーブル（太枠） -->
         <div class="status-list-table-frame">
             <table class="status-list-table">
                 <thead>
                     <tr>
-                        <th class="th-left">
-                            名前 <span class="sort-indicator" aria-hidden="true"></span>
-                        </th>
-                        <th>
-                            勤務状況 <span class="sort-indicator" aria-hidden="true"></span>
-                        </th>
-                        <th>
-                            勤務場所 <span class="sort-indicator" aria-hidden="true"></span>
-                        </th>
-                        <th>
-                            メールアドレス <span class="sort-indicator" aria-hidden="true"></span>
-                        </th>
-                        <th class="th-right">
-                            電話番号 <span class="sort-indicator" aria-hidden="true"></span>
-                        </th>
+                        <th class="th-left">名前</th>
+                        <th>勤務状況</th>
+                        <th>勤務場所</th>
+                        <th>メールアドレス</th>
+                        <th class="th-right">電話番号</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -55,7 +48,7 @@
                         <td>〇〇〇〇〇〇〇〇</td>
                         <td>勤務中</td>
                         <td>会社</td>
-                        <td>oooooo @gmail.com</td>
+                        <td>oooooo@gmail.com</td>
                         <td>090-9090-909</td>
                     </tr>
                 </tbody>

@@ -4,7 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <title>ユーザー情報一覧</title>
-    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/base.css}">
+    <link rel="stylesheet" th:href="@{/css/style_user_list.css}">
 </head>
 
 <body class="page-body">
@@ -27,15 +28,14 @@
 
         <!-- 一覧テーブル枠全体 -->
         <div class="user-list-table-frame">
-
             <table class="user-list-table">
                 <thead>
                     <tr>
                         <th>名前</th>
+                        <th>所属部署</th>
+                        <th>勤務場所</th>
                         <th>メールアドレス</th>
                         <th>電話番号</th>
-                        <th>勤務場所</th>
-                        <th>部署</th>
                         <th>権限</th>
                         <th>操作</th>
                     </tr>
@@ -43,10 +43,10 @@
                 <tbody>
                     <tr>
                         <td>〇〇〇〇〇〇</td>
+                        <td>システム部</td>
+                        <td>会社</td>
                         <td>taguchi@gmail.com</td>
                         <td>090-0808-080</td>
-                        <td>会社</td>
-                        <td>システム部</td>
                         <td>管理者</td>
                         <td class="user-list-actions-cell">
                             <button class="user-list-action-pill user-list-action-pill-main">集計</button>
@@ -56,10 +56,10 @@
                     </tr>
                     <tr>
                         <td>〇〇〇〇〇〇</td>
+                        <td>システム部</td>
+                        <td>会社</td>
                         <td>example@example.com</td>
                         <td>090-1111-2222</td>
-                        <td>会社</td>
-                        <td>システム部</td>
                         <td>一般</td>
                         <td class="user-list-actions-cell">
                             <button class="user-list-action-pill user-list-action-pill-main">集計</button>
@@ -69,7 +69,6 @@
                     </tr>
                 </tbody>
             </table>
-
         </div>
     </main>
 

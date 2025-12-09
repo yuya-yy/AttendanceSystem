@@ -1,0 +1,133 @@
+/* ======================================
+   勤怠状況一覧（S0105） status_list.css
+   - 部署の現在の勤務状況一覧
+   - 上にタイトル + 件数
+   - 下に黒枠テーブル
+====================================== */
+
+/* 画面コンテナ */
+.status-main {
+    display: flex;
+    flex-direction: column;
+    padding: 16px 24px 40px;
+    box-sizing: border-box;
+    gap: 16px;
+    font-size: 14px;
+    line-height: 1.5;
+    color: #000;
+}
+
+/* タイトル行（画面タイトル＋部署バッジ＋件数表示など） */
+.status-title-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+}
+
+.dept-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 10px;
+    border-radius: 999px;
+    border: 1px solid #000;
+    font-size: 12px;
+    background-color: #ffffff;
+}
+
+/* ====== 検索・フィルタ行（名前・勤務状況・勤務場所など） ====== */
+
+.user-list-search-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+/* 左の検索ボックス（虫眼鏡＋テキスト） */
+.user-list-search-box {
+    display: inline-flex;
+    align-items: center;
+    border: 2px solid #000;
+    border-radius: 4px;
+    padding: 4px 8px;
+    background-color: #fff;
+    min-height: 28px;
+    box-sizing: border-box;
+}
+
+.user-list-search-icon {
+    font-size: 14px;
+    margin-right: 4px;
+}
+
+.user-list-search-input {
+    border: none;
+    outline: none;
+    background-color: transparent;
+    font-size: 14px;
+    min-width: 140px;
+}
+
+/* 右側のセレクトボックス（勤務状況・勤務場所） */
+.filter-select {
+    padding: 4px 8px;
+    font-size: 14px;
+}
+
+/* ====== テーブル枠（外側） ====== */
+
+.status-list-table-frame {
+    border: 3px solid #000;
+    background-color: #fff;
+    box-sizing: border-box;
+    width: 95%;          /* 少し左右に余白を作る */
+    margin: 0 auto 40px; /* 中央寄せ + 下余白 */
+    min-height: 300px;
+    overflow-x: auto;
+    padding: 0;
+}
+
+/* 実際のテーブル */
+.status-list-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+    color: #000;
+    table-layout: fixed;
+}
+
+/* ヘッダー行 */
+.status-list-table thead th {
+    font-weight: 600;
+    color: #000;
+    text-align: left;
+    vertical-align: middle;
+    padding: 6px 10px;
+    border-bottom: 2px solid #000;
+    border-right: 1px solid #000;
+    white-space: nowrap;
+}
+
+.status-list-table thead th:last-child {
+    border-right: none;
+}
+
+/* データ行 */
+.status-list-table tbody td {
+    padding: 6px 10px;
+    vertical-align: top;
+    color: #000;
+    border-bottom: 1px solid #000;
+    border-right: 1px solid #000;
+    word-break: break-word;
+}
+
+.status-list-table tbody td:last-child {
+    border-right: none;
+}
+
+.status-list-table tbody tr:last-child td {
+    border-bottom: none;
+}

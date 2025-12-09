@@ -1,0 +1,201 @@
+/* ======================================
+   テーマ共通（色・角丸・影・余白・文字サイズ）
+   ※ここは全画面で共通に使う「変数置き場」
+====================================== */
+
+:root {
+    /* カラー */
+    --color-bg: #DFEFED;           /* ページ全体の背景 */
+    --color-surface: #FFFFFF;      /* カード・フォームの背景 */
+    --color-surface-subtle: #F5FBF8; /* 少し色付きの背景など */
+    --color-header: #7DD3C9;       /* ヘッダー背景 */
+    --color-accent: #517D99;       /* メインボタン・強調色 */
+    --color-accent-soft: #BFE9DB;  /* 補助色（ホバーなど） */
+    --color-danger: #E2B1B1;       /* エラー系の背景など */
+    --color-border: #D3E2DD;       /* 薄い境界線 */
+    --color-text-main: #1F2933;    /* 基本の文字色 */
+    --color-text-muted: #6B7280;   /* 少し薄い説明文など */
+
+    /* 角丸・影 */
+    --radius-lg: 18px;
+    --radius-md: 12px;
+    --radius-pill: 999px;
+
+    --shadow-soft: 0 14px 40px rgba(15, 23, 42, 0.12);
+    --shadow-subtle: 0 6px 18px rgba(15, 23, 42, 0.06);
+
+    /* 余白 */
+    --spacing-xs: 6px;
+    --spacing-sm: 10px;
+    --spacing-md: 16px;
+    --spacing-lg: 24px;
+    --spacing-xl: 32px;
+
+    /* フォントサイズ */
+    --font-size-xs: 11px;
+    --font-size-sm: 13px;
+    --font-size-md: 14px;
+    --font-size-lg: 18px;
+}
+
+/* ======================================
+   リセット & ベース
+   （全画面共通のごく基本的な設定）
+====================================== */
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    margin: 0;
+    padding: 0;
+}
+
+/* すべての画面で使う body の共通設定 */
+body.page-body {
+    min-height: 100vh;
+    margin: 0;
+    background-color: var(--color-bg);
+    color: var(--color-text-main);
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Noto Sans JP", "Meiryo", sans-serif;
+    display: flex;
+    flex-direction: column;
+}
+
+/* a タグの基本挙動（色は継承） */
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* main は「中身エリア」として縦に伸びる想定 */
+main {
+    flex: 1;
+}
+
+/* 画面全体の共通コンテナ（必要に応じて各画面CSSで上書きOK） */
+.page-main {
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: var(--spacing-lg) var(--spacing-md) var(--spacing-xl);
+}
+
+/* 各ページのタイトルの共通スタイル */
+.page-title {
+    font-size: 22px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    margin-bottom: var(--spacing-md);
+}
+
+/* ======================================
+   共通ヘッダー（ナビゲーション）
+   fragments/header.html で使うクラス
+====================================== */
+
+.main-header {
+    background-color: var(--color-header);
+    box-shadow: 0 2px 10px rgba(15, 23, 42, 0.12);
+    position: sticky;
+    top: 0;
+    z-index: 50;
+}
+
+/* 中身を真ん中に寄せて、タイトルとナビを横並びに */
+.header-inner {
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: 10px var(--spacing-md);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--spacing-md);
+}
+
+/* 左上の「勤怠管理システム」 */
+.header-title {
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: #0F172A;
+}
+
+/* 右側のメニュー */
+.header-nav {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+/* メニューの1個1個 */
+.nav-item {
+    font-size: var(--font-size-sm);
+    padding: 6px 12px;
+    border-radius: var(--radius-pill);
+    background-color: rgba(255, 255, 255, 0.0);
+    border: 1px solid transparent;
+    cursor: pointer;
+    transition:
+        background-color 120ms ease,
+        box-shadow 120ms ease,
+        transform 80ms ease,
+        border-color 120ms ease;
+    white-space: nowrap;
+}
+
+.nav-item:hover {
+    background-color: rgba(255, 255, 255, 0.55);
+    border-color: rgba(255, 255, 255, 0.8);
+    box-shadow: var(--shadow-subtle);
+    transform: translateY(-1px);
+}
+
+/* ログアウトだけ強調表示 */
+.nav-item.logout {
+    background-color: var(--color-accent);
+    color: #FFFFFF;
+    border-color: rgba(0, 0, 0, 0.04);
+    box-shadow: var(--shadow-soft);
+}
+
+.nav-item.logout:hover {
+    background-color: #3e617c;
+}
+
+/* ヘッダー下の仕切り線 */
+.header-line {
+    border-top: 1px solid rgba(15, 23, 42, 0.1);
+}
+
+/* ======================================
+   ユーティリティクラス（どの画面でも使える小物）
+====================================== */
+
+/* 少し薄めの文字にしたいとき */
+.text-muted {
+    color: var(--color-text-muted);
+}
+
+/* エラー文など、赤系の文字にしたいとき */
+.text-danger {
+    color: #B91C1C;
+}
+
+/* 小さなバッジ風パーツ（部署名やステータス表示などに） */
+.badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 8px;
+    border-radius: var(--radius-pill);
+    font-size: var(--font-size-xs);
+    background-color: #E5E7EB;
+}
