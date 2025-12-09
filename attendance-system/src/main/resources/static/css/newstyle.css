@@ -80,6 +80,10 @@ a:hover {
 
 main {
     flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--spacing-lg) var(--spacing-md);
 }
 
 /* 共通コンテナ（画面ごとに max-width をそろえる） */
@@ -182,15 +186,19 @@ main {
 .report-card,
 .report-summary-card {
     background-color: var(--color-surface);
-    border-radius: var(--radius-lg);
-    padding: var(--spacing-lg);
+    border-radius: 60px;
+    padding: 60px;
     box-shadow: var(--shadow-soft);
     border: 1px solid var(--color-border);
+    /*max-width: 1200px; /* デフォルトより大きく (例: 400px → 600px) */
+    width: 430px;
+    height: 470px;
+    padding-top: 35px;
 }
 
 /* フォームカードのタイトル（見出し） */
 .form-card-title {
-    font-size: 18px;
+    font-size: 25px;
     font-weight: 600;
     margin-bottom: var(--spacing-md);
     padding-left: 10px;
@@ -203,10 +211,11 @@ main {
     flex-direction: column;
     gap: 4px;
     margin-bottom: var(--spacing-md);
+    padding-top: 8px;
 }
 
 .form-field-label {
-    font-size: var(--font-size-sm);
+    font-size: 16px;
     color: var(--color-text-muted);
 }
 
@@ -222,8 +231,8 @@ main {
 select.form-field-input {
     width: 100%;
     min-height: 38px;
-    padding: 8px 10px;
-    border-radius: 10px;
+    min-height: 44px;
+    padding: 10px 14px;
     border: 1.5px solid var(--color-border);
     background-color: #F9FAFB;
     font-size: var(--font-size-md);
@@ -292,10 +301,15 @@ select.form-field-input {
 .form-button-row {
     margin-top: var(--spacing-lg);
     display: flex;
-    justify-content: flex-end;
+    justify-content: center;
     gap: 10px;
+    padding-top: 45px;
 }
-
+.form-button-row > * {
+    flex: 1; /* 各ボタンが均等に広がる */
+    max-width: 300px; /* 広がりすぎを防ぐ(お好みで調整) */
+    height: 60px; /* ボタンの高さを統一 */
+}
 /* ======================================
    ボタン（共通 / 強調 / サブ）
 ====================================== */
@@ -312,7 +326,7 @@ button {
     border: none;
     background-color: var(--color-accent);
     color: #FFFFFF;
-    font-size: var(--font-size-md);
+    font-size: 20px;
     font-weight: 600;
     cursor: pointer;
     box-shadow: var(--shadow-soft);
