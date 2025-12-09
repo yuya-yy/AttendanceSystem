@@ -36,6 +36,22 @@ public interface UserRepository extends JpaRepository<User, Integer> {
       """)
   List<User> findActiveByDepartmentId(@Param("departmentId") Integer departmentId);
 
+
+  /**
+     * メールアドレスをキーに「有効なユーザー」を1件取得する。
+     * deleted_at が null のレコードのみ対象。
+     *
+     * 新規ユーザー登録／ユーザー編集で、
+     * 「同じメールアドレスのユーザーが既にいないか」を調べるために使用する。
+     */
+    @Query("""
+            SELECT u
+            FROM User u
+            WHERE u.email = :email
+              AND u.deletedAt IS NULL
+            """)
+    Optional<User> findByEmail(@Param("email") String email);
+
   // 有効なユーザー 一覧を取得する。
   @Query("""
       SELECT user
