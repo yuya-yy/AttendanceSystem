@@ -1,0 +1,197 @@
+/* ======================================
+   ログイン画面用 CSS（login.css）
+   - 対象：login.html
+   - 前提：base.css が先に読み込まれていること
+   - ここでは「フォームレイアウト」「ボタン」
+     などログイン画面固有の見た目だけを書く
+====================================== */
+
+/* --------------------------------------
+   1. 画面全体のレイアウト調整
+   - base.css の .page-main を
+     「ログイン専用の配置」に上書き
+-------------------------------------- */
+
+/* ログイン画面の main
+   - 画面中央にカードを1枚だけ配置するイメージ */
+.page-main {
+    /* base.css で max-width などは決まっているのでそのまま利用 */
+    max-width: 1120px;
+    margin: 0 auto;
+
+    /* ログイン画面では「縦横センター寄せ」にする */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    /* 上下に少し余白をつける（ヘッダーとの距離） */
+    padding: 40px 16px 48px;
+    box-sizing: border-box;
+}
+
+/* タイトル（「ログイン」）の位置と余白 */
+.page-title {
+    font-size: 22px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    margin: 0 0 24px 0;
+    text-align: center;
+}
+
+/* --------------------------------------
+   2. ログイン用カード（白い四角の箱）
+-------------------------------------- */
+
+/* login.html 側で
+   <section class="form-card"> ... </section>
+   という想定で使うカード */
+.form-card {
+    width: 360px;                       /* ログインなので細めでOK */
+    max-width: 100%;
+
+    background-color: var(--color-surface);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-soft);
+    border: 1px solid var(--color-border);
+
+    padding: 24px 28px 28px;
+    box-sizing: border-box;
+}
+
+/* カード内のエラーメッセージがあれば上に出す想定 */
+.login-error-message {
+    margin: 0 0 16px 0;
+    padding: 8px 10px;
+    border-radius: 8px;
+    background-color: var(--color-danger);
+    color: #111827;
+    font-size: var(--font-size-sm);
+}
+
+/* --------------------------------------
+   3. 入力フォームの共通部品
+   - ユーザー名 / パスワード行
+-------------------------------------- */
+
+/* 1項目ごとのブロック（ラベル + 入力欄） */
+.form-field-block {
+    margin-bottom: 18px;
+}
+
+/* ラベル（例：ユーザー名 / パスワード） */
+.form-field-label {
+    display: block;
+    font-size: var(--font-size-sm);
+    color: var(--color-text-muted);
+    margin-bottom: 6px;
+}
+
+/* 入力欄の基本スタイル（テキスト / パスワード共通） */
+.form-field-input {
+    width: 100%;
+    min-height: 38px;
+    padding: 8px 10px;
+    border-radius: 10px;
+    border: 1.5px solid var(--color-border);
+    background-color: #F9FAFB;
+    font-size: var(--font-size-md);
+    color: var(--color-text-main);
+    outline: none;
+    box-sizing: border-box;
+    font-family: inherit;
+}
+
+/* フォーカスしたときの枠線強調 */
+.form-field-input:focus {
+    border-color: var(--color-accent);
+    background-color: #FFFFFF;
+    box-shadow: 0 0 0 1px rgba(81, 125, 153, 0.4);
+}
+
+/* --------------------------------------
+   4. パスワード行（入力＋👁ボタン）の横並び
+-------------------------------------- */
+
+/* パスワード用の行を横並びにするためのコンテナ
+   login.html 側でこんな感じを想定：
+   <div class="form-field-block">
+       <label class="form-field-label">パスワード</label>
+       <div class="password-row">
+           <input ... class="form-field-input">
+           <button type="button" class="login-visibility-hint">👁</button>
+       </div>
+   </div>
+*/
+.password-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* パスワードの input はできるだけ広く */
+.password-row .form-field-input {
+    flex: 1;
+}
+
+/* 「👁 表示／非表示」ボタン用 */
+.login-visibility-hint {
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    font-size: 12px;
+    color: var(--color-text-muted);
+    padding: 4px 6px;
+    border-radius: 6px;
+}
+
+/* ホバーしたときに少しだけ背景をつける */
+.login-visibility-hint:hover {
+    background-color: #E5E7EB;
+}
+
+/* --------------------------------------
+   5. ボタン行（ログインボタン）
+-------------------------------------- */
+
+/* ボタン全体の配置（中央寄せ） */
+.form-button-row {
+    margin-top: 24px;
+    display: flex;
+    justify-content: center;
+}
+
+/* 「ログインする →」ボタン
+   login.html で class="primary-action-button" を想定 */
+.primary-action-button {
+    min-width: 180px;
+    padding: 10px 18px;
+    border-radius: var(--radius-pill);
+    border: none;
+    background-color: var(--color-accent);
+    color: #FFFFFF;
+    font-size: var(--font-size-md);
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: var(--shadow-soft);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    transition:
+        background-color 120ms ease,
+        box-shadow 120ms ease,
+        transform 80ms ease;
+}
+
+/* マウスを乗せたとき */
+.primary-action-button:hover {
+    background-color: #3e617c;
+    box-shadow: 0 10px 30px rgba(15, 23, 42, 0.2);
+    transform: translateY(-1px);
+}
+
+/* クリック中（押し込んだ感じ） */
+.primary-action-button:active {
+    transform: translateY(0);
+    box-shadow: var(--shadow-subtle);
+}

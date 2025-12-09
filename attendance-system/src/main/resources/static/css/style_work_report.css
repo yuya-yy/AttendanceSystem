@@ -1,0 +1,100 @@
+/* ======================================
+   勤怠実績一覧（S0107） work_report.css
+   - 左：日別勤怠テーブル
+   - 右：月別サマリテーブル
+====================================== */
+
+/* 画面コンテナ */
+.report-main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 16px 24px 40px;
+    box-sizing: border-box;
+    gap: 16px;
+    font-size: 14px;
+    line-height: 1.5;
+    color: #000;
+}
+
+/* 左右 2 カラムレイアウト */
+.report-grid {
+    max-width: 1120px;
+    margin: 12px auto 40px;
+    display: grid;
+    grid-template-columns: 1.6fr 0.8fr; /* 左広め / 右少し狭め */
+    column-gap: 28px;
+}
+
+/* 左（日別）・右（月別）共通の枠 */
+.report-card,
+.report-summary-card {
+    border: 3px solid #000;
+    background: #fff;
+    box-sizing: border-box;
+    padding: 0;
+}
+
+/* テーブル共通（黒枠） */
+.report-table,
+.report-summary-table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+    color: #000;
+}
+
+/* セル共通 */
+.report-table th,
+.report-table td,
+.report-summary-table th,
+.report-summary-table td {
+    border-right: 1px solid #000;
+    border-bottom: 1px solid #000;
+    padding: 8px 10px;
+    font-size: 14px;
+    vertical-align: middle;
+}
+
+/* ヘッダー行は少し太いボーダー */
+.report-table thead th,
+.report-summary-table thead th {
+    font-weight: 700;
+    border-bottom: 3px solid #000;
+}
+
+/* 最右列は右枠なし */
+.report-table th:last-child,
+.report-table td:last-child,
+.report-summary-table th:last-child,
+.report-summary-table td:last-child {
+    border-right: none;
+}
+
+/* 最終行の下線を消す */
+.report-table tbody tr:last-child td,
+.report-summary-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* 日別テーブル：日付列を少し広めに */
+.w-date {
+    width: 40%;
+    white-space: nowrap;
+}
+
+/* 月別サマリ：月の列を固定幅に */
+.w-month {
+    width: 70px;
+}
+
+/* 「○時間△分」を少し薄く表示したい場合に使う */
+.value-gray {
+    color: #555;
+}
+
+/* 日別テーブルの中に空きスペース用のダミー行がある場合 */
+.fill-row td {
+    height: 420px; /* 画像の雰囲気に合わせた大きめの高さ */
+    padding: 0;
+}

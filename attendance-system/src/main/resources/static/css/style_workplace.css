@@ -1,0 +1,135 @@
+/* ======================================
+   勤務場所登録画面（S0103） workplace.css
+   - 共通テーマやヘッダーは base.css に任せる
+   - ここでは「中央寄せ + カード + ラジオボタン + 登録ボタン」を定義
+====================================== */
+
+/* 画面全体のレイアウト（メインを中央寄せ） */
+.page-main {
+    display: flex;
+    justify-content: center;   /* 横方向センタリング */
+    align-items: flex-start;   /* 上寄せ */
+    padding-top: 60px;
+    padding-bottom: 40px;
+    box-sizing: border-box;
+}
+
+/* 真ん中の白いカード */
+.form-card {
+    background-color: #ffffff;
+    border-radius: 16px;
+    border: 1px solid var(--color-border);
+    box-shadow: var(--shadow-soft);
+    padding: 24px 28px 32px;
+    width: 420px;              /* ログインより少し広め */
+    box-sizing: border-box;
+}
+
+/* カード内タイトル（フォーム見出し） */
+.form-card-title {
+    font-size: 18px;
+    font-weight: 600;
+    margin: 0 0 24px 0;
+    padding-left: 8px;
+    border-left: 4px solid var(--color-accent);
+}
+
+/* ====== フォーム部品（ラベル・入力欄など） ====== */
+
+.form-field-block {
+    margin-bottom: 20px;
+}
+
+.form-field-label {
+    display: block;
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 6px;
+}
+
+.form-field-input {
+    width: 100%;
+    padding: 8px 10px;
+    font-size: 14px;
+    border-radius: 6px;
+    border: 1px solid var(--color-border);
+    background-color: #F9FAFB;
+    box-sizing: border-box;
+    outline: none;
+}
+
+.form-field-input:focus {
+    border-color: var(--color-accent);
+    background-color: #ffffff;
+    box-shadow: 0 0 0 1px rgba(81, 125, 153, 0.4);
+}
+
+/* ====== ラジオボタン（勤務場所選択） ====== */
+
+/* form タグに付いているクラス想定 */
+.workplace-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* ラジオボタンの縦並びリスト */
+.radio-list {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 24px;
+}
+
+/* 1行分（○ 会社） */
+.radio-line {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+}
+
+.radio-line input[type="radio"] {
+    cursor: pointer;
+}
+
+/* ====== ボタン行・登録ボタン ====== */
+
+/* ボタンを中央寄せしたいときの行 */
+.form-button-row {
+    margin-top: 24px;
+    text-align: center;
+}
+
+/* 共通のメインボタン（base では定義しない想定） */
+.primary-action-button {
+    min-width: 160px;
+    padding: 10px 18px;
+    border-radius: 999px;              /* pill 形状 */
+    border: none;
+    background-color: var(--color-accent);
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: var(--shadow-soft);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    transition: background-color 120ms ease,
+                box-shadow 120ms ease,
+                transform 80ms ease;
+}
+
+.primary-action-button:hover {
+    background-color: #3e617c;
+    box-shadow: 0 10px 30px rgba(15, 23, 42, 0.2);
+    transform: translateY(-1px);
+}
+
+.primary-action-button:active {
+    transform: translateY(0);
+    box-shadow: var(--shadow-subtle);
+}

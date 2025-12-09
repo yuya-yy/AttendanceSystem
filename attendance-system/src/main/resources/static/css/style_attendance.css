@@ -1,0 +1,220 @@
+/* ======================================
+   勤怠入力画面（S0102）専用 CSS
+   - レイアウト
+   - 左：勤怠テーブル
+   - 右：ユーザー情報・時計・ボタン
+====================================== */
+
+/* ------------------------------
+   画面全体レイアウト
+   ※ base.css で body/page-body は定義済み
+------------------------------ */
+
+/* 勤怠入力画面のメインコンテナ */
+.attendance-main {
+    max-width: 100%;          /* 画面幅の上限（他画面とそろえる） */
+    margin: 0px;             /* 中央寄せ */
+    padding: 24px 24px 40px;    /* 上左右・下の余白 */
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;                  /* タイトルとの間などのすき間 */
+}
+
+/* タイトルの下に少し余白を付ける */
+.attendance-main .page-title {
+    margin-bottom: 8px;
+}
+
+/* 左右2カラムのレイアウト */
+.attendance-layout {
+    display: flex;              /* 「flexbox（フレックスボックス）」で横並びにする */
+    /*flex-wrap: wrap;            /* 画面が狭いときは折り返しOK */
+    gap: 24px;                  /* 左右のカードの間隔 */
+    align-items: flex-start;    /* 上端をそろえる */
+}
+
+/* ------------------------------
+   左カラム：勤怠テーブル側
+------------------------------ */
+
+.attendance-table-card {
+    flex: 1 1 600px;    /* 横幅は優先的に広く取りたい（最低600pxぐらい） */
+    min-width: 400px;
+    color: #000;
+}
+
+/* 勤務状況 / 勤務場所の表示部分 */
+.attendance-info-top {
+    margin-bottom: 16px;
+}
+
+/* 「勤務状況：出勤中」など1行分のレイアウト */
+.attendance-status-row {
+    display: flex;
+    gap: 16px;
+    font-size: 14px;
+    line-height: 1.6;
+    margin-bottom: 4px;
+}
+
+/* 「勤務状況」「勤務場所」などラベル側 */
+.label-gray {
+    color: #9aa0a6;
+    font-weight: 500;
+    min-width: 80px;
+}
+
+/* 「出勤中」「会社」など値側 */
+.value-gray {
+    color: #9aa0a6;
+}
+
+/* 黒枠で囲まれたテーブルの外側のボックス */
+.attendance-table-wrapper {
+    border: 3px solid #000;
+    background-color: #fff;
+    padding: 0;
+    box-sizing: border-box;
+    min-height: 360px;    /* レコードが少なくてもある程度高さを確保 */
+}
+
+/* 勤怠テーブル本体 */
+.attendance-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+}
+
+/* ヘッダー行 */
+.attendance-table thead th {
+    border-bottom: 2px solid #000;
+    border-right: 1px solid #000;
+    background-color: #fff;
+    font-weight: 500;
+    color: #000;
+    text-align: left;
+    padding: 8px;
+    white-space: nowrap;
+}
+
+.attendance-table thead th:last-child {
+    border-right: none;
+}
+
+/* データ行 */
+.attendance-table tbody td {
+    border-bottom: 1px solid #000;
+    border-right: 1px solid #000;
+    padding: 8px;
+    color: #000;
+    vertical-align: top;
+}
+
+.attendance-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.attendance-table tbody td:last-child {
+    border-right: none;
+}
+
+/* ------------------------------
+   右カラム：ユーザー情報・時計・ボタン
+------------------------------ */
+
+.attendance-side {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    flex: 0 0 260px;    /* 右側は細めカラムとして確保 */
+    min-width: 220px;
+    max-width: 320px;
+}
+
+/* 「ようこそ ○○さん」「○○部／管理者」のブロック */
+.attendance-user-block {
+    font-size: 14px;
+    line-height: 1.5;
+    color: #000;
+}
+
+/* ようこそ行 */
+.attendance-user-block .welcome-line {
+    font-weight: 500;
+    margin-bottom: 4px;
+}
+
+/* 部署・権限行 */
+.attendance-user-block .dept-line {
+    font-weight: 500;
+}
+
+/* 日付＋現在時刻ブロック */
+.attendance-clock-block {
+    text-align: center;
+}
+
+/* 日付（例：10月 22日（水）） */
+.clock-date {
+    font-size: 14px;
+    color: #000;
+    margin-bottom: 8px;
+    font-weight: 500;
+}
+
+/* 現在時刻（大きな数字） */
+.clock-time {
+    font-size: 48px;
+    font-weight: 600;
+    color: #000;
+    line-height: 1.2;
+}
+
+/* 出勤／退勤ボタンをまとめるブロック */
+.attendance-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;          /* ボタン同士のすき間 */
+    align-items: center;
+    margin-top: 16px;
+}
+
+/* ------------------------------
+   出勤 / 退勤 ボタン（newstyle のデザイン）
+   ※ base.css のカラーテーマ変数を使用
+------------------------------ */
+
+.time-button {
+    min-width: 140px;
+    padding: 12px 20px;
+    border-radius: 999px; /* まるいボタン */
+    border: 1.5px solid var(--color-accent);
+    background-color: #FFFFFF;
+    color: var(--color-accent);
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.12);
+    transition:
+        background-color 120ms ease,
+        color 120ms ease,
+        box-shadow 120ms ease,
+        transform 80ms ease;
+}
+
+/* ホバー時（マウスを乗せたとき） */
+.time-button:hover {
+    background-color: var(--color-accent-soft);
+    color: #0F172A;
+    transform: translateY(-1px);
+}
+
+/* クリック中 */
+.time-button:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.35);
+}
