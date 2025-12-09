@@ -4,12 +4,18 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 
-import jakarta.persistence.*; // Entity / Column / ManyToOne などをまとめてインポート
+import jakarta.persistence.*;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ * 勤怠記録（attendance_recordsテーブル）を表すエンティティ。
+ *
+ * - 1レコードが 「ユーザーの1回の勤務（出勤〜退勤）」を表す
+ * - 出勤／退勤の処理ロジックも、このクラスのメソッドとして持たせる
+ */
 @Entity
 @Table(name = "attendance_records")
 @Getter
@@ -42,30 +48,26 @@ public class AttendanceRecord {
     @Column(name = "work_location_name", nullable = false, length = 100)
     private String workLocationName;
 
-    // 論理削除
+    // 論理削除日時
     @Column(name = "deleted_at")
     private OffsetDateTime deletedAt;
 
-    // 作成日時・更新日時（値の設定はService側で行う想定）
+    // 作成日時
     @Column(name = "created_at", nullable = false)
     private OffsetDateTime createdAt;
 
+    // 更新日時
     @Column(name = "updated_at", nullable = false)
     private OffsetDateTime updatedAt;
 
-    // ============================
-    // ここから「1レコードの振る舞い」
-    // ============================
-
     /**
-     * 出勤処理（新しく作成したレコードに対して呼ぶ想定）。
+     * 出勤処理。
      *
      * @param now              サーバーの現在時刻
      * @param workLocationName 出勤時点の勤務場所名（「会社」「在宅」など）
      */
     public void startWork(OffsetDateTime now, String workLocationName) {
         if (this.clockIn != null) {
-            // すでに出勤済みならおかしい
             throw new IllegalStateException("すでに出勤済みのレコードです。");
         }
         this.workDate = now.toLocalDate(); // 勤務日
@@ -74,7 +76,7 @@ public class AttendanceRecord {
     }
 
     /**
-     * 退勤処理（未退勤レコードに対して呼ぶ想定）。
+     * 退勤処理
      *
      * @param now サーバーの現在時刻
      */
@@ -89,7 +91,7 @@ public class AttendanceRecord {
     }
 
     /**
-     * 勤務中かどうか（退勤しておらず、論理削除されていない）。
+     * 勤務中かどうかの判定。（退勤しておらず、論理削除されていない）。
      */
     public boolean isUnfinished() {
         return this.clockOut == null && this.deletedAt == null;

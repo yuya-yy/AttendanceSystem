@@ -18,29 +18,15 @@ import com.example.attendance.entity.WorkLocation;
 @Repository
 public interface WorkLocationRepository extends JpaRepository<WorkLocation, Integer> {
 
-    /**
-     * 勤務場所コードをキーに、1件の勤務場所マスタを取得する。
-     * 例：OFFICE / HOME / TRIP / CLIENT / OTHER
-     *
-     * （deleted_at の条件は付けていないので、
-     * 必要であれば Service 側で isActive() を見て判定してください）
-     */
+    // 勤務場所コードをキーに、1件の勤務場所マスタを取得する。//使用しない可能性あり
     Optional<WorkLocation> findByCode(String code);
 
-    /**
-     * 有効な勤務場所マスタ一覧を取得する。
-     *
-     * 条件：
-     * - deletedAt IS NULL（論理削除されていない）
-     *
-     * 並び順：
-     * - id 昇順
-     */
+    // 有効な勤務場所一覧を取得する。
     @Query("""
-            SELECT w
-            FROM WorkLocation w
-            WHERE w.deletedAt IS NULL
-            ORDER BY w.id ASC
+            SELECT workLocation
+            FROM WorkLocation workLocation
+            WHERE workLocation.deletedAt IS NULL
+            ORDER BY workLocation.id ASC
             """)
     List<WorkLocation> findAllActive();
 }

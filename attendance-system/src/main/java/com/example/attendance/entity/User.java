@@ -13,15 +13,20 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class User {
 
-    // ====== 基本情報 ======
+/**
+ * ユーザー（usersテーブル）を表すエンティティ。
+ *
+ * - ログインID・表示名・連絡先・権限などを管理する
+ * - 所属部署（Department）やデフォルト勤務場所（WorkLocation）と関連を持つ
+ */
+public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    // ログインID（ユニーク）
+    // ログインID ※一意
     @Column(name = "username", nullable = false, unique = true, length = 50)
     private String username;
 
@@ -33,7 +38,7 @@ public class User {
     @Column(name = "password_hash", nullable = false, columnDefinition = "TEXT")
     private String passwordHash;
 
-    // メールアドレス（任意）※ユニーク
+    // メールアドレス（任意）※一意
     @Column(name = "email", unique = true, length = 255)
     private String email;
 
@@ -45,8 +50,6 @@ public class User {
     @Column(name = "role", nullable = false)
     private Integer role;
 
-    // ====== リレーション（テーブル結合） ======
-
     // 所属部署（users.department_id → departments.id）
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "department_id", nullable = false)
@@ -57,23 +60,21 @@ public class User {
     @JoinColumn(name = "default_work_location_id")
     private WorkLocation defaultWorkLocation;
 
-    // ====== 論理削除・監査カラム ======
-
+    // 論理削除日時
     @Column(name = "deleted_at")
     private OffsetDateTime deletedAt;
 
+    // 作成日時
     @Column(name = "created_at", nullable = false, updatable = false)
     private OffsetDateTime createdAt;
 
+    // 更新日時
     @Column(name = "updated_at", nullable = false)
     private OffsetDateTime updatedAt;
 
-    // ====== 便利メソッド（DBには持たない） ======
-
     /**
-     * 論理削除されていないかどうか。
+     * 有効なユーザーかどうか（論理削除されていないか）。
      */
-    @Transient
     public boolean isActive() {
         return deletedAt == null;
     }
@@ -82,7 +83,6 @@ public class User {
      * 管理者ユーザーかどうか。
      * role が 1 のときを管理者とみなす。
      */
-    @Transient
     public boolean isAdmin() {
         return role != null && role == 1;
     }
