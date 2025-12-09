@@ -23,11 +23,11 @@ public class Department {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    // 部署名（ユニーク）
+    // 部署名 ※一意
     @Column(name = "department_name", nullable = false, unique = true, length = 100)
     private String departmentName;
 
-    // 論理削除日時（削除されていない場合は null）
+    // 論理削除日時
     @Column(name = "deleted_at")
     private OffsetDateTime deletedAt;
 
@@ -39,12 +39,9 @@ public class Department {
     @Column(name = "updated_at", nullable = false)
     private OffsetDateTime updatedAt;
 
-    // ====== 便利メソッド（DBカラムにはしない） ======
-
     /**
      * 有効なレコードかどうか（論理削除されていないか）。
      */
-    @Transient
     public boolean isActive() {
         return deletedAt == null;
     }
