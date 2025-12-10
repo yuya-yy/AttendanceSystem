@@ -19,6 +19,12 @@
         <!-- 画面タイトル -->
         <div class="page-title">勤怠入力画面</div>
 
+        <!-- メッセージ表示（エラー／情報） -->
+        <div class="flash-messages">
+            <div th:if="${flashError}" class="alert-error" th:text="${flashError}"></div>
+            <div th:if="${flashInfo}" class="alert-info" th:text="${flashInfo}"></div>
+        </div>
+
         <!-- 左右２カラム -->
         <div class="attendance-layout">
 
@@ -29,11 +35,13 @@
                 <div class="attendance-info-top">
                     <div class="attendance-status-row">
                         <span class="label-gray">勤務状況</span>
-                        <span class="value-gray">出勤中</span>
+                        <span class="value-gray" th:text="${workStatusLabel}">勤務状況</span>
                     </div>
+
                     <div class="attendance-status-row">
                         <span class="label-gray">勤務場所</span>
-                        <span class="value-gray">会社</span>
+                        <!-- デフォルト勤務場所名など（例：会社／在宅） -->
+                        <span class="value-gray" th:text="${currentWorkLocationName}">会社</span>
                     </div>
                 </div>
 
@@ -49,13 +57,45 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>10月22日 (水)</td>
-                                <td>8:00</td>
-                                <td>18:00</td>
-                                <td>8:32</td>
+                            <!-- 直近30日分の勤怠履歴を表示する想定 -->
+                            <tr th:each="record : ${recentRecords}">
+                                <!-- 日付：workDate を日本語形式で表示 -->
+                                <td th:text="${#temporals.format(record.workDate, 'M月 d日 (E)')}">
+                                    10月22日 (水)
+                                </td>
+
+                                <td th:text="${record.clockIn != null
+                                                ? #temporals.format(
+                                                    record.clockIn.withOffsetSameInstant(
+                                                        T(java.time.ZoneOffset).ofHours(9)
+                                                    ),
+                                                    'HH:mm'
+                                                )
+                                            : ''}">
+                                    8:00
+                                </td>
+
+                                <!-- 退勤時刻：同じく +09:00 に直してから表示 -->
+                                <td th:text="${record.clockOut != null
+                                                ? #temporals.format(
+                                                    record.clockOut.withOffsetSameInstant(
+                                                        T(java.time.ZoneOffset).ofHours(9)
+                                                ),
+                                                'HH:mm'
+                                                )
+                                            : ''}">
+                                    18:00
+                                </td>
+
+                                <td th:text="${record.workingTimeText}">8時間32分</td>
                             </tr>
-                            <!-- 将来的にはここを th:each="rec : ${attendanceList}" にして繰り返し -->
+
+                            <!-- レコードが1件もない場合の表示 -->
+                            <tr th:if="${#lists.isEmpty(recentRecords)}">
+                                <td colspan="4" class="attendance-empty-row">
+                                    直近30日間の勤怠データはありません。
+                                </td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
@@ -67,23 +107,44 @@
                 <!-- ようこそ ○○ さん -->
                 <div class="attendance-user-block">
                     <div class="welcome-line">
-                        ようこそ〇〇〇〇〇〇さん
+                        ようこそ
+                        <span th:text="${displayName}">山田 太郎</span>
+                        さん
                     </div>
                     <div class="dept-line">
-                        〇〇〇部 / 管理者
+                        <span th:text="${departmentName}">システム部</span>
+                        /
+                        <span th:text="${roleLabel}">管理者</span>
                     </div>
                 </div>
 
-                <!-- 日付と現在時刻 -->
+                <!-- 日付と現在時刻（サーバーで用意した文字列を表示する想定） -->
                 <div class="attendance-clock-block">
-                    <div class="clock-date">10月 22日 (水)</div>
-                    <div class="clock-time">15:30</div>
+                    <div class="clock-date" th:text="${todayDateText}">
+                        10月 22日 (水)
+                    </div>
+                    <div class="clock-time" th:text="${nowTimeText}">
+                        15:30
+                    </div>
                 </div>
 
                 <!-- 出勤 / 退勤 ボタン -->
                 <div class="attendance-buttons">
-                    <button class="time-button">出勤</button>
-                    <button class="time-button">退勤</button>
+
+                    <!-- 出勤ボタン -->
+                    <form th:action="@{/attendance/clock-in}" method="post" class="attendance-button-form">
+                        <!-- CSRFトークン -->
+
+                        <button type="submit" class="time-button">出勤</button>
+                    </form>
+
+                    <!-- 退勤ボタン -->
+                    <form th:action="@{/attendance/clock-out}" method="post" class="attendance-button-form">
+                        <!-- CSRFトークン -->
+
+                        <button type="submit" class="time-button">退勤</button>
+                    </form>
+
                 </div>
 
             </aside>

@@ -72,11 +72,10 @@
 
 /* 黒枠で囲まれたテーブルの外側のボックス */
 .attendance-table-wrapper {
-    border: 3px solid #000;
-    background-color: #fff;
-    padding: 0;
-    box-sizing: border-box;
-    min-height: 360px;    /* レコードが少なくてもある程度高さを確保 */
+     border: 1px solid #111827;   /* もとの枠線に合わせて調整 */
+    border-radius: 4px;
+    overflow-y: auto;            /* ← 縦方向のスクロールを有効にする */
+    max-height: 360px;  
 }
 
 /* 勤怠テーブル本体 */
@@ -84,6 +83,7 @@
     width: 100%;
     border-collapse: collapse;
     font-size: 14px;
+    background-color: #fff;
 }
 
 /* ヘッダー行 */
@@ -96,6 +96,10 @@
     text-align: left;
     padding: 8px;
     white-space: nowrap;
+    position: sticky;
+    top: 0;
+    background-color: #f9fafb;   /* 背景を白系にして、下の行と重なっても読めるように */
+    z-index: 1;
 }
 
 .attendance-table thead th:last-child {

@@ -4,6 +4,8 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 
+import java.time.temporal.ChronoUnit;
+
 import jakarta.persistence.*;
 
 import lombok.Getter;
@@ -105,6 +107,43 @@ public class AttendanceRecord {
         if (this.clockIn == null || this.clockOut == null) {
             return 0L;
         }
-        return Duration.between(this.clockIn, this.clockOut).toMinutes();
+
+        // 表示している「時:分」に合わせるため、秒以下を切り捨て
+        OffsetDateTime clockInMinutes = this.clockIn.truncatedTo(ChronoUnit.MINUTES);
+        OffsetDateTime clockOutMinutes = this.clockOut.truncatedTo(ChronoUnit.MINUTES);
+
+        return Duration.between(clockInMinutes, clockOutMinutes)
+                .toMinutes();
+    }
+
+    public String getWorkingTimeText() {
+        // 出勤中（退勤していない）など → 空文字で表示したい
+        if (this.clockIn == null || this.clockOut == null) {
+            return "";
+        }
+
+        // 分数の計算ルールは calculateWorkingMinutes() に統一
+        long minutes = calculateWorkingMinutes();
+
+        // 0分ちょうどなら「0分」
+        if (minutes <= 0) {
+            return "0分";
+        }
+
+        long hours = minutes / 60;
+        long restMinutes = minutes % 60;
+
+        if (hours == 0) {
+            // 0時間○分 → 「○分」だけ表示
+            return restMinutes + "分";
+        }
+
+        if (restMinutes == 0) {
+            // ○時間0分 → 「○時間」だけ
+            return hours + "時間";
+        }
+
+        // ○時間△分
+        return hours + "時間" + restMinutes + "分";
     }
 }
