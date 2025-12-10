@@ -55,6 +55,14 @@ public class AdminUserService {
     }
 
     /**
+     * ユーザー一覧を取得する
+     *
+     */
+    public List<User> findAllUsers() {
+        return userRepository.findAllActive();
+    }
+
+    /**
      * 新規ユーザーを登録する。
      *
      * @param username              ユーザー名（ログインID）
