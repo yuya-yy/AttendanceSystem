@@ -1,20 +1,48 @@
 <!-- src/main/resources/templates/fragments/header.html -->
 <!-- htmlhint-disable doctype-first -->
-<header class="main-header" th:fragment="header">
+<header class="main-header" th:fragment="header(currentPage)">
     <div class="header-inner">
 
         <!-- 左側：タイトル -->
-        <div class="header-title">勤怠管理システム</div>
+        <div class="header-title">
+            <span class="brand-text">勤怠管理システム</span>
+        </div>
 
         <!-- 中央ナビメニュー -->
         <nav class="header-nav">
-            <a th:href="@{/attendance}" class="nav-item">勤怠入力</a>
-            <a th:href="@{/attendance/work-location}" class="nav-item">勤務場所登録</a>
-            <a th:href="@{/attendance/contact}" class="nav-item">連絡先登録</a>
-            <a th:href="@{/attendance/status}" class="nav-item">勤怠状況一覧</a>
-            <a th:href="@{/users/list}" class="nav-item">ユーザー一覧</a>
-            <a th:href="@{/users/new}" class="nav-item">新規ユーザー登録</a>
-            <a th:href="@{/auth/logout}" class="nav-item logout">ログアウト</a>
+            <a th:href="@{/attendance}" class="nav-item"
+                th:classappend="${currentPage} == 'attendance' ? ' nav-item--active' : ''">
+                勤怠入力
+            </a>
+
+            <a th:href="@{/attendance/work-location}" class="nav-item"
+                th:classappend="${currentPage} == 'workLocation' ? ' nav-item--active' : ''">
+                勤務場所登録
+            </a>
+
+            <a th:href="@{/attendance/contact}" class="nav-item"
+                th:classappend="${currentPage} == 'contact' ? ' nav-item--active' : ''">
+                連絡先登録
+            </a>
+
+            <a th:href="@{/attendance/status}" class="nav-item"
+                th:classappend="${currentPage} == 'status' ? ' nav-item--active' : ''">
+                勤怠状況一覧
+            </a>
+
+            <a th:href="@{/users/list}" class="nav-item"
+                th:classappend="${currentPage} == 'userList' ? ' nav-item--active' : ''">
+                ユーザー一覧
+            </a>
+
+            <a th:href="@{/users/new}" class="nav-item"
+                th:classappend="${currentPage} == 'userNew' ? ' nav-item--active' : ''">
+                新規ユーザー登録
+            </a>
+
+            <a th:href="@{/auth/logout}" class="nav-item logout">
+                ログアウト
+            </a>
         </nav>
 
     </div>

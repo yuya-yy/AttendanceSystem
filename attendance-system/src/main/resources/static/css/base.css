@@ -102,30 +102,38 @@ main {
 ====================================== */
 
 .main-header {
-    background-color: var(--color-header);
-    box-shadow: 0 2px 10px rgba(15, 23, 42, 0.12);
+    background-color: var(--color-header);box-shadow: 0 6px 16px rgba(15, 23, 42, 0.18);
     position: sticky;
     top: 0;
     z-index: 50;
+
 }
 
 /* 中身を真ん中に寄せて、タイトルとナビを横並びに */
 .header-inner {
-    max-width: 1120px;
+    width: 100%;
     margin: 0 auto;
-    padding: 10px var(--spacing-md);
+    padding: 8px var(--spacing-lg); /* 変数使ってるんだって */
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: var(--spacing-md);
 }
 
+/* サービス名のテキスト部分 */
+.brand-text {
+    font-size: 20px;                 /* メニューより少し大きめ */
+    font-weight: 700;
+    letter-spacing: 0.06em;
+}
+
 /* 左上の「勤怠管理システム」 */
 .header-title {
-    font-size: 18px;
+    font-size: 20px;
     font-weight: 700;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.06em;
     color: #0F172A;
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.4); /* ほんのり立体感 */
 }
 
 /* 右側のメニュー */
@@ -138,7 +146,8 @@ main {
 
 /* メニューの1個1個 */
 .nav-item {
-    font-size: var(--font-size-sm);
+    font-size: var(--font-size-md);
+    font-weight: 500;
     padding: 6px 12px;
     border-radius: var(--radius-pill);
     background-color: rgba(255, 255, 255, 0.0);
@@ -173,7 +182,30 @@ main {
 
 /* ヘッダー下の仕切り線 */
 .header-line {
-    border-top: 1px solid rgba(15, 23, 42, 0.1);
+    /* border-top: 1px solid rgba(15, 23, 42, 0.1); */
+    border-top: none;
+}
+
+.nav-item--active {
+    position: relative;                 /* 下線をきれいに引くための土台 */
+    font-weight: 600;                   /* 少し太くして目立たせる */
+}
+
+/* アクティブメニューの下にアクセントカラーの線を引く */
+.nav-item--active::after {
+    content: "";
+    position: absolute;
+    left: 10px;                         /* 文字より少し内側から線を引く */
+    right: 10px;
+    bottom: -2px;                        /* 下寄りに配置 */
+    height: 3px;                        /* 線の太さ */
+    border-radius: 999px;
+    background-color: var(--color-accent); /* 既存のアクセント色を利用 */
+}
+.header-nav .nav-item,
+.header-nav .nav-item:hover,
+.header-nav .nav-item:focus {
+    text-decoration: none;
 }
 
 /* ======================================
