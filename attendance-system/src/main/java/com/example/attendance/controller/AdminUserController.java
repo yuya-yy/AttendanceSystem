@@ -1,11 +1,13 @@
 package com.example.attendance.controller;
 
+import java.util.List;
 import java.util.Locale;
 
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 // import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.attendance.common.BusinessException;
+import com.example.attendance.entity.User;
 import com.example.attendance.service.AdminUserService;
 
 import jakarta.servlet.http.HttpSession;
@@ -40,7 +43,6 @@ public class AdminUserController {
      * ユーザー情報一覧画面を表示する（GET /users/list）
      * 全ユーザーの一覧を表示する画面。
      *
-     * ※ 今は画面のひな型だけ表示する。
      */
     @GetMapping("/users/list")
     public String showUserListPage(HttpSession session,
@@ -59,7 +61,11 @@ public class AdminUserController {
             return "redirect:/auth/login";
         }
 
-        // TODO: AdminUserService からユーザー一覧を取得して model に詰める
+        // Serviceから取得
+        List<User> users = adminUserService.findAllUsers();
+
+        // Model に詰める
+        model.addAttribute("users", users);
 
         // resources/templates/user_list.html
         return "user_list";
@@ -224,9 +230,8 @@ public class AdminUserController {
      * 将来は userId を使ってユーザー情報を取得し、
      * Model に詰めてから user_edit.html を表示する。
      */
-    @GetMapping("/users/edit")
-    // @GetMapping("/users/{userId}/edit")
-    public String showUserEditPage(/* @PathVariable("userId") Integer userId */) {
+    @GetMapping("/users/{userId}/edit")
+    public String showUserEditPage(@PathVariable("userId") Integer userId) {
 
         // 後で userId を使ってユーザー情報を Service から取得する
         // 今はテンプレートだけ表示
@@ -239,10 +244,18 @@ public class AdminUserController {
      *
      * 日別の出勤／退勤／勤務時間と、月別の合計勤務時間を表示する画面。
      */
-    @GetMapping("/reports")
-    // @GetMapping("/reports/{userId}")
-    public String showWorkReportPage(/* @PathVariable("userId") Integer userId */) {
+    @GetMapping("/reports/{userId}")
+    public String showWorkReportPage(@PathVariable("userId") Integer userId) {
         // 後で userId を使って勤怠実績を取得・集計する
         return "work_report";
+    }
+
+    /**
+     * ユーザー削除機能、画面は無し、仮置き
+     *
+     */
+    @PostMapping("/users/{userId}/delete")
+    public String deleteUser(@PathVariable("userId") Integer userId) {
+        return "user_delete";
     }
 }

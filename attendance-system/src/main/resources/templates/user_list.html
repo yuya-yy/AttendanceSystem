@@ -41,30 +41,36 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>〇〇〇〇〇〇</td>
-                        <td>システム部</td>
-                        <td>会社</td>
-                        <td>taguchi@gmail.com</td>
-                        <td>090-0808-080</td>
-                        <td>管理者</td>
-                        <td class="user-list-actions-cell">
-                            <button class="user-list-action-pill user-list-action-pill-main">集計</button>
-                            <button class="user-list-action-pill">✏</button>
-                            <button class="user-list-action-pill user-list-action-danger">🗑</button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>〇〇〇〇〇〇</td>
-                        <td>システム部</td>
-                        <td>会社</td>
-                        <td>example@example.com</td>
-                        <td>090-1111-2222</td>
-                        <td>一般</td>
-                        <td class="user-list-actions-cell">
-                            <button class="user-list-action-pill user-list-action-pill-main">集計</button>
-                            <button class="user-list-action-pill">✏</button>
-                            <button class="user-list-action-pill user-list-action-danger">🗑</button>
+                    <tr th:each="user : ${users}">
+                        <td th:text="${user.displayName}">山田 太郎</td>
+                        <td th:text="${user.department.departmentName}">開発部</td>
+                        <td
+                            th:text="${user.defaultWorkLocation != null ? user.defaultWorkLocation.locationName : '未設定'}">
+                            会社</td>
+                        <td th:text="${user.email}">taro@example.com</td>
+                        <td th:text="${user.phone}">000-0000-0000</td>
+                        <td th:text="${user.role == 1 ? '管理者' : '一般'}">一般</td>
+                        <td class="user-actions">
+                            <!-- 管理者だけ操作ボタンをまとめて表示 -->
+                            <div class="action-buttons" th:if="${session.role == 1}">
+                                <!-- 勤怠実績ボタン（GET /reports/{userId}） -->
+                                <a th:href="@{'/reports/' + ${user.id}}">
+                                    勤怠実績
+                                </a>
+
+                                <!-- 編集ボタン（GET /users/{userId}/edit） -->
+                                <a th:href="@{'/users/' + ${user.id} + '/edit'}">
+                                    ✏️
+                                </a>
+
+                                <!-- 削除ボタン（POST /users/{userId}/delete） -->
+                                <form th:action="@{'/users/' + ${user.id} + '/delete'}" method="post"
+                                    class="inline-delete-form">
+                                    <button type="submit">
+                                        🗑️
+                                    </button>
+                                </form>
+                            </div>
                         </td>
                     </tr>
                 </tbody>
