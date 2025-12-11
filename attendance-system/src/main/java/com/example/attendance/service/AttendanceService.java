@@ -56,12 +56,20 @@ public class AttendanceService {
      */
     @Transactional(readOnly = true)
     public String getCurrentWorkLocationName(Integer userId) {
-        User user = loadActiveUser(userId);
 
+        // ユーザー取得（存在しないのはシステム的におかしいので例外）
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new BusinessException("error.auth.loginFailed"));
+
+        // デフォルト勤務場所を参照
         WorkLocation defaultWorkLocation = user.getDefaultWorkLocation();
+
         if (defaultWorkLocation == null) {
+            // 勤務場所がまだ設定されていない場合
             return "未設定";
         }
+
+        // 勤務場所マスタの名前（例：会社／在宅／出張／客先／その他）
         return defaultWorkLocation.getLocationName();
     }
 
