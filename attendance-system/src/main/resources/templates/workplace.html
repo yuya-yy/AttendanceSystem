@@ -18,28 +18,19 @@
         <section class="form-card">
             <h2 class="form-card-title">勤務場所登録</h2>
 
-            <form action="#" method="post" class="workplace-form">
+            <!-- フラッシュメッセージ（エラー／情報） -->
+            <div th:if="${flashError}" class="alert-error" th:text="${flashError}"></div>
+            <div th:if="${flashInfo}" class="alert-info" th:text="${flashInfo}"></div>
+
+            <!-- 勤務場所登録フォーム -->
+            <form th:action="@{/attendance/work-location}" method="post" class="workplace-form">
+
                 <div class="radio-list">
-                    <label class="radio-line"><input type="radio" name="workLocation" value="office">会社</label>
-
-                    <label class="radio-line">
-                        <input type="radio" name="workLocation" value="home" />
-                        <span>在宅</span>
-                    </label>
-
-                    <label class="radio-line">
-                        <input type="radio" name="workLocation" value="trip" />
-                        <span>出張</span>
-                    </label>
-
-                    <label class="radio-line">
-                        <input type="radio" name="workLocation" value="client" />
-                        <span>客先</span>
-                    </label>
-
-                    <label class="radio-line">
-                        <input type="radio" name="workLocation" value="other" />
-                        <span>その他</span>
+                    <!-- 勤務場所マスタ一覧からラジオボタンを生成 -->
+                    <label class="radio-line" th:each="loc : ${workLocations}">
+                        <input type="radio" name="workLocationId" th:value="${loc.id}"
+                            th:checked="${selectedWorkLocationId} != null and ${selectedWorkLocationId} == ${loc.id}" />
+                        <span th:text="${loc.locationName}">会社</span>
                     </label>
                 </div>
 

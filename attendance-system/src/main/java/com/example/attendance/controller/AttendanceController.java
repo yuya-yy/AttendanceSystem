@@ -11,12 +11,14 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.ui.Model;
 
 import com.example.attendance.common.BusinessException;
 import com.example.attendance.entity.AttendanceRecord;
 import com.example.attendance.service.AttendanceService;
+import com.example.attendance.service.UserSettingService;
 import com.example.attendance.entity.User;
 
 import jakarta.servlet.http.HttpSession;
@@ -32,10 +34,13 @@ import jakarta.servlet.http.HttpSession;
 public class AttendanceController {
 
     private final AttendanceService attendanceService;
+    private final UserSettingService userSettingService;
     private final MessageSource messageSource;
 
     public AttendanceController(AttendanceService attendanceService,
+            UserSettingService userSettingService,
             MessageSource messageSource) {
+        this.userSettingService = userSettingService;
         this.attendanceService = attendanceService;
         this.messageSource = messageSource;
     }
@@ -180,9 +185,56 @@ public class AttendanceController {
      * 勤務場所登録画面を表示する（GET /attendance/work-location）
      */
     @GetMapping("/work-location")
-    public String showWorkLocationPage() {
-        // resources/templates/workplace.html
-        return "workplace";
+    public String showWorkLocationPage(HttpSession session,
+            Model model,
+            RedirectAttributes redirectAttributes,
+            Locale locale) {
+
+        Integer userId = (Integer) session.getAttribute("userId");
+        if (userId == null) {
+            String msg = messageSource.getMessage("error.auth.required", null, locale);
+            redirectAttributes.addFlashAttribute("flashError", msg);
+            return "redirect:/auth/login";
+        }
+
+        // ラジオに出す候補（会社／在宅／出張／客先／その他）
+        model.addAttribute("workLocations", userSettingService.getActiveWorkLocations());
+
+        // 現在設定されている勤務場所（あればそのID）
+        Integer selectedId = userSettingService.getCurrentWorkLocationId(userId);
+        model.addAttribute("selectedWorkLocationId", selectedId);
+
+        return "workplace"; // ↑の workplace.html
+    }
+
+    @PostMapping("/work-location")
+    public String updateWorkLocation(
+            @RequestParam(name = "workLocationId", required = false) Integer workLocationId,
+            HttpSession session,
+            RedirectAttributes redirectAttributes,
+            Locale locale) {
+
+        Integer userId = (Integer) session.getAttribute("userId");
+        if (userId == null) {
+            String msg = messageSource.getMessage("error.auth.required", null, locale);
+            redirectAttributes.addFlashAttribute("flashError", msg);
+            return "redirect:/auth/login";
+        }
+
+        try {
+            userSettingService.updateWorkLocation(userId, workLocationId);
+            String msg = messageSource.getMessage("info.workLocation.saved", null, locale);
+            redirectAttributes.addFlashAttribute("flashInfo", msg);
+            return "redirect:/attendance";
+        } catch (BusinessException e) {
+            String msg = messageSource.getMessage(e.getMessageKey(), null, locale);
+            redirectAttributes.addFlashAttribute("flashError", msg);
+        } catch (Exception e) {
+            String msg = messageSource.getMessage("error.system.unexpected", null, locale);
+            redirectAttributes.addFlashAttribute("flashError", msg);
+        }
+
+        return "redirect:/attendance/work-location";
     }
 
     /**
