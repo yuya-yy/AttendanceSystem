@@ -268,34 +268,43 @@ public class AttendanceController {
     @PostMapping("/contact")
     public String updateContact(
             @RequestParam(name = "email", required = false) String email,
-            @RequestParam(name = "phoneNumber", required = false) String phoneNumber,
+            @RequestParam(name = "phone", required = false) String phone,
             HttpSession session,
             RedirectAttributes redirectAttributes,
             Locale locale) {
 
+        // ① ログインチェック（未ログインならログイン画面へ）
         Integer userId = (Integer) session.getAttribute("userId");
         if (userId == null) {
             String msg = messageSource.getMessage("error.auth.required", null, locale);
             redirectAttributes.addFlashAttribute("flashError", msg);
+
             return "redirect:/auth/login";
         }
 
         try {
-            userSettingService.updateContactInfo(userId, email, phoneNumber);
+            // ② 連絡先情報の更新（業務ロジックは Service に任せる）
+            userSettingService.updateContactInfo(userId, email, phone);
+
+            // ③ 正常終了メッセージを設定して勤怠入力画面へリダイレクト
             String msg = messageSource.getMessage("info.contact.saved", null, locale);
             redirectAttributes.addFlashAttribute("flashInfo", msg);
-            return "redirect:/attendance";
+
+            return "redirect:/attendance/contact";
+
         } catch (BusinessException e) {
             String msg = messageSource.getMessage(e.getMessageKey(), null, locale);
             redirectAttributes.addFlashAttribute("flashError", msg);
+
+            return "redirect:/attendance/contact";
+
         } catch (Exception e) {
             String msg = messageSource.getMessage("error.system.unexpected", null, locale);
             redirectAttributes.addFlashAttribute("flashError", msg);
         }
 
-        return "redirect:/attendance";
+        return "redirect:/attendance/contact";
     }
-
 
     /**
      * 勤怠状況一覧画面を表示する（GET /attendance/status）

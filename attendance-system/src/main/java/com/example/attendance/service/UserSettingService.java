@@ -91,7 +91,7 @@ public class UserSettingService {
 
         userRepository.save(user);
     }
-    
+
     /**
      * 連絡先情報を取得する。
      * 連絡先登録画面（S0104）に表示するために、ログインユーザーのメールアドレス・電話番号を取得する。
@@ -110,15 +110,15 @@ public class UserSettingService {
      * 連絡先情報を更新する。
      * 連絡先登録画面（S0104）から送信されたメールアドレス・電話番号で、ログインユーザーの連絡先情報を更新する。
      *
-     * @param userId      ログインユーザーID
-     * @param email       メールアドレス
-     * @param phoneNumber 電話番号
+     * @param userId ログインユーザーID
+     * @param email  メールアドレス
+     * @param phone  電話番号
      */
     @Transactional
-    public void updateContactInfo(Integer userId, String email, String phoneNumber) {
+    public void updateContactInfo(Integer userId, String email, String phone) {
 
         String trimmedEmail = (email != null) ? email.trim() : null;
-        String trimmedPhone = (phoneNumber != null) ? phoneNumber.trim() : null;
+        String trimmedPhone = (phone != null) ? phone.trim() : null;
         // 1) ユーザー存在チェック
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new BusinessException("error.user.notFound"));
@@ -144,12 +144,11 @@ public class UserSettingService {
         }
 
         // 2) 連絡先情報の更新
-        user.setEmail(email);
-        user.setPhone(phoneNumber);
+        user.setEmail(trimmedEmail);
+        user.setPhone(trimmedPhone);
         user.setUpdatedAt(OffsetDateTime.now());
 
         userRepository.save(user);
     }
 
-    
 }
