@@ -402,7 +402,7 @@ public class AdminUserController {
     }
 
     /**
-     * 勤怠実績一覧画面（S0107）を表示する（GET /reports）
+     * 勤怠実績一覧画面（S0107）を表示する（GET /reports/{userId}）
      *
      * 日別の出勤／退勤／勤務時間と、月別の合計勤務時間を表示する画面。
      */
@@ -417,10 +417,9 @@ public class AdminUserController {
 
         // ★ 未ログインチェック
         Integer userId = (Integer) session.getAttribute("userId");
-        Integer role = (Integer) session.getAttribute("role");
         if (userId == null) {
             String message = messageSource.getMessage(
-                    "error.auth.forbidden",
+                    "error.auth.required",
                     null,
                     locale);
             redirectAttributes.addFlashAttribute("flashError", message);
@@ -428,7 +427,7 @@ public class AdminUserController {
         }
 
         // ★ 権限チェック（管理者のみ）
-
+        Integer role = (Integer) session.getAttribute("role");
         if (role == null || role != 1) { // 1 = 管理者
             String message = messageSource.getMessage(
                     "error.auth.forbidden",
@@ -438,21 +437,34 @@ public class AdminUserController {
             return "redirect:/attendance";
         }
 
-        // ★ ログインチェック（省略）
+        try {
 
-        // 1) 対象ユーザー情報
-        User targetUser = adminUserService.findUserDetail(targetUserId);
-        model.addAttribute("targetUser", targetUser);
+            // 1) 対象ユーザー情報
+            User targetUser = adminUserService.findUserDetail(targetUserId);
+            model.addAttribute("targetUser", targetUser);
 
-        // 2) 日別一覧
-        List<AttendanceRecord> dailyRecords = adminUserService.getDailyWorkRecords(targetUserId);
-        model.addAttribute("dailyRecords", dailyRecords);
+            // 2) 日別一覧
+            List<AttendanceRecord> dailyRecords = adminUserService.getDailyWorkRecords(targetUserId);
+            model.addAttribute("dailyRecords", dailyRecords);
 
-        // 3) 月別サマリ一覧
-        Map<YearMonth, Long> monthlySummary = adminUserService.getMonthlyWorkSummary(targetUserId);
-        model.addAttribute("monthlySummary", monthlySummary);
+            // 3) 月別サマリ一覧
+            Map<YearMonth, Long> monthlySummary = adminUserService.getMonthlyWorkSummary(targetUserId);
+            model.addAttribute("monthlySummary", monthlySummary);
 
-        return "work_report";
+            return "work_report";
+
+        } catch (BusinessException e) {
+            // 業務エラー（ユーザーが存在しないなど）
+            String msg = messageSource.getMessage(e.getMessageKey(), null, locale);
+            redirectAttributes.addFlashAttribute("flashError", msg);
+            return "redirect:/users/list";
+
+        } catch (Exception e) {
+            // 想定外エラー
+            String msg = messageSource.getMessage("error.system.unexpected", null, locale);
+            redirectAttributes.addFlashAttribute("flashError", msg);
+            return "redirect:/users/list";
+        }
     }
 
     /**

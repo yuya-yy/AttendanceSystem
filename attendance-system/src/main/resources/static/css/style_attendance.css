@@ -75,7 +75,7 @@
      border: 1px solid #111827;   /* もとの枠線に合わせて調整 */
     border-radius: 4px;
     overflow-y: auto;            /* ← 縦方向のスクロールを有効にする */
-    max-height: 360px;  
+    max-height: 360px;
 }
 
 /* 勤怠テーブル本体 */

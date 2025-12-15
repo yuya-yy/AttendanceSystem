@@ -20,11 +20,20 @@
 
 /* 左右 2 カラムレイアウト */
 .report-grid {
-    max-width: 800px;
+    max-width: 1120px;  /* ヘッダーと揃える。デザインの「最大幅」をpxで決める */
+    width: 100%;        /* 画面が狭いときは100%まで広がる */
     margin: auto;
     display: grid;
     grid-template-columns: 1.2fr 0.5fr; /* 左広め / 右少し狭め */
     column-gap: 28px;
+}
+
+/* 画面幅が 900px 以下のときは 1 カラムにする */
+@media (max-width: 900px) {
+    .report-grid {
+        grid-template-columns: 1fr; /* 左右を縦に並べる */
+        row-gap: 16px;             /* カード同士の縦方向の余白 */
+    }
 }
 
 /* 左（日別）・右（月別）共通の枠 */
@@ -34,23 +43,25 @@
     box-sizing: border-box;
     border-radius: 18px;
     box-shadow: var(--shadow-soft);
+    overflow: hidden; /* ← 中のスクロール領域をカードの丸みに合わせて切る */
+    padding: 10px;         /* ← 余白は「カード側」に持たせる（重要） */
+}
+.report-card-body,
+.report-summary-body {
+    max-height: 60vh;   /* 画面高さの60%を上限にする（お好みで調整） */
+    overflow-y: auto;   /* 縦にあふれたらスクロールバーを表示 */
+    background: #ffffff;
+    scrollbar-gutter: stable; /* ← スクロールバーの有無で幅が変わらないようにする */
 }
 
 /* テーブル共通（黒枠） */
 .report-table,
 .report-summary-table {
+    width: 100%;
+    margin: 0;
     border-collapse: collapse;
     table-layout: fixed;
     color: #000000;
-}
-.report-table{
-width: 96%;     /*card内のレポートの幅*/
-margin:10px;
-}
-
-.report-summary-table {
-    width: 90%;
-    margin: 10px;
 }
 
 /* セル共通 */
@@ -64,11 +75,15 @@ margin:10px;
     vertical-align: middle;
 }
 
-/* ヘッダー行は少し太いボーダー */
+/* ヘッダー行 */
 .report-table thead th,
 .report-summary-table thead th {
-    background-color: rgba(217, 219, 219, 0.563);
+    background-color: #E5E7EB;
     text-align: left;
+    position: sticky;
+    top: 0;                 /* ← 10px ではなく 0（隙間を作らない） */
+    z-index: 2;              /* ← 1より少し上げて安定させる */
+    background-clip: padding-box;
 }
 
 /* 最終行の下線を消す */
@@ -79,23 +94,18 @@ margin:10px;
 
 /* 日別テーブル：日付列を少し広めに */
 .w-date {
-    width: 37%;
+    width: 32%;
     white-space: nowrap;
     padding: 8.7px;
 }
 
 /* 月別サマリ：月の列を固定幅に */
 .w-month {
-    width: 50px;
+    width: 130px;
+    white-space: nowrap;
 }
 
 /* 「○時間△分」を少し薄く表示したい場合に使う */
 .value-gray {
     color: #555;
-}
-
-/* 日別テーブルの中に空きスペース用のダミー行がある場合 */
-.fill-row td {
-    height: 320px; /* 画像の雰囲気に合わせた大きめの高さ */
-    padding: 0;
 }

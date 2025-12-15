@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.YearMonth;
 import java.time.ZoneId;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -63,8 +64,6 @@ public class AdminUserService {
     public List<WorkLocation> getActiveWorkLocations() {
         return workLocationRepository.findAllActive();
     }
-
-
 
     /**
      * ユーザー一覧を取得する
@@ -403,8 +402,11 @@ public class AdminUserService {
     public Map<YearMonth, Long> getMonthlyWorkSummary(Integer targetUserId) {
 
         // 1) 対象ユーザー存在チェック（論理削除も含めて確認）
+        if (targetUserId == null) {
+            throw new BusinessException("error.user.notFound");
+        }
         User targetUser = userRepository.findById(targetUserId)
-                .filter(User::isActive) // deletedAt が null のユーザーだけOK
+                .filter(User::isActive)
                 .orElseThrow(() -> new BusinessException("error.user.notFound"));
 
         // 2) 集計対象期間の決定
@@ -421,9 +423,10 @@ public class AdminUserService {
                 fromDate,
                 toDate);
 
-        // 4) 月ごとに勤務時間（分）を集計する
-        // TreeMap を使うと YearMonth の昇順（古い月 → 新しい月）で並ぶ
-        Map<YearMonth, Long> monthlyMinutesMap = new TreeMap<>();
+        // ) 月ごとに勤務時間（分）を集計する
+        // 新しい月 → 古い月 の順にしたいので reverseOrder を指定
+
+        Map<YearMonth, Long> monthlyMinutesMap = new TreeMap<>(Comparator.reverseOrder());
 
         for (AttendanceRecord record : records) {
 
@@ -454,7 +457,7 @@ public class AdminUserService {
                 .filter(User::isActive)
                 .orElseThrow(() -> new BusinessException("error.user.notFound"));
 
-        // 直近365日分の期間を計算
+        // 直近365日分の期間を計算(未退勤レコードも含めている
         LocalDate toDate = LocalDate.now();
         LocalDate fromDate = toDate.minusDays(364);
 
