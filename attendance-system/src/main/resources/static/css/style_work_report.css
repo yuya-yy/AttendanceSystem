@@ -9,39 +9,48 @@
     flex: 1;
     display: flex;
     flex-direction: column;
-    padding: 16px 24px 40px;
+    padding: 16px 24px 20px;
     box-sizing: border-box;
     gap: 16px;
     font-size: 14px;
     line-height: 1.5;
     color: #000;
+    min-width: 540px;
 }
 
 /* 左右 2 カラムレイアウト */
 .report-grid {
-    max-width: 1120px;
-    margin: 12px auto 40px;
+    max-width: 800px;
+    margin: auto;
     display: grid;
-    grid-template-columns: 1.6fr 0.8fr; /* 左広め / 右少し狭め */
+    grid-template-columns: 1.2fr 0.5fr; /* 左広め / 右少し狭め */
     column-gap: 28px;
 }
 
 /* 左（日別）・右（月別）共通の枠 */
 .report-card,
 .report-summary-card {
-    border: 3px solid #000;
-    background: #fff;
+    background: #ffffff;
     box-sizing: border-box;
-    padding: 0;
+    border-radius: 18px;
+    box-shadow: var(--shadow-soft);
 }
 
 /* テーブル共通（黒枠） */
 .report-table,
 .report-summary-table {
-    width: 100%;
     border-collapse: collapse;
     table-layout: fixed;
-    color: #000;
+    color: #000000;
+}
+.report-table{
+width: 96%;     /*card内のレポートの幅*/
+margin:10px;
+}
+
+.report-summary-table {
+    width: 90%;
+    margin: 10px;
 }
 
 /* セル共通 */
@@ -49,8 +58,7 @@
 .report-table td,
 .report-summary-table th,
 .report-summary-table td {
-    border-right: 1px solid #000;
-    border-bottom: 1px solid #000;
+    border-bottom: 1.2px solid rgba(217, 219, 219, 0.563);
     padding: 8px 10px;
     font-size: 14px;
     vertical-align: middle;
@@ -59,16 +67,8 @@
 /* ヘッダー行は少し太いボーダー */
 .report-table thead th,
 .report-summary-table thead th {
-    font-weight: 700;
-    border-bottom: 3px solid #000;
-}
-
-/* 最右列は右枠なし */
-.report-table th:last-child,
-.report-table td:last-child,
-.report-summary-table th:last-child,
-.report-summary-table td:last-child {
-    border-right: none;
+    background-color: rgba(217, 219, 219, 0.563);
+    text-align: left;
 }
 
 /* 最終行の下線を消す */
@@ -79,13 +79,14 @@
 
 /* 日別テーブル：日付列を少し広めに */
 .w-date {
-    width: 40%;
+    width: 37%;
     white-space: nowrap;
+    padding: 8.7px;
 }
 
 /* 月別サマリ：月の列を固定幅に */
 .w-month {
-    width: 70px;
+    width: 50px;
 }
 
 /* 「○時間△分」を少し薄く表示したい場合に使う */
@@ -95,6 +96,6 @@
 
 /* 日別テーブルの中に空きスペース用のダミー行がある場合 */
 .fill-row td {
-    height: 420px; /* 画像の雰囲気に合わせた大きめの高さ */
+    height: 320px; /* 画像の雰囲気に合わせた大きめの高さ */
     padding: 0;
 }
