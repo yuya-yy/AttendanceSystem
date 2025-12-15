@@ -273,37 +273,40 @@ public class AttendanceController {
             RedirectAttributes redirectAttributes,
             Locale locale) {
 
-        // ① ログインチェック（未ログインならログイン画面へ）
         Integer userId = (Integer) session.getAttribute("userId");
         if (userId == null) {
             String msg = messageSource.getMessage("error.auth.required", null, locale);
             redirectAttributes.addFlashAttribute("flashError", msg);
-
             return "redirect:/auth/login";
         }
 
         try {
-            // ② 連絡先情報の更新（業務ロジックは Service に任せる）
             userSettingService.updateContactInfo(userId, email, phone);
 
-            // ③ 正常終了メッセージを設定して勤怠入力画面へリダイレクト
             String msg = messageSource.getMessage("info.contact.saved", null, locale);
             redirectAttributes.addFlashAttribute("flashInfo", msg);
-
             return "redirect:/attendance/contact";
 
         } catch (BusinessException e) {
             String msg = messageSource.getMessage(e.getMessageKey(), null, locale);
             redirectAttributes.addFlashAttribute("flashError", msg);
 
+            // ★ 入力値を保持して戻す（正しく入力した email も残る）
+            redirectAttributes.addFlashAttribute("formEmail", email);
+            redirectAttributes.addFlashAttribute("formPhone", phone);
+
             return "redirect:/attendance/contact";
 
         } catch (Exception e) {
             String msg = messageSource.getMessage("error.system.unexpected", null, locale);
             redirectAttributes.addFlashAttribute("flashError", msg);
-        }
 
-        return "redirect:/attendance/contact";
+            // ★ 予期せぬエラーでも入力を残す（任意）
+            redirectAttributes.addFlashAttribute("formEmail", email);
+            redirectAttributes.addFlashAttribute("formPhone", phone);
+
+            return "redirect:/attendance/contact";
+        }
     }
 
     /**
