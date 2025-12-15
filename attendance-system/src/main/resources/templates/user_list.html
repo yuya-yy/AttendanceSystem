@@ -18,6 +18,10 @@
         <!-- タイトル -->
         <div class="page-title">ユーザー情報一覧</div>
 
+        <!-- フラッシュメッセージ（エラー／情報） -->
+        <div th:if="${flashError}" class="alert-error" th:text="${flashError}"></div>
+        <div th:if="${flashInfo}" class="alert-info" th:text="${flashInfo}"></div>
+
         <!-- 検索ボックス -->
         <div class="user-list-search-row">
             <div class="user-list-search-box">

@@ -91,4 +91,64 @@ public class UserSettingService {
 
         userRepository.save(user);
     }
+
+    /**
+     * 連絡先情報を取得する。
+     * 連絡先登録画面（S0104）に表示するために、ログインユーザーのメールアドレス・電話番号を取得する。
+     *
+     * @param userId ログインユーザーID
+     * @return 連絡先情報（メールアドレス、電話番号）を含むユーザー情報。見つからない場合は null
+     */
+    @Transactional(readOnly = true)
+    public User getContactInfo(Integer userId) {
+        return userRepository.findById(userId)
+                .filter(User::isActive) // 論理削除されていないユーザーだけ
+                .orElse(null);
+    }
+
+    /**
+     * 連絡先情報を更新する。
+     * 連絡先登録画面（S0104）から送信されたメールアドレス・電話番号で、ログインユーザーの連絡先情報を更新する。
+     *
+     * @param userId ログインユーザーID
+     * @param email  メールアドレス
+     * @param phone  電話番号
+     */
+    @Transactional
+    public void updateContactInfo(Integer userId, String email, String phone) {
+
+        String trimmedEmail = (email != null) ? email.trim() : null;
+        String trimmedPhone = (phone != null) ? phone.trim() : null;
+        // 1) ユーザー存在チェック
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new BusinessException("error.user.notFound"));
+
+        // 論理削除されていたらエラーにする
+        if (!user.isActive()) {
+            throw new BusinessException("error.auth.userDeleted");
+        }
+
+        // 2-3) メールアドレス形式（任意入力：入っている場合だけチェック）
+        if (trimmedEmail != null && !trimmedEmail.isBlank()) {
+            String emailPattern = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$";
+            if (!trimmedEmail.matches(emailPattern)) {
+                throw new BusinessException("validation.email.format");
+            }
+        }
+
+        // 2-4) 電話番号形式（任意入力：入っている場合だけチェック）
+        if (trimmedPhone != null && !trimmedPhone.isBlank()) {
+            if (!trimmedPhone.matches("^[0-9]+$")) {
+                throw new BusinessException("validation.phone.numeric");
+            }
+        }
+
+        // 2) 連絡先情報の更新
+        user.setEmail(trimmedEmail);
+        user.setPhone(trimmedPhone);
+        user.setUpdatedAt(OffsetDateTime.now());
+
+        userRepository.save(user);
+    }
+
 }

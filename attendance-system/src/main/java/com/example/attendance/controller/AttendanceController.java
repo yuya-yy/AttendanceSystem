@@ -241,9 +241,69 @@ public class AttendanceController {
      * 連絡先登録画面を表示する（GET /attendance/contact）
      */
     @GetMapping("/contact")
-    public String showContactPage() {
-        // resources/templates/contact.html
+    public String showContactPage(HttpSession session,
+            Model model,
+            RedirectAttributes redirectAttributes,
+            Locale locale) {
+
+        Integer userId = (Integer) session.getAttribute("userId");
+        if (userId == null) {
+            String msg = messageSource.getMessage("error.auth.required", null, locale);
+            redirectAttributes.addFlashAttribute("flashError", msg);
+            return "redirect:/auth/login";
+        }
+
+        // 現在の連絡先情報を取得
+        User contactInfo = userSettingService.getContactInfo(userId);
+        model.addAttribute("contactInfo", contactInfo);
+
         return "contact";
+    }
+
+    /**
+     * 連絡先情報を更新する（POST /attendance/contact）
+     * UserSettingService.updateContactInfo を呼び出して連絡先情報を更新し、
+     * 連絡先登録画面 or 勤怠入力画面へリダイレクトする。
+     */
+    @PostMapping("/contact")
+    public String updateContact(
+            @RequestParam(name = "email", required = false) String email,
+            @RequestParam(name = "phone", required = false) String phone,
+            HttpSession session,
+            RedirectAttributes redirectAttributes,
+            Locale locale) {
+
+        // ① ログインチェック（未ログインならログイン画面へ）
+        Integer userId = (Integer) session.getAttribute("userId");
+        if (userId == null) {
+            String msg = messageSource.getMessage("error.auth.required", null, locale);
+            redirectAttributes.addFlashAttribute("flashError", msg);
+
+            return "redirect:/auth/login";
+        }
+
+        try {
+            // ② 連絡先情報の更新（業務ロジックは Service に任せる）
+            userSettingService.updateContactInfo(userId, email, phone);
+
+            // ③ 正常終了メッセージを設定して勤怠入力画面へリダイレクト
+            String msg = messageSource.getMessage("info.contact.saved", null, locale);
+            redirectAttributes.addFlashAttribute("flashInfo", msg);
+
+            return "redirect:/attendance/contact";
+
+        } catch (BusinessException e) {
+            String msg = messageSource.getMessage(e.getMessageKey(), null, locale);
+            redirectAttributes.addFlashAttribute("flashError", msg);
+
+            return "redirect:/attendance/contact";
+
+        } catch (Exception e) {
+            String msg = messageSource.getMessage("error.system.unexpected", null, locale);
+            redirectAttributes.addFlashAttribute("flashError", msg);
+        }
+
+        return "redirect:/attendance/contact";
     }
 
     /**

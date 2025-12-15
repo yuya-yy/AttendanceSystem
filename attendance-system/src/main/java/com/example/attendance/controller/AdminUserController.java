@@ -23,8 +23,6 @@ import jakarta.servlet.http.HttpSession;
 /**
  * ユーザー情報一覧・ユーザー管理・勤怠実績画面を扱う Controller。
  *
- * Laravel でいうと、UserController + Admin用の機能をまとめたクラスで、
- * index / create / edit / show 的な画面表示を担当するイメージです。
  */
 @Controller
 @RequestMapping
@@ -167,9 +165,8 @@ public class AdminUserController {
                     defaultWorkLocationId);
 
             // 成功時：一覧画面へ遷移（メッセージはお好みで）
-            // String success = messageSource.getMessage("info.user.register.success", null,
-            // locale);
-            // redirectAttributes.addFlashAttribute("flashInfo", success);
+            String success = messageSource.getMessage("info.user.register.success", null, locale);
+            redirectAttributes.addFlashAttribute("flashInfo", success);
             return "redirect:/users/list";
 
         } catch (BusinessException e) {

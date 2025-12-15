@@ -17,18 +17,24 @@
         <section class="form-card">
             <h2 class="form-card-title">連絡先登録</h2>
 
-            <form action="#" method="post">
+            <!-- フラッシュメッセージ（エラー／情報） -->
+            <div th:if="${flashError}" class="alert-error" th:text="${flashError}"></div>
+            <div th:if="${flashInfo}" class="alert-info" th:text="${flashInfo}"></div>
+
+            <form th:action="@{/attendance/contact}" method="post">
 
                 <!-- メールアドレス -->
                 <div class="form-field-block">
                     <label for="email" class="form-field-label">メールアドレス</label>
-                    <input type="email" id="email" name="email" class="form-field-input" />
+                    <input type="email" id="email" name="email" class="form-field-input"
+                        th:value="${contactInfo?.email}" />
                 </div>
 
                 <!-- 電話番号 -->
                 <div class="form-field-block">
-                    <label for="phoneNumber" class="form-field-label">電話番号</label>
-                    <input type="text" id="phoneNumber" name="phoneNumber" class="form-field-input" />
+                    <label for="phone" class="form-field-label">電話番号</label>
+                    <input type="text" id="phone" name="phone" class="form-field-input"
+                        th:value="${contactInfo?.phone}" />
                 </div>
 
                 <!-- 登録ボタン -->
