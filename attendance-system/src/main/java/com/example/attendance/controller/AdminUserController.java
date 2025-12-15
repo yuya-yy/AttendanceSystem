@@ -81,26 +81,26 @@ public class AdminUserController {
             Model model) {
 
         // ★ 未ログインチェック
-        Integer userId = (Integer) session.getAttribute("userId");
-        Integer role = (Integer) session.getAttribute("role");
-        if (userId == null) {
-            String message = messageSource.getMessage(
-                    "error.auth.required",
-                    null,
-                    locale);
-            redirectAttributes.addFlashAttribute("flashError", message);
-            return "redirect:/auth/login";
-        }
+        // Integer userId = (Integer) session.getAttribute("userId");
+        // Integer role = (Integer) session.getAttribute("role");
+        // if (userId == null) {
+        //     String message = messageSource.getMessage(
+        //             "error.auth.required",
+        //             null,
+        //             locale);
+        //     redirectAttributes.addFlashAttribute("flashError", message);
+        //     return "redirect:/auth/login";
+        // }
 
-        // ★ 権限チェック（管理者のみ）
-        if (role == null || role != 1) { // 1 = 管理者
-            String message = messageSource.getMessage(
-                    "error.auth.forbidden",
-                    null,
-                    locale);
-            redirectAttributes.addFlashAttribute("flashError", message);
-            return "redirect:/attendance";
-        }
+        // // ★ 権限チェック（管理者のみ）
+        // if (role == null || role != 1) { // 1 = 管理者
+        //     String message = messageSource.getMessage(
+        //             "error.auth.forbidden",
+        //             null,
+        //             locale);
+        //     redirectAttributes.addFlashAttribute("flashError", message);
+        //     return "redirect:/attendance";
+        // }
 
         // TODO: 部署一覧・勤務場所一覧を Service から取得して model に詰める
         model.addAttribute("departments", adminUserService.getActiveDepartments());
@@ -130,24 +130,24 @@ public class AdminUserController {
             Locale locale) {
 
         // ===== 1) 未ログイン・権限チェック =====
-        Integer sessionUserId = (Integer) session.getAttribute("userId");
-        Integer sessionRole = (Integer) session.getAttribute("role");
-        if (sessionUserId == null) {
-            String message = messageSource.getMessage(
-                    "error.auth.required",
-                    null,
-                    locale);
-            redirectAttributes.addFlashAttribute("flashError", message);
-            return "redirect:/auth/login";
-        }
-        if (sessionRole == null || sessionRole != 1) {
-            String message = messageSource.getMessage(
-                    "error.auth.forbidden",
-                    null,
-                    locale);
-            redirectAttributes.addFlashAttribute("flashError", message);
-            return "redirect:/attendance";
-        }
+        // Integer sessionUserId = (Integer) session.getAttribute("userId");
+        // Integer sessionRole = (Integer) session.getAttribute("role");
+        // if (sessionUserId == null) {
+        //     String message = messageSource.getMessage(
+        //             "error.auth.required",
+        //             null,
+        //             locale);
+        //     redirectAttributes.addFlashAttribute("flashError", message);
+        //     return "redirect:/auth/login";
+        // }
+        // if (sessionRole == null || sessionRole != 1) {
+        //     String message = messageSource.getMessage(
+        //             "error.auth.forbidden",
+        //             null,
+        //             locale);
+        //     redirectAttributes.addFlashAttribute("flashError", message);
+        //     return "redirect:/attendance";
+        // }
 
         // ===== 2) String → Integer 変換（空や変な文字列は null にする） =====
         Integer role = parseIntegerOrNull(roleValue);
