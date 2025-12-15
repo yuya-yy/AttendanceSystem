@@ -119,6 +119,7 @@ public class UserSettingService {
 
         String trimmedEmail = (email != null) ? email.trim() : null;
         String trimmedPhone = (phone != null) ? phone.trim() : null;
+        String normalizedEmail = (trimmedEmail == null || trimmedEmail.isBlank()) ? null : trimmedEmail;
         // 1) ユーザー存在チェック
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new BusinessException("error.user.notFound"));
@@ -137,15 +138,36 @@ public class UserSettingService {
         }
 
         // 2-4) 電話番号形式（任意入力：入っている場合だけチェック）
+        String normalizedPhone = null;
         if (trimmedPhone != null && !trimmedPhone.isBlank()) {
-            if (!trimmedPhone.matches("^[0-9]+$")) {
+            String digitsOnly = trimmedPhone.replaceAll("-", ""); // ハイフン削除
+            if (!digitsOnly.matches("^[0-9]+$")) {
                 throw new BusinessException("validation.phone.numeric");
             }
+            normalizedPhone = digitsOnly; // DBには数字だけで保存
+        }
+
+        // メール重複チェック（自分以外）
+        if (normalizedEmail != null) {
+            userRepository.findByEmail(normalizedEmail).ifPresent(existing -> {
+                if (!existing.getId().equals(userId)) {
+                    throw new BusinessException("error.user.email.duplicate");
+                }
+            });
+        }
+
+        // 電話番号重複チェック（自分以外）
+        if (normalizedPhone != null) {
+            userRepository.findByPhone(normalizedPhone).ifPresent(existing -> {
+                if (!existing.getId().equals(userId)) {
+                    throw new BusinessException("error.user.phone.duplicate");
+                }
+            });
         }
 
         // 2) 連絡先情報の更新
-        user.setEmail(trimmedEmail);
-        user.setPhone(trimmedPhone);
+        user.setEmail(normalizedEmail);
+        user.setPhone(normalizedPhone);
         user.setUpdatedAt(OffsetDateTime.now());
 
         userRepository.save(user);
