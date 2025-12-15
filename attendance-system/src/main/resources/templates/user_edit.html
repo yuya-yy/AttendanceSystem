@@ -10,74 +10,90 @@
 
 <body class="page-body">
 
-    <!-- 共通ヘッダー -->
-    <div th:replace="~{fragments/header :: header('attendance')}"></div>
+    <!-- 共通ヘッダー：タブ名は好きなキーでOK -->
+    <div th:replace="~{fragments/header :: header('userEdit')}"></div>
 
     <main class="page-main">
 
         <section class="form-card wide">
             <h2 class="form-card-title">ユーザー情報編集</h2>
 
-            <form action="#" method="post">
+            <!-- エラーメッセージ -->
+            <div th:if="${flashError}" class="form-error-message">
+                <span th:text="${flashError}"></span>
+            </div>
+
+            <!-- 情報メッセージ（必要なら） -->
+            <div th:if="${flashInfo}" class="form-info-message">
+                <span th:text="${flashInfo}"></span>
+            </div>
+
+            <!-- /users/{id}/update に POST -->
+            <form th:action="@{|/users/${editUser.id}/update|}" method="post">
 
                 <div class="form-grid-2col">
-                    <!-- ユーザー名 -->
                     <div class="form-grid-item">
                         <label for="editUsername" class="form-field-label">ユーザー名</label>
-                        <input id="editUsername" name="username" type="text" class="form-field-input" />
+                        <input id="editUsername" name="username" type="text" class="form-field-input"
+                            th:value="${usernameValue}" />
                     </div>
 
-                    <!-- 氏名（表示名） -->
+                    <!-- 氏名（表示名）：Value を優先 -->
                     <div class="form-grid-item">
                         <label for="editDisplayName" class="form-field-label">氏名（表示名）</label>
-                        <input id="editDisplayName" name="displayName" type="text" class="form-field-input" />
+                        <input id="editDisplayName" name="displayName" type="text" class="form-field-input"
+                            th:value="${displayNameValue}" />
                     </div>
 
-                    <!-- パスワード -->
+                    <!-- パスワード（空欄なら変更しない） -->
                     <div class="form-grid-item">
                         <label for="editPassword" class="form-field-label">パスワード</label>
                         <div class="password-row" style="margin-bottom:8px;">
-                            <input id="editPassword" name="password" type="password" class="form-field-input" />
-                            <!--<div class="login-visibility-hint">
-                                <span role="img" aria-label="eye">👁</span> 表示
-                            </div>-->
+                            <input id="editPassword" name="password" type="password" class="form-field-input"
+                                placeholder="変更する場合のみ入力してください" />
                         </div>
                     </div>
 
-                    <!-- メールアドレス -->
+                    <!-- メールアドレス：Value を優先 -->
                     <div class="form-grid-item">
                         <label for="editMail" class="form-field-label">メールアドレス</label>
-                        <input id="editMail" name="mail" type="email" class="form-field-input" />
+                        <input id="editMail" name="email" type="email" class="form-field-input"
+                            th:value="${emailValue}" />
                     </div>
 
-                    <!-- 所属部署 -->
+                    <!-- 所属部署（プルダウン）：Value を優先 -->
                     <div class="form-grid-item">
                         <label for="editDept" class="form-field-label">所属部署</label>
-                        <input id="editDept" name="department" type="text" class="form-field-input" />
+                        <select id="editDept" name="departmentId" class="form-field-input">
+                            <option value="">選択してください</option>
+                            <option th:each="dept : ${departments}" th:value="${dept.id}"
+                                th:text="${dept.departmentName}" th:selected="${departmentIdValue} == ${dept.id}">
+                            </option>
+                        </select>
                     </div>
 
-                    <!-- 電話番号 -->
+                    <!-- 電話番号：Value を優先 -->
                     <div class="form-grid-item">
                         <label for="editPhone" class="form-field-label">電話番号</label>
-                        <input id="editPhone" name="phone" type="text" class="form-field-input" />
+                        <input id="editPhone" name="phone" type="text" class="form-field-input"
+                            th:value="${phoneValue}" />
                     </div>
 
-                    <!-- 権限（ラジオ） -->
+                    <!-- 権限：1=管理者 / 2=一般（Value を優先） -->
                     <div class="form-grid-item">
                         <span class="form-field-label">権限</span>
                         <div class="inline-radio-group">
                             <label class="inline-radio-option">
-                                <input type="radio" name="role" value="admin" />
+                                <input type="radio" name="role" value="1" th:checked="${roleValue} == '1'" />
                                 <span>管理者</span>
                             </label>
                             <label class="inline-radio-option">
-                                <input type="radio" name="role" value="user" />
+                                <input type="radio" name="role" value="2" th:checked="${roleValue} == '2'" />
                                 <span>一般</span>
                             </label>
                         </div>
                     </div>
 
-                    <!-- 右側のダミー余白 -->
                     <div class="form-grid-item"></div>
                 </div>
 
