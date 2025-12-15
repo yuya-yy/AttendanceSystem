@@ -43,13 +43,20 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <!-- 仮データ -->
-                    <tr>
-                        <td>〇〇〇〇〇〇〇〇</td>
-                        <td>勤務中</td>
-                        <td>会社</td>
-                        <td>oooooo@gmail.com</td>
-                        <td>090-9090-909</td>
+                    <tr th:each="user : ${users}">
+                        <td th:text="${user.displayName}">名前</td>
+
+                        <!-- 勤務状況：Set に含まれていたら「勤務中」、そうでなければ「勤務外」 -->
+                        <td th:text="${workingUserIds.contains(user.id)} ? '勤務中' : '勤務外'">勤務状況</td>
+
+                        <!-- 勤務場所：defaultWorkLocation が null のときは「未設定」 -->
+                        <td
+                            th:text="${user.defaultWorkLocation != null} ? ${user.defaultWorkLocation.locationName} : '未設定'">
+                            勤務場所
+                        </td>
+
+                        <td th:text="${user.email}">メール</td>
+                        <td th:text="${user.phone}">電話番号</td>
                     </tr>
                 </tbody>
             </table>

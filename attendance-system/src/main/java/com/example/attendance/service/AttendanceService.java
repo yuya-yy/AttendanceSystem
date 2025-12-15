@@ -3,7 +3,9 @@ package com.example.attendance.service;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.util.List;
+import java.util.Set;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -128,6 +130,27 @@ public class AttendanceService {
         record.setUpdatedAt(now);
 
         attendanceRecordRepository.save(record);
+    }
+
+    @Transactional(readOnly = true)
+    public List<User> getActiveUsersInDepartment(Integer departmentId) {
+        return userRepository.findActiveByDepartmentId(departmentId);
+    }
+
+    /**
+     * 指定部署で「勤務中（未退勤）」のユーザーID一覧を取得する。
+     * attendance_records.clock_out IS NULL となっているレコードを対象にする。
+     */
+    @Transactional(readOnly = true)
+    public Set<Integer> getWorkingUserIdsInDepartment(Integer departmentId) {
+
+        // 部署内の未退勤レコード一覧を取得
+        List<AttendanceRecord> unfinishedList = attendanceRecordRepository.findUnfinishedByDepartmentId(departmentId);
+
+        // user_id の Set に変換（勤務中ユーザーのID一覧）
+        return unfinishedList.stream()
+                .map(record -> record.getUser().getId())
+                .collect(Collectors.toSet());
     }
 
     // ===== 内部ヘルパー =====
