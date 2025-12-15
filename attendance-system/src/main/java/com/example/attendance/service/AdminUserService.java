@@ -1,16 +1,24 @@
 package com.example.attendance.service;
 
+import java.time.LocalDate;
 import java.time.OffsetDateTime;
+import java.time.YearMonth;
+import java.time.ZoneId;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.attendance.common.BusinessException;
+import com.example.attendance.entity.AttendanceRecord;
 import com.example.attendance.entity.Department;
 import com.example.attendance.entity.User;
 import com.example.attendance.entity.WorkLocation;
+import com.example.attendance.repository.AttendanceRecordRepository;
 import com.example.attendance.repository.DepartmentRepository;
 import com.example.attendance.repository.UserRepository;
 import com.example.attendance.repository.WorkLocationRepository;
@@ -26,15 +34,18 @@ public class AdminUserService {
     private final UserRepository userRepository;
     private final DepartmentRepository departmentRepository;
     private final WorkLocationRepository workLocationRepository;
+    private final AttendanceRecordRepository attendanceRecordRepository;
     private final PasswordEncoder passwordEncoder;
 
     public AdminUserService(UserRepository userRepository,
             DepartmentRepository departmentRepository,
             WorkLocationRepository workLocationRepository,
+            AttendanceRecordRepository attendanceRecordRepository,
             PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.departmentRepository = departmentRepository;
         this.workLocationRepository = workLocationRepository;
+        this.attendanceRecordRepository = attendanceRecordRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -203,7 +214,7 @@ public class AdminUserService {
     }
 
     /**
-     * 編集対象ユーザーの詳細を取得する。
+     * * 編集対象ユーザーの詳細を取得する。
      * - 論理削除済みの場合はエラー。
      */
     @Transactional(readOnly = true)
@@ -227,7 +238,7 @@ public class AdminUserService {
 
     /**
      * ユーザー情報を更新する。
-     * 
+     *
      * @param targetUserId 更新対象のユーザーID
      * @param displayName  表示名
      * @param email        メールアドレス
@@ -376,4 +387,84 @@ public class AdminUserService {
 
         userRepository.save(user);
     }
+
+    /***
+     * 月別の勤務時間サマリ一覧を取得する。**対象ユーザーについて、「当月を含めた直近12か月分」の勤怠レコードを集計し、*月ごとの合計勤務時間（分）
+     *
+     * を YearMonth 単位で返す。**
+     *
+     * @param
+     * targetUserId        勤怠実績を確認したい対象ユーザーID*@return
+     *                     key:YearMonth（年月）,value:その月の合計勤務時間（分）
+     */
+
+    @Transactional(readOnly = true)
+    public Map<YearMonth, Long> getMonthlyWorkSummary(Integer targetUserId) {
+
+        // 1) 対象ユーザー存在チェック（論理削除も含めて確認）
+        if (targetUserId == null) {
+            throw new BusinessException("error.user.notFound");
+        }
+        User targetUser = userRepository.findById(targetUserId)
+                .filter(User::isActive)
+                .orElseThrow(() -> new BusinessException("error.user.notFound"));
+
+        // 2) 集計対象期間の決定
+        // 仕様：当月を含めた直近12か月分
+        YearMonth thisMonth = YearMonth.now(ZoneId.of("Asia/Tokyo"));
+        YearMonth oldestMonth = thisMonth.minusMonths(11); // 12か月前まで
+
+        LocalDate fromDate = oldestMonth.atDay(1); // 最古月の1日
+        LocalDate toDate = thisMonth.atEndOfMonth(); // 今月の末日
+
+        // 3) 対象期間の勤怠レコード一覧を取得
+        List<AttendanceRecord> records = attendanceRecordRepository.findByUserIdBetweenDates(
+                targetUser.getId(),
+                fromDate,
+                toDate);
+
+        // ) 月ごとに勤務時間（分）を集計する
+        // 新しい月 → 古い月 の順にしたいので reverseOrder を指定
+
+        Map<YearMonth, Long> monthlyMinutesMap = new TreeMap<>(Comparator.reverseOrder());
+
+        for (AttendanceRecord record : records) {
+
+            // 4-1) 退勤していないレコード（clockOut が null）は集計対象外にする
+            if (record.isUnfinished()) { // isUnfinished() がなければ clockOut == null でもOK
+                continue;
+            }
+
+            // 4-2) 勤務日から YearMonth（YYYY-MM）を取り出す
+            YearMonth ym = YearMonth.from(record.getWorkDate());
+
+            // 4-3) その日の勤務時間（分）を計算
+            long workingMinutes = record.calculateWorkingMinutes();
+            // ↑ AttendanceRecord に「勤務時間（分）を返す」メソッドがある前提
+
+            // 4-4) 月ごとの合計に加算
+            monthlyMinutesMap.merge(ym, workingMinutes, Long::sum);
+        }
+
+        return monthlyMinutesMap;
+    }
+
+    @Transactional(readOnly = true)
+    public List<AttendanceRecord> getDailyWorkRecords(Integer targetUserId) {
+
+        // 対象ユーザー存在チェック（論理削除も含めて確認）
+        User targetUser = userRepository.findById(targetUserId)
+                .filter(User::isActive)
+                .orElseThrow(() -> new BusinessException("error.user.notFound"));
+
+        // 直近365日分の期間を計算(未退勤レコードも含めている
+        LocalDate toDate = LocalDate.now();
+        LocalDate fromDate = toDate.minusDays(364);
+
+        return attendanceRecordRepository.findByUserIdBetweenDates(
+                targetUser.getId(),
+                fromDate,
+                toDate);
+    }
+
 }

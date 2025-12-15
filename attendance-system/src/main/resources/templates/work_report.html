@@ -14,64 +14,103 @@
     <div th:replace="~{fragments/header :: header('reports')}"></div>
 
     <main class="report-main">
-        <div class="page-title">勤怠実績一覧</div>
+        <div class="page-title" th:text="|${targetUser.displayName}さんの勤怠実績一覧|">
+            勤怠実績一覧
+        </div>
+
+        <!-- フラッシュメッセージ（エラー／情報） -->
+        <div th:if="${flashError}" class="alert-error" th:text="${flashError}"></div>
+        <div th:if="${flashInfo}" class="alert-info" th:text="${flashInfo}"></div>
 
         <div class="report-grid">
-            <!-- 左：日別の実績テーブル（太い黒枠） -->
+            <!-- 左：日別の実績テーブル -->
             <section class="report-card">
-                <table class="report-table">
-                    <thead>
-                        <tr>
-                            <th class="w-date">日付</th>
-                            <th>出勤時刻</th>
-                            <th>退勤時刻</th>
-                            <th>勤務時間</th>
-                            <th>勤務場所</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>10月11日 (水)</td>
-                            <td>8:00</td>
-                            <td>22:00</td>
-                            <td>8:00</td>
-                            <td>会社</td>
-                        </tr>
-                        <tr>
-                            <td>10月11日 (水)</td>
-                            <td>8:00</td>
-                            <td>22:00</td>
-                            <td>8:00</td>
-                            <td>会社</td>
-                        </tr>
-                        <!-- 画面サンプルの白い大きな余白を再現 -->
-                        <tr class="fill-row">
-                            <td colspan="4"></td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div class="report-card-body">
+                    <table class="report-table">
+                        <thead>
+                            <tr>
+                                <th class="w-date">日付</th>
+                                <th>出勤時刻</th>
+                                <th>退勤時刻</th>
+                                <th>勤務時間</th>
+                                <th>勤務場所</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- 日別データがない場合のメッセージ -->
+                            <tr th:if="${dailyRecords == null or #lists.isEmpty(dailyRecords)}">
+                                <td colspan="5" class="text-muted">勤怠実績がありません。</td>
+                            </tr>
+
+                            <!-- 日別勤怠レコード一覧を表示 -->
+                            <tr th:each="record : ${dailyRecords}">
+                                <!-- 例：10月11日 (水) のように表示 -->
+                                <td th:text="${#temporals.format(record.workDate, 'MM月dd日 (E)')}">
+                                    10月11日 (水)
+                                </td>
+
+                                <!-- 出勤時刻（未設定なら「-」） -->
+                                <td
+                                    th:text="${record.clockIn != null ? #temporals.format(record.clockIn, 'HH:mm') : '-'}">
+                                    8:00
+                                </td>
+
+
+                                <!-- 退勤時刻（未設定なら「-」） -->
+                                <td
+                                    th:text="${record.clockOut != null ? #temporals.format(record.clockOut, 'HH:mm') : '-'}">
+                                    22:00
+                                </td>
+
+
+                                <!-- 勤務時間（calculateWorkingMinutes() で分を計算している想定） -->
+                                <td
+                                    th:text="|${record.calculateWorkingMinutes() / 60}時間${record.calculateWorkingMinutes() % 60}分|">
+                                    8時間0分
+                                </td>
+
+
+                                <!-- 勤務場所名（attendance_records.work_location_name） -->
+                                <td th:text="${record.workLocationName}">
+                                    会社
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </section>
 
-            <!-- 右：月ごとの総勤務時間（太い黒枠） -->
+            <!-- 右：月ごとの総勤務時間 -->
             <aside class="report-summary-card">
-                <table class="report-summary-table">
-                    <thead>
-                        <tr>
-                            <th class="w-month">月</th>
-                            <th>総勤務時間</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>9月</td>
-                            <td>321時間30分</td>
-                        </tr>
-                        <tr>
-                            <td>8月</td>
-                            <td>3時間</td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div class="report-summary-body">
+                    <table class="report-summary-table">
+                        <thead>
+                            <tr>
+                                <th class="w-month">月</th>
+                                <th>総勤務時間</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- 月別サマリがない場合のメッセージ -->
+                            <tr th:if="${monthlySummary == null or #maps.isEmpty(monthlySummary)}">
+                                <td colspan="2" class="text-muted">集計対象のデータがありません。</td>
+                            </tr>
+
+                            <!-- monthlySummary: Map<YearMonth, Long> を想定 -->
+                            <tr th:each="entry : ${monthlySummary}">
+                                <!-- key = YearMonth（例：2025-12 → 2025年12月） -->
+                                <td th:text="${#temporals.format(entry.key, 'uuuu年MM月')}">
+                                    2025年12月
+                                </td>
+
+                                <!-- value = 合計勤務時間（分）を「○時間△分」に変換 -->
+                                <td th:text="|${entry.value / 60}時間${entry.value % 60}分|">
+                                    160時間0分
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </aside>
         </div>
     </main>
