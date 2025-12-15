@@ -251,7 +251,38 @@ public class AttendanceController {
      * 同じ部署メンバーの現在の勤務状況を一覧表示する画面。
      */
     @GetMapping("/status")
-    public String showDepartmentStatusPage() {
+    public String showDepartmentStatusPage(
+            HttpSession session,
+            Model model,
+            RedirectAttributes redirectAttributes,
+            Locale locale) {
+
+        Integer userId = (Integer) session.getAttribute("userId");
+        Integer departmentId = (Integer) session.getAttribute("departmentId");
+
+        // 未ログインならログイン画面へ
+        if (userId == null) {
+            String msg = messageSource.getMessage("error.auth.required", null, locale);
+            redirectAttributes.addFlashAttribute("flashError", msg);
+            return "redirect:/auth/login";
+        }
+
+        // 部署IDがセッションに無いのは想定外なので、ひとまず勤怠入力画面へ戻す
+        if (departmentId == null) {
+            String msg = messageSource.getMessage("error.system.unexpected", null, locale);
+            redirectAttributes.addFlashAttribute("flashError", msg);
+            return "redirect:/attendance";
+        }
+
+        // 同じ部署のユーザー一覧
+        List<User> users = attendanceService.getActiveUsersInDepartment(departmentId);
+
+        // 勤務中ユーザーIDの Set（clock_out IS NULL の人）
+        java.util.Set<Integer> workingUserIds = attendanceService.getWorkingUserIdsInDepartment(departmentId);
+
+        // 画面に渡す
+        model.addAttribute("users", users);
+        model.addAttribute("workingUserIds", workingUserIds);
         // resources/templates/status_list.html
         return "status_list";
     }
