@@ -228,12 +228,174 @@ public class AdminUserController {
      * Model に詰めてから user_edit.html を表示する。
      */
     @GetMapping("/users/{userId}/edit")
-    public String showUserEditPage(@PathVariable("userId") Integer userId) {
+    public String showUserEditPage(@PathVariable("userId") Integer userId,
+            HttpSession session,
+            Model model,
+            RedirectAttributes redirectAttributes,
+            Locale locale) {
 
-        // 後で userId を使ってユーザー情報を Service から取得する
-        // 今はテンプレートだけ表示
+        Integer sessionUserId = (Integer) session.getAttribute("userId");
+        Integer role = (Integer) session.getAttribute("role");
 
-        return "user_edit";
+        // 未ログイン → ログイン画面へ
+        if (sessionUserId == null) {
+            String msg = messageSource.getMessage("error.auth.required", null, locale);
+            redirectAttributes.addFlashAttribute("flashError", msg);
+            return "redirect:/auth/login";
+        }
+
+        // 一般ユーザー → 一覧に戻す
+        if (role == null || role != 1) {
+            String msg = messageSource.getMessage("error.auth.forbidden", null, locale);
+            redirectAttributes.addFlashAttribute("flashError", msg);
+            return "redirect:/users/list";
+        }
+
+        try {
+            User editUser = adminUserService.findUserDetail(userId);
+            model.addAttribute("editUser", editUser);
+            model.addAttribute("departments", adminUserService.findAllActiveDepartments());
+
+            // 「自分自身を編集しているか？」のフラグ（view で使いたければ）
+            boolean isSelf = sessionUserId.equals(userId);
+            model.addAttribute("isSelf", isSelf);
+
+            // ================================
+            // ここから「フォーム値のセット部分」
+            // ================================
+
+            // ユーザー名（表示のみ用）
+            if (!model.containsAttribute("usernameValue")) {
+                model.addAttribute("usernameValue", editUser.getUsername());
+            }
+
+            // ★ 氏名：フラッシュ属性があればそれを優先、なければDBの値
+            if (!model.containsAttribute("displayNameValue")) {
+                model.addAttribute("displayNameValue", editUser.getDisplayName());
+            }
+
+            // ★ メールアドレス
+            if (!model.containsAttribute("emailValue")) {
+                model.addAttribute("emailValue", editUser.getEmail());
+            }
+
+            // ★ 電話番号
+            if (!model.containsAttribute("phoneValue")) {
+                model.addAttribute("phoneValue", editUser.getPhone());
+            }
+
+            // ★ 所属部署ID
+            if (!model.containsAttribute("departmentIdValue")) {
+                Integer deptId = (editUser.getDepartment() != null)
+                        ? editUser.getDepartment().getId()
+                        : null;
+                model.addAttribute("departmentIdValue", deptId);
+            }
+
+            // ★ 権限（1 / 2 を String として扱うと Thymeleaf 側が楽）
+            if (!model.containsAttribute("roleValue")) {
+                String roleStr = (editUser.getRole() != null)
+                        ? String.valueOf(editUser.getRole())
+                        : null;
+                model.addAttribute("roleValue", roleStr);
+            }
+            return "user_edit";
+        } catch (BusinessException e) {
+            String msg = messageSource.getMessage(e.getMessageKey(), null, locale);
+            redirectAttributes.addFlashAttribute("flashError", msg);
+            return "redirect:/users/list";
+        } catch (Exception e) {
+            String msg = messageSource.getMessage("error.system.unexpected", null, locale);
+            redirectAttributes.addFlashAttribute("flashError", msg);
+            return "redirect:/users/list";
+        }
+    }
+
+    /**
+     * ユーザー更新処理（POST /users/{userId}/update）
+     * パスワードが空欄の場合は変更しない。
+     */
+    @PostMapping("users/{userId}/update")
+    public String updateUser(@PathVariable("userId") Integer userId,
+            @RequestParam("username") String username,
+            @RequestParam("displayName") String displayName,
+            @RequestParam("email") String email,
+            @RequestParam("phone") String phone,
+            // ★ ここは一旦 String で受け取る（未選択だと "" が来る）
+            @RequestParam(name = "departmentId", required = false) String departmentIdStr,
+            @RequestParam(name = "role", required = false) String roleStr,
+            @RequestParam(name = "password", required = false) String password,
+            HttpSession session,
+            RedirectAttributes redirectAttributes,
+            Locale locale) {
+
+        Integer sessionUserId = (Integer) session.getAttribute("userId");
+        Integer sessionRole = (Integer) session.getAttribute("role");
+
+        // 未ログイン
+        if (sessionUserId == null) {
+            String msg = messageSource.getMessage("error.auth.required", null, locale);
+            redirectAttributes.addFlashAttribute("flashError", msg);
+            return "redirect:/auth/login";
+        }
+
+        // 一般ユーザーは禁止
+        if (sessionRole == null || sessionRole != 1) {
+            String msg = messageSource.getMessage("error.auth.forbidden", null, locale);
+            redirectAttributes.addFlashAttribute("flashError", msg);
+            return "redirect:/users/list";
+        }
+
+        try {
+            // ★ String → Integer 変換（空欄は null）
+            Integer departmentId = null;
+            if (departmentIdStr != null && !departmentIdStr.isBlank()) {
+                departmentId = Integer.valueOf(departmentIdStr);
+            }
+
+            Integer roleParam = null;
+            if (roleStr != null && !roleStr.isBlank()) {
+                roleParam = Integer.valueOf(roleStr);
+            }
+
+            // ★ 管理者が自分自身を一般(2)に落とすのは禁止
+            if (sessionUserId.equals(userId) && roleParam != null && roleParam == 2) {
+                throw new BusinessException("error.user.role.protected");
+            }
+
+            // ★ Service に Integer を渡す（必須チェックは Service 側で）
+            adminUserService.updateUser(
+                    userId,
+                    username,
+                    displayName,
+                    email,
+                    phone,
+                    departmentId,
+                    roleParam,
+                    password // 空欄なら Service 側で「変更なし」
+            );
+
+            String msg = messageSource.getMessage("info.user.update.success", null, locale);
+            redirectAttributes.addFlashAttribute("flashInfo", msg);
+
+            return "redirect:/users/list";
+
+        } catch (BusinessException e) {
+            String msg = messageSource.getMessage(e.getMessageKey(), null, locale);
+            redirectAttributes.addFlashAttribute("flashError", msg);
+            redirectAttributes.addFlashAttribute("usernameValue", username);
+            redirectAttributes.addFlashAttribute("displayNameValue", displayName);
+            redirectAttributes.addFlashAttribute("emailValue", email);
+            redirectAttributes.addFlashAttribute("phoneValue", phone);
+            redirectAttributes.addFlashAttribute("departmentIdValue", departmentIdStr);
+            redirectAttributes.addFlashAttribute("roleValue", roleStr);
+            return "redirect:/users/" + userId + "/edit";
+        } catch (Exception e) {
+            e.printStackTrace(); // 開発中はログ見えた方が原因追いやすいです
+            String msg = messageSource.getMessage("error.system.unexpected", null, locale);
+            redirectAttributes.addFlashAttribute("flashError", msg);
+            return "redirect:/users/" + userId + "/edit";
+        }
     }
 
     /**
