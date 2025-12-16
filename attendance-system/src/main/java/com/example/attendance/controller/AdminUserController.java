@@ -475,7 +475,48 @@ public class AdminUserController {
      *
      */
     @PostMapping("/users/{userId}/delete")
-    public String deleteUser(@PathVariable("userId") Integer userId) {
-        return "user_delete";
+    public String deleteUser(
+            @PathVariable("userId") Integer targetUserId,
+            HttpSession session,
+            RedirectAttributes redirectAttributes,
+            Locale locale) {
+
+        Integer currentUserId = (Integer) session.getAttribute("userId");
+        Integer role = (Integer) session.getAttribute("role");
+
+        // 未ログイン → /auth/login
+        if (currentUserId == null) {
+            String msg = messageSource.getMessage("error.auth.required", null, locale);
+            redirectAttributes.addFlashAttribute("flashError", msg);
+            return "redirect:/auth/login";
+        }
+
+        // 一般ユーザーが実行 → /users/list
+        if (role == null || role != 1) {
+            String msg = messageSource.getMessage("error.auth.forbidden", null, locale);
+            redirectAttributes.addFlashAttribute("flashError", msg);
+            return "redirect:/users/list";
+        }
+
+        // 自分自身を削除しようとした場合 → /users/list
+        if (currentUserId.equals(targetUserId)) {
+            String msg = messageSource.getMessage("error.user.delete.self", null, locale);
+            redirectAttributes.addFlashAttribute("flashError", msg);
+            return "redirect:/users/list";
+        }
+
+        // 対象ユーザー削除（対象なしもここでBusinessException）
+        try {
+            adminUserService.softDeleteUser(targetUserId);
+            return "redirect:/users/list";
+        } catch (BusinessException e) {
+            String msg = messageSource.getMessage(e.getMessageKey(), null, locale);
+            redirectAttributes.addFlashAttribute("flashError", msg);
+            return "redirect:/users/list";
+        } catch (Exception e) {
+            String msg = messageSource.getMessage("error.system.unexpected", null, locale);
+            redirectAttributes.addFlashAttribute("flashError", msg);
+            return "redirect:/users/list";
+        }
     }
 }
