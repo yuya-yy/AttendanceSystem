@@ -6,6 +6,8 @@
     <title>ユーザー情報一覧</title>
     <link rel="stylesheet" th:href="@{/css/base.css}">
     <link rel="stylesheet" th:href="@{/css/style_user_list.css}">
+    <script th:src="@{/js/common.js}" defer></script>
+    <script th:src="@{/js/user_list.js}" defer></script>
 </head>
 
 <body class="page-body">
@@ -15,24 +17,71 @@
 
     <main class="user-list-main">
 
-        <!-- タイトル -->
+        <!-- タイトル（page-title は base.css の共通デザインを使う想定） -->
         <div class="page-title">ユーザー情報一覧</div>
 
         <!-- フラッシュメッセージ（エラー／情報） -->
         <div th:if="${flashError}" class="alert-error" th:text="${flashError}"></div>
         <div th:if="${flashInfo}" class="alert-info" th:text="${flashInfo}"></div>
 
-        <!-- 検索ボックス -->
-        <div class="user-list-search-row">
-            <div class="user-list-search-box">
-                <span class="user-list-search-icon">🔍</span>
-                <input class="user-list-search-input" type="text" name="q" placeholder="ユーザー検索" />
-            </div>
-        </div>
+        <!-- 検索・絞り込み -->
+        <section class="user-list-filter-section">
+            <!-- 1段目：名前検索 -->
+            <div class="user-list-filter-row">
+                <div class="user-list-filter-group">
+                    <span class="user-list-filter-label">ユーザー検索</span>
+                    <!-- ★JSが参照する id はそのまま -->
+                    <input id="keywordInput" type="text" class="user-list-filter-input" placeholder="氏名を入力してください">
+                </div>
 
-        <!-- 一覧テーブル枠全体 -->
+                <div class="user-list-filter-group">
+                    <span class="user-list-filter-label">権限</span>
+                    <select id="roleFilter" class="user-list-filter-select">
+                        <option value="ALL">すべて</option>
+                        <option value="ADMIN">管理者のみ</option>
+                        <option value="USER">一般のみ</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- 2段目：所属部署・権限・勤務場所 -->
+            <div class="user-list-filter-row">
+                <div class="user-list-filter-group">
+                    <span class="user-list-filter-label">所属部署　</span>
+                    <select id="departmentFilter" class="user-list-filter-select">
+                        <option value="ALL">すべて</option>
+                        <option th:each="dept : ${departments}" th:value="${dept.id}" th:text="${dept.departmentName}">
+                            開発部
+                        </option>
+                    </select>
+                </div>
+
+
+
+                <div class="user-list-filter-group">
+                    <span class="user-list-filter-label">勤務場所</span>
+                    <select id="locationFilter" class="user-list-filter-select">
+                        <option value="ALL">すべて</option>
+                        <option value="OFFICE">会社</option>
+                        <option value="HOME">在宅</option>
+                        <option value="TRIP">出張</option>
+                        <option value="CLIENT">客先</option>
+                        <option value="OTHER">その他</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- 件数＆0件メッセージ（テーブル外） -->
+            <div class="user-list-result-info">
+                <!-- ★JSが参照する id はそのまま -->
+                <span id="resultCount">0件表示中</span>
+                <span id="resultEmpty" class="user-list-result-empty">条件に一致するユーザーがいません。</span>
+            </div>
+        </section>
+
+        <!-- 一覧テーブル枠 -->
         <div class="user-list-table-frame">
-            <table class="user-list-table">
+            <table id="userTable" class="user-list-table">
                 <thead>
                     <tr>
                         <th>名前</th>
@@ -44,46 +93,54 @@
                         <th>操作</th>
                     </tr>
                 </thead>
+
                 <tbody>
-                    <tr th:each="user : ${users}">
+                    <tr th:each="user : ${users}" th:attr="
+              data-name=${user.displayName},
+              data-department-id=${user.department.id},
+              data-role=${user.role == 1 ? 'ADMIN' : 'USER'},
+              data-location=${user.defaultWorkLocation != null ? user.defaultWorkLocation.code : 'OTHER'}
+            ">
                         <td th:text="${user.displayName}">山田 太郎</td>
                         <td th:text="${user.department.departmentName}">開発部</td>
                         <td
                             th:text="${user.defaultWorkLocation != null ? user.defaultWorkLocation.locationName : '未設定'}">
-                            会社</td>
-                        <td th:text="${user.email}">taro@example.com</td>
-                        <td th:text="${user.phone}">000-0000-0000</td>
+                            会社
+                        </td>
+
+                        <!-- null のとき「-」にして見栄えを安定させる -->
+                        <td th:text="${user.email != null ? user.email : '-'}">taro@example.com</td>
+                        <td th:text="${user.phone != null ? user.phone : '-'}">000-0000-0000</td>
+
                         <td th:text="${user.role == 1 ? '管理者' : '一般'}">一般</td>
-                        <td class="user-actions">
-                            <!-- 管理者だけ操作ボタンをまとめて表示 -->
-                            <div class="action-buttons" th:if="${session.role == 1}">
-                                <!-- 勤怠実績ボタン（GET /reports/{userId}） -->
-                                <a th:href="@{'/reports/' + ${user.id}}">
+
+                        <td>
+                            <!-- 管理者だけ操作ボタン -->
+                            <div class="user-list-actions" th:if="${session.role == 1}">
+                                <a class="user-list-action-pill user-list-action-pill-main"
+                                    th:href="@{'/reports/' + ${user.id}}">
                                     勤怠実績
                                 </a>
 
-                                <!-- 編集ボタン（GET /users/{userId}/edit） -->
-                                <a th:href="@{'/users/' + ${user.id} + '/edit'}">
-                                    ✏️
+                                <a class="user-list-action-pill" th:href="@{'/users/' + ${user.id} + '/edit'}">
+                                    編集
                                 </a>
 
-                                <!-- 削除ボタン（POST /users/{userId}/delete） -->
                                 <form th:action="@{'/users/' + ${user.id} + '/delete'}" method="post"
-                                    class="inline-delete-form" onsubmit="return confirm('このユーザーを削除します。よろしいですか？');">
-
-                                    <button type="submit" aria-label="削除">
-                                        🗑️
+                                    class="user-list-inline-form">
+                                    <button type="submit" class="user-list-action-pill user-list-action-danger">
+                                        削除
                                     </button>
                                 </form>
-
                             </div>
                         </td>
                     </tr>
                 </tbody>
+
             </table>
         </div>
-    </main>
 
+    </main>
 </body>
 
 </html>
