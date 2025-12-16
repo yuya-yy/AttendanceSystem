@@ -1,167 +1,197 @@
 /* ======================================
-   ユーザー情報一覧（S0106） user_list.css
-   - 全ユーザー一覧
-   - 上に検索＋フィルタ
-   - 下に黒枠テーブル＋操作ボタン
+   ユーザー情報一覧（S0106） style_user_list.css
+   - クラス名は user-list- で統一
 ====================================== */
 
 /* 画面コンテナ */
 .user-list-main {
-    display: flex;
-    flex-direction: column;
-    padding: 16px 24px 40px;
-    box-sizing: border-box;
-    gap: 16px;
-    font-size: 14px;
-    line-height: 1.5;
-    color: #000;
+  display: flex;
+  flex-direction: column;
+  padding: 16px 24px 40px;
+  box-sizing: border-box;
+  gap: 16px;
+  font-size: 14px;
+  line-height: 1.5;
+  color: #000;
 }
 
-/* タイトル行（画面タイトル＋件数表示） */
-.user-list-title-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 8px;
+/* ===== 検索・絞り込み（フィルター） ===== */
+.user-list-filter-section {
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 12px;
+  padding: 12px 16px;
+  margin-bottom: 16px;
+  background: #f9fafb;
 }
 
-/* ====== 検索・フィルタ ====== */
-
-.user-list-search-row {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: flex-start;
-    gap: 12px;
-    margin-bottom: 12px;
+/* ★フィルター枠を「中身にちょうどいい幅」にする */
+.user-list-filter-section {
+  align-self: flex-start; /* ← flexの“横いっぱいに伸びる”を止める */
+  width: fit-content;     /* ← 中身の幅に合わせる */
+  max-width: 100%;        /* ← 画面が狭いときははみ出さない */
 }
 
-/* 左の検索ボックス */
-.user-list-search-box {
-    display: inline-flex;
-    align-items: center;
-    border: 2px solid #000;
-    border-radius: 4px;
-    padding: 4px 8px;
-    background-color: #fff;
-    min-height: 28px;
-    box-sizing: border-box;
+/* 好みで調整（勤務状況/勤務場所が揃う幅） */
+/* .user-list-filter-label {
+  display: inline-block;
+  width: 72px;
+} */
+
+.user-list-filter-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 16px;
+  margin-bottom: 10px;
 }
 
-.user-list-search-icon {
-    font-size: 14px;
-    margin-right: 4px;
+.user-list-filter-row:last-child {
+  margin-bottom: 0;
 }
 
-.user-list-search-input {
-    border: none;
-    outline: none;
-    background-color: transparent;
-    font-size: 14px;
-    min-width: 160px;
+.user-list-filter-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
-/* プルダウン系（所属部署、勤務場所、権限） */
+.user-list-filter-label {
+  font-size: 14px;
+  color: #374151;
+  white-space: nowrap;
+}
+
+.user-list-filter-input {
+  padding: 6px 10px;
+  border-radius: 8px;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  font-size: 14px;
+  min-width: 240px;
+  background: #fff;
+}
+
 .user-list-filter-select {
-    padding: 4px 8px;
-    font-size: 14px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  font-size: 14px;
+  min-width: 160px;
+  background: #fff;
 }
 
-/* ====== テーブル枠 ====== */
+/* 件数表示 */
+.user-list-result-info {
+  margin-top: 6px;
+  font-size: 12px;
+  color: #6b7280;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
 
+.user-list-result-empty {
+  display: none; /* JSで 0件のときだけ表示 */
+  color: #ef4444;
+}
+
+/* ===== テーブル枠 ===== */
 .user-list-table-frame {
-    border: 3px solid #000;
-    background-color: #fff;
-    box-sizing: border-box;
-    min-height: 300px;
-    overflow-x: auto;
-    padding: 0;
+  border: 3px solid #000;
+  background-color: #fff;
+  box-sizing: border-box;
+  min-height: 300px;
+  overflow-x: auto;
 }
 
 /* テーブル本体 */
 .user-list-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 14px;
-    color: #000;
-    table-layout: fixed;
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  color: #000;
+  table-layout: fixed;
 }
 
 /* ヘッダー */
 .user-list-table thead th {
-    font-weight: 600;
-    color: #000;
-    text-align: left;
-    vertical-align: middle;
-    padding: 6px 8px;
-    border-bottom: 2px solid #000;
-    border-right: 1px solid #000;
-    white-space: nowrap;
+  font-weight: 600;
+  text-align: left;
+  vertical-align: middle;
+  padding: 6px 8px;
+  border-bottom: 2px solid #000;
+  border-right: 1px solid #000;
+  white-space: nowrap;
 }
 
 .user-list-table thead th:last-child {
-    border-right: none;
+  border-right: none;
 }
 
 /* データ行 */
 .user-list-table tbody td {
-    padding: 6px 8px;
-    vertical-align: top;
-    color: #000;
-    border-bottom: 1px solid #000;
-    border-right: 1px solid #000;
-    word-break: break-word;
+  padding: 6px 8px;
+  vertical-align: top;
+  border-bottom: 1px solid #000;
+  border-right: 1px solid #000;
+  word-break: break-word;
 }
 
 .user-list-table tbody td:last-child {
-    border-right: none;
+  border-right: none;
 }
 
 .user-list-table tbody tr:last-child td {
-    border-bottom: none;
+  border-bottom: none;
 }
 
-/* 操作列の中身（ボタンを横並びに） */
-.user-list-actions-cell {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 4px;
+/* ===== 操作ボタン（右端列） ===== */
+.user-list-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
 }
 
-/* ====== 操作ボタン（集計／編集／削除など） ====== */
+/* aタグをボタン見た目にするため */
+.user-list-actions a {
+  text-decoration: none;
+  display: inline-block;
+}
 
+/* formが変な余白を持たないようにする */
+.user-list-inline-form {
+  margin: 0;
+}
+
+/* ボタン共通 */
 .user-list-action-pill {
-    padding: 4px 8px;
-    border-radius: 999px;
-    border: 1px solid #000;
-    background-color: #ffffff;
-    font-size: 12px;
-    line-height: 1.2;
-    cursor: pointer;
-    font-family: inherit;
-    transition: background-color 120ms ease,
-                color 120ms ease,
-                border-color 120ms ease;
+  padding: 4px 8px;
+  border-radius: 999px;
+  border: 1px solid #000;
+  background-color: #fff;
+  font-size: 12px;
+  line-height: 1.2;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background-color 120ms ease, color 120ms ease, border-color 120ms ease;
 }
 
-/* メインの操作（例：集計）を少し目立たせる場合 */
+/* メイン操作（勤怠実績） */
 .user-list-action-pill-main {
-    background-color: var(--color-accent);
-    color: #ffffff;
-    border-color: transparent;
+  background-color: var(--color-accent);
+  color: #fff;
+  border-color: transparent;
 }
 
 .user-list-action-pill-main:hover {
-    background-color: #3e617c;
+  background-color: #3e617c;
 }
 
-/* 危険操作（削除など） */
+/* 危険操作（削除） */
 .user-list-action-danger {
-    border-color: #E2B1B1;
-    color: #B91C1C;
+  border-color: #E2B1B1;
+  color: #B91C1C;
 }
 
 .user-list-action-danger:hover {
-    background-color: #E2B1B1;
-    color: #ffffff;
+  background-color: #E2B1B1;
+  color: #fff;
 }

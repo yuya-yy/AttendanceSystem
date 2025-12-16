@@ -6,6 +6,8 @@
     <title>勤怠状況一覧</title>
     <link rel="stylesheet" th:href="@{/css/base.css}">
     <link rel="stylesheet" th:href="@{/css/style_status_list.css}">
+    <script th:src="@{/js/common.js}" defer></script>
+    <script th:src="@{/js/status_list.js}" defer></script>
 </head>
 
 <body class="page-body">
@@ -13,54 +15,103 @@
     <!-- 共通ヘッダー -->
     <div th:replace="~{fragments/header :: header('status')}"></div>
 
-    <main class="status-main page-container">
-        <!-- タイトル行 -->
-        <div class="status-title-row">
-            <div class="page-title">勤怠状況一覧</div>
-            <div class="dept-badge" title="表示中の部門">〇〇部署</div>
-        </div>
+    <main class="status-list-main">
 
-        <!-- 検索ボックス -->
-        <div class="user-list-search-row">
-            <div class="user-list-search-box">
-                <span class="user-list-search-icon">🔍</span>
-                <input class="user-list-search-input" type="text" name="q" placeholder="ユーザー検索" />
+        <!-- タイトル行 -->
+        <div class="status-list-title-row">
+            <div class="page-title">勤怠状況一覧</div>
+
+            <!-- ※部署名を表示したい場合は、Controllerで model に deptName 等を入れて th:text にしてください -->
+            <div class="status-list-dept-badge" title="表示中の部署">
+                〇〇部署
             </div>
         </div>
 
-        <!-- （将来）フィルタ UI を足すならこのあたりに filter-section を置く -->
+        <!-- 検索・絞り込み -->
+        <section class="status-list-filter-section">
+            <!-- 1段目：名前検索 -->
+            <div class="status-list-filter-row">
+                <div class="status-list-filter-group">
+                    <span class="status-list-filter-label">ユーザー検索</span>
+                    <!-- ★JSが参照する id はそのまま -->
+                    <input id="keywordInput" type="text" class="status-list-filter-input" placeholder="氏名を入力してください">
+                </div>
+            </div>
 
-        <!-- テーブル（太枠） -->
-        <div class="status-list-table-frame">
+            <!-- 2段目：勤務状況・勤務場所 -->
+            <div class="status-list-filter-row">
+                <div class="status-list-filter-group">
+                    <span class="status-list-filter-label">勤務状況　
+                    </span>
+                    <select id="statusFilter" class="status-list-filter-select">
+                        <option value="ALL">すべて</option>
+                        <option value="WORKING">勤務中のみ</option>
+                        <option value="OFF">勤務外のみ</option>
+                    </select>
+                </div>
+
+                <div class="status-list-filter-group">
+                    <span class="status-list-filter-label">勤務場所</span>
+                    <select id="locationFilter" class="status-list-filter-select">
+                        <option value="ALL">すべて</option>
+                        <option value="OFFICE">会社</option>
+                        <option value="HOME">在宅</option>
+                        <option value="TRIP">出張</option>
+                        <option value="CLIENT">客先</option>
+                        <option value="OTHER">その他</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- 件数＆0件メッセージ -->
+            <div class="status-list-result-info">
+                <!-- ★JSが参照する id はそのまま -->
+                <span id="resultCount">0件表示中</span>
+                <span id="resultEmpty" class="status-list-result-empty">条件に一致するユーザーがいません。</span>
+            </div>
+        </section>
+
+        <!-- テーブル枠 -->
+        <!-- ※JSがこの id を使っている可能性があるので維持 -->
+        <div id="statusTable" class="status-list-table-frame">
             <table class="status-list-table">
                 <thead>
                     <tr>
-                        <th class="th-left">名前</th>
+                        <th>名前</th>
                         <th>勤務状況</th>
                         <th>勤務場所</th>
                         <th>メールアドレス</th>
-                        <th class="th-right">電話番号</th>
+                        <th>電話番号</th>
                     </tr>
                 </thead>
+
                 <tbody>
-                    <tr th:each="user : ${users}">
+                    <tr th:each="user : ${users}" th:if="${user != null}" th:attr="
+                data-name=${user.displayName},
+                data-status=${workingUserIds != null and workingUserIds.contains(user.id) ? 'WORKING' : 'OFF'},
+                data-location=${user.defaultWorkLocation != null ? user.defaultWorkLocation.code : 'OTHER'}
+              ">
                         <td th:text="${user.displayName}">名前</td>
 
-                        <!-- 勤務状況：Set に含まれていたら「勤務中」、そうでなければ「勤務外」 -->
-                        <td th:text="${workingUserIds.contains(user.id)} ? '勤務中' : '勤務外'">勤務状況</td>
+                        <!-- ★Thymeleafの三項演算子は「式の中で」書く -->
+                        <td th:text="${workingUserIds != null and workingUserIds.contains(user.id) ? '勤務中' : '勤務外'}">
+                            勤務状況
+                        </td>
 
-                        <!-- 勤務場所：defaultWorkLocation が null のときは「未設定」 -->
+                        <!-- ★ ${} を入れ子にしない -->
                         <td
-                            th:text="${user.defaultWorkLocation != null} ? ${user.defaultWorkLocation.locationName} : '未設定'">
+                            th:text="${user.defaultWorkLocation != null ? user.defaultWorkLocation.locationName : '未設定'}">
                             勤務場所
                         </td>
 
-                        <td th:text="${user.email}">メール</td>
-                        <td th:text="${user.phone}">電話番号</td>
+                        <!-- null対策（見た目を安定） -->
+                        <td th:text="${user.email != null ? user.email : '-'}">メール</td>
+                        <td th:text="${user.phone != null ? user.phone : '-'}">電話番号</td>
                     </tr>
                 </tbody>
             </table>
         </div>
+
     </main>
 </body>
 
