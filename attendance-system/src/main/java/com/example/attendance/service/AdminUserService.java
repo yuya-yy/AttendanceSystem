@@ -467,4 +467,12 @@ public class AdminUserService {
                 toDate);
     }
 
+    @Transactional
+    public void softDeleteUser(Integer targetUserId) {
+        User targetUser = userRepository.findByIdAndDeletedAtIsNull(targetUserId)
+                .orElseThrow(() -> new BusinessException("error.user.notFound"));
+
+        targetUser.setDeletedAt(OffsetDateTime.now());
+        userRepository.save(targetUser);
+    }
 }
