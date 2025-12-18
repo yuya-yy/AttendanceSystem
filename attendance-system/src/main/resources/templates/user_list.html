@@ -82,6 +82,15 @@
         <!-- 一覧テーブル枠 -->
         <div class="user-list-table-frame">
             <table id="userTable" class="user-list-table">
+                <colgroup>
+                    <col class="col-name">
+                    <col class="col-dept">
+                    <col class="col-location">
+                    <col class="col-email">
+                    <col class="col-phone">
+                    <col class="col-role">
+                    <col class="col-actions">
+                </colgroup>
                 <thead>
                     <tr>
                         <th>名前</th>
@@ -113,25 +122,28 @@
                         <td th:text="${user.phone != null ? user.phone : '-'}">000-0000-0000</td>
 
                         <td th:text="${user.role == 1 ? '管理者' : '一般'}">一般</td>
-
-                        <td>
-                            <!-- 管理者だけ操作ボタン -->
-                            <div class="user-list-actions" th:if="${session.role == 1}">
-                                <a class="user-list-action-pill user-list-action-pill-main"
-                                    th:href="@{'/reports/' + ${user.id}}">
+                        <td class="user-actions">
+                            <!-- 管理者だけ操作ボタンをまとめて表示 -->
+                            <div class="user-list-actions-cell" th:if="${session.role == 1}">
+                                <!-- 勤怠実績ボタン（GET /reports/{userId}） -->
+                                <a th:href="@{'/reports/' + ${user.id}}">
                                     勤怠実績
                                 </a>
 
-                                <a class="user-list-action-pill" th:href="@{'/users/' + ${user.id} + '/edit'}">
-                                    編集
+                                <!-- 編集ボタン（GET /users/{userId}/edit） -->
+                                <a th:href="@{'/users/' + ${user.id} + '/edit'}">
+                                    ✏️
                                 </a>
 
+                                <!-- 削除ボタン（POST /users/{userId}/delete） -->
                                 <form th:action="@{'/users/' + ${user.id} + '/delete'}" method="post"
-                                    class="user-list-inline-form">
-                                    <button type="submit" class="user-list-action-pill user-list-action-danger">
-                                        削除
+                                    class="inline-delete-form" onsubmit="return confirm('このユーザーを削除します。よろしいですか？');">
+
+                                    <button type="submit" aria-label="削除">
+                                        🗑️
                                     </button>
                                 </form>
+
                             </div>
                         </td>
                     </tr>

@@ -95,11 +95,13 @@
 
 /* ===== テーブル枠 ===== */
 .user-list-table-frame {
-  border: 3px solid #000;
-  background-color: #fff;
-  box-sizing: border-box;
-  min-height: 300px;
-  overflow-x: auto;
+    background: #ffffff;
+    box-sizing: border-box;
+    border-radius: 18px;
+    box-shadow: var(--shadow-soft);
+    padding: 10px;
+    width: 100%;
+    overflow-x: auto;
 }
 
 /* テーブル本体 */
@@ -111,15 +113,28 @@
   table-layout: fixed;
 }
 
+.user-list-table .col-name     { width: 23ch; }  /* 名前 */
+.user-list-table .col-dept     { width: 20ch; }  /* 所属部署 */
+.user-list-table .col-location { width: 20ch; }   /* 勤務場所 */
+.user-list-table .col-phone    { width: 23ch; }  /* 電話番号 */
+.user-list-table .col-role     { width: 15ch; }   /* 権限 */
+.user-list-table .col-actions  { width: 27ch; }  /* 操作 */
+
+/* ★メールは指定しない（= 残りの幅を全部もらう） */
+.user-list-table .col-email { width: auto; }
+
 /* ヘッダー */
 .user-list-table thead th {
-  font-weight: 600;
-  text-align: left;
-  vertical-align: middle;
-  padding: 6px 8px;
-  border-bottom: 2px solid #000;
-  border-right: 1px solid #000;
-  white-space: nowrap;
+    border-bottom: 1.2px solid rgba(217, 219, 219, 0.563);
+    padding: 8px 10px;
+    font-size: 14px;
+    vertical-align: middle;
+    background-color: #E5E7EB;
+    text-align: left;
+    position: sticky;
+    top: 0;                 /* ← 10px ではなく 0（隙間を作らない） */
+    z-index: 2;              /* ← 1より少し上げて安定させる */
+    background-clip: padding-box;
 }
 
 .user-list-table thead th:last-child {
@@ -128,11 +143,11 @@
 
 /* データ行 */
 .user-list-table tbody td {
-  padding: 6px 8px;
-  vertical-align: top;
-  border-bottom: 1px solid #000;
-  border-right: 1px solid #000;
-  word-break: break-word;
+    border-bottom: 1.2px solid rgba(217, 219, 219, 0.563);
+    padding: 8px 10px;
+    font-size: 14px;
+    vertical-align: middle;
+     word-break: break-word;
 }
 
 .user-list-table tbody td:last-child {
@@ -143,11 +158,11 @@
   border-bottom: none;
 }
 
-/* ===== 操作ボタン（右端列） ===== */
-.user-list-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
+/* 操作列の中身（ボタンを横並びに） */
+.user-list-actions-cell {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px;
 }
 
 /* aタグをボタン見た目にするため */

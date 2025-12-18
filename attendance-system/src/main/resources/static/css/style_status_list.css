@@ -107,13 +107,14 @@
 
 /* ===== テーブル枠 ===== */
 .status-list-table-frame {
-  border: 3px solid #000;
-  background-color: #fff;
-  box-sizing: border-box;
-  width: 100%;          /* ★フィルターと同じ幅にする */
-  margin: 0 0 40px;
-  min-height: 300px;
-  overflow-x: auto;
+    background: #ffffff;
+    box-sizing: border-box;
+    border-radius: 18px;
+    box-shadow: var(--shadow-soft);
+    padding: 10px;
+    width: min(1120px, 92%); /* 画面が広い時は最大1120px、狭い時は92% */
+    margin: 0 auto;
+    overflow-x: auto;
 }
 
 /* テーブル本体 */
@@ -127,13 +128,16 @@
 
 /* ヘッダー */
 .status-list-table thead th {
-  font-weight: 600;
-  text-align: left;
-  vertical-align: middle;
-  padding: 6px 10px;
-  border-bottom: 2px solid #000;
-  border-right: 1px solid #000;
-  white-space: nowrap;
+    border-bottom: 1.2px solid rgba(217, 219, 219, 0.563);
+    padding: 8px 10px;
+    font-size: 14px;
+    vertical-align: middle;
+    background-color: #E5E7EB;
+    text-align: left;
+    position: sticky;
+    top: 0;                 /* ← 10px ではなく 0（隙間を作らない） */
+    z-index: 2;              /* ← 1より少し上げて安定させる */
+    background-clip: padding-box;
 }
 
 .status-list-table thead th:last-child {
@@ -142,11 +146,11 @@
 
 /* データ行 */
 .status-list-table tbody td {
-  padding: 6px 10px;
-  vertical-align: top;
-  border-bottom: 1px solid #000;
-  border-right: 1px solid #000;
-  word-break: break-word;
+    border-bottom: 1.2px solid rgba(217, 219, 219, 0.563);
+    padding: 8px 10px;
+    font-size: 14px;
+    vertical-align: middle;
+     word-break: break-word;
 }
 
 .status-list-table tbody td:last-child {
