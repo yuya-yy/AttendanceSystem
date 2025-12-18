@@ -16,22 +16,28 @@
     margin: 0px;             /* 中央寄せ */
     padding: 24px 24px 40px;    /* 上左右・下の余白 */
     box-sizing: border-box;
-    display: flex;
+    /*display: flex;*/
     flex-direction: column;
     gap: 16px;                  /* タイトルとの間などのすき間 */
 }
 
 /* タイトルの下に少し余白を付ける */
 .attendance-main .page-title {
-    margin-bottom: 8px;
+    display: flex;
+    justify-content: space-between; /* 左＝タイトル、右＝勤務状況ブロック */
+    align-items: flex-start;
+    gap: 16px;
+    margin-bottom: 0;
 }
+
 
 /* 左右2カラムのレイアウト */
 .attendance-layout {
     display: flex;              /* 「flexbox（フレックスボックス）」で横並びにする */
-    /*flex-wrap: wrap;            /* 画面が狭いときは折り返しOK */
     gap: 24px;                  /* 左右のカードの間隔 */
     align-items: flex-start;    /* 上端をそろえる */
+    align-items: stretch;
+    justify-content: center;    /* 中央寄せ */
 }
 
 /* ------------------------------
@@ -39,43 +45,49 @@
 ------------------------------ */
 
 .attendance-table-card {
-    flex: 1 1 600px;    /* 横幅は優先的に広く取りたい（最低600pxぐらい） */
+    flex: 0 1 800px;    /* 横幅は優先的に広く取りたい（最低600pxぐらい） */
     min-width: 400px;
-    color: #000;
+    background: #ffffff;
+    box-sizing: border-box;
+    border-radius: 18px;
+    box-shadow: var(--shadow-soft);
+    overflow: hidden; /* ← 中のスクロール領域をカードの丸みに合わせて切る */
+    padding: 10px;
 }
 
 /* 勤務状況 / 勤務場所の表示部分 */
 .attendance-info-top {
-    margin-bottom: 16px;
+    margin-bottom: 0;              /* タイトル行の中なので余白は不要 */
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;         /* ブロック内を右揃え */
 }
 
 /* 「勤務状況：出勤中」など1行分のレイアウト */
 .attendance-status-row {
     display: flex;
-    gap: 16px;
+    gap: 14px;
     font-size: 14px;
-    line-height: 1.6;
-    margin-bottom: 4px;
 }
 
 /* 「勤務状況」「勤務場所」などラベル側 */
 .label-gray {
-    color: #9aa0a6;
+    color: #000;
     font-weight: 500;
     min-width: 80px;
 }
 
 /* 「出勤中」「会社」など値側 */
 .value-gray {
-    color: #9aa0a6;
+    color: #000;
 }
 
 /* 黒枠で囲まれたテーブルの外側のボックス */
 .attendance-table-wrapper {
-     border: 1px solid #111827;   /* もとの枠線に合わせて調整 */
-    border-radius: 4px;
-    overflow-y: auto;            /* ← 縦方向のスクロールを有効にする */
-    max-height: 360px;
+    max-height: 70vh;   /* 画面高さの60%を上限にする（お好みで調整） */
+    overflow-y: auto;   /* 縦にあふれたらスクロールバーを表示 */
+    background: #ffffff;
+    scrollbar-gutter: stable;
 }
 
 /* 勤怠テーブル本体 */
@@ -88,31 +100,28 @@
 
 /* ヘッダー行 */
 .attendance-table thead th {
-    border-bottom: 2px solid #000;
-    border-right: 1px solid #000;
-    background-color: #fff;
     font-weight: 500;
     color: #000;
-    text-align: left;
+    background-color: #E5E7EB;
     padding: 8px;
     white-space: nowrap;
+    text-align: left;
     position: sticky;
-    top: 0;
-    background-color: #f9fafb;   /* 背景を白系にして、下の行と重なっても読めるように */
-    z-index: 1;
+    top: 0;                 /* ← 10px ではなく 0（隙間を作らない） */
+    z-index: 2;              /* ← 1より少し上げて安定させる */
+    background-clip: padding-box;
 }
 
 .attendance-table thead th:last-child {
-    border-right: none;
+    border-bottom: none;
 }
 
 /* データ行 */
 .attendance-table tbody td {
-    border-bottom: 1px solid #000;
-    border-right: 1px solid #000;
-    padding: 8px;
-    color: #000;
-    vertical-align: top;
+    border-bottom: 1.2px solid rgba(217, 219, 219, 0.563);
+    padding: 8px 10px;
+    font-size: 14px;
+    vertical-align: middle;
 }
 
 .attendance-table tbody tr:last-child td {
@@ -129,17 +138,18 @@
 
 .attendance-side {
     display: flex;
+    justify-content: center;
     flex-direction: column;
-    gap: 24px;
+    gap: 30px;
     flex: 0 0 260px;    /* 右側は細めカラムとして確保 */
     min-width: 220px;
     max-width: 320px;
+    max-height: 55vh;
 }
 
 /* 「ようこそ ○○さん」「○○部／管理者」のブロック */
 .attendance-user-block {
     font-size: 14px;
-    line-height: 1.5;
     color: #000;
 }
 
@@ -181,7 +191,7 @@
     flex-direction: column;
     gap: 16px;          /* ボタン同士のすき間 */
     align-items: center;
-    margin-top: 16px;
+
 }
 
 /* ------------------------------
