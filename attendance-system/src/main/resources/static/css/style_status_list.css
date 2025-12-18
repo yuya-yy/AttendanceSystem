@@ -1,83 +1,111 @@
 /* ======================================
-   勤怠状況一覧（S0105） status_list.css
-   - 部署の現在の勤務状況一覧
-   - 上にタイトル + 件数
-   - 下に黒枠テーブル
+   勤怠状況一覧（S0105） style_status_list.css
+   - クラス名は status-list- で統一
 ====================================== */
 
 /* 画面コンテナ */
-.status-main {
-    display: flex;
-    flex-direction: column;
-    padding: 16px 24px 40px;
-    box-sizing: border-box;
-    gap: 16px;
-    font-size: 14px;
-    line-height: 1.5;
-    color: #000;
+.status-list-main {
+  display: flex;
+  flex-direction: column;
+  padding: 16px 24px 40px;
+  box-sizing: border-box;
+  gap: 16px;
+  font-size: 14px;
+  line-height: 1.5;
+  color: #000;
 }
 
-/* タイトル行（画面タイトル＋部署バッジ＋件数表示など） */
-.status-title-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 8px;
+/* タイトル行 */
+.status-list-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
 }
 
-.dept-badge {
-    display: inline-flex;
-    align-items: center;
-    padding: 2px 10px;
-    border-radius: 999px;
-    border: 1px solid #000;
-    font-size: 12px;
-    background-color: #ffffff;
+.status-list-dept-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 10px;
+  border-radius: 999px;
+  border: 1px solid #000;
+  font-size: 12px;
+  background-color: #fff;
 }
 
-/* ====== 検索・フィルタ行（名前・勤務状況・勤務場所など） ====== */
+/* ===== 検索・絞り込み（フィルター） ===== */
+.status-list-filter-section {
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 12px;
+  padding: 12px 16px;
+  margin-bottom: 16px;
+  background: #f9fafb;
 
-.user-list-search-row {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 12px;
+}
+/* ★フィルター枠を「中身にちょうどいい幅」にする */
+.status-list-filter-section {
+  align-self: flex-start; /* ← flexの“横いっぱいに伸びる”を止める */
+  width: fit-content;     /* ← 中身の幅に合わせる */
+  max-width: 100%;        /* ← 画面が狭いときははみ出さない */
 }
 
-/* 左の検索ボックス（虫眼鏡＋テキスト） */
-.user-list-search-box {
-    display: inline-flex;
-    align-items: center;
-    border: 2px solid #000;
-    border-radius: 4px;
-    padding: 4px 8px;
-    background-color: #fff;
-    min-height: 28px;
-    box-sizing: border-box;
+.status-list-filter-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 16px;
+  margin-bottom: 10px;
 }
 
-.user-list-search-icon {
-    font-size: 14px;
-    margin-right: 4px;
+.status-list-filter-row:last-child {
+  margin-bottom: 0;
 }
 
-.user-list-search-input {
-    border: none;
-    outline: none;
-    background-color: transparent;
-    font-size: 14px;
-    min-width: 140px;
+.status-list-filter-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
-/* 右側のセレクトボックス（勤務状況・勤務場所） */
-.filter-select {
-    padding: 4px 8px;
-    font-size: 14px;
+.status-list-filter-label {
+  font-size: 14px;
+  color: #374151;
+  white-space: nowrap;
 }
 
-/* ====== テーブル枠（外側） ====== */
+.status-list-filter-input {
+  padding: 6px 10px;
+  border-radius: 8px;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  font-size: 14px;
+  min-width: 240px;
+  background: #fff;
+}
 
+.status-list-filter-select {
+  padding: 6px 10px;
+  border-radius: 8px;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  font-size: 14px;
+  min-width: 160px;
+  background: #fff;
+}
+
+/* 件数表示 */
+.status-list-result-info {
+  margin-top: 6px;
+  font-size: 12px;
+  color: #6b7280;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.status-list-result-empty {
+  display: none; /* JSで 0件のときだけ表示 */
+  color: #ef4444;
+}
+
+/* ===== テーブル枠 ===== */
 .status-list-table-frame {
     background: #ffffff;
     box-sizing: border-box;
@@ -89,16 +117,16 @@
     overflow-x: auto;
 }
 
-/* 実際のテーブル */
+/* テーブル本体 */
 .status-list-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 14px;
-    color: #000;
-    table-layout: fixed;
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  color: #000;
+  table-layout: fixed;
 }
 
-/* ヘッダー行 */
+/* ヘッダー */
 .status-list-table thead th {
     border-bottom: 1.2px solid rgba(217, 219, 219, 0.563);
     padding: 8px 10px;
@@ -113,7 +141,7 @@
 }
 
 .status-list-table thead th:last-child {
-    border-right: none;
+  border-right: none;
 }
 
 /* データ行 */
@@ -126,9 +154,9 @@
 }
 
 .status-list-table tbody td:last-child {
-    border-right: none;
+  border-right: none;
 }
 
 .status-list-table tbody tr:last-child td {
-    border-bottom: none;
+  border-bottom: none;
 }

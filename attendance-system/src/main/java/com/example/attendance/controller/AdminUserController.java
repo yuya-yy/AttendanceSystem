@@ -18,6 +18,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.attendance.common.BusinessException;
 import com.example.attendance.entity.AttendanceRecord;
+import com.example.attendance.entity.Department;
 import com.example.attendance.entity.User;
 import com.example.attendance.service.AdminUserService;
 
@@ -65,8 +66,11 @@ public class AdminUserController {
         // Serviceから取得
         List<User> users = adminUserService.findAllUsers();
 
+        List<Department> departments = adminUserService.getActiveDepartments();
+
         // Model に詰める
         model.addAttribute("users", users);
+        model.addAttribute("departments", departments);
 
         // resources/templates/user_list.html
         return "user_list";
@@ -103,7 +107,7 @@ public class AdminUserController {
             return "redirect:/attendance";
         }
 
-        // TODO: 部署一覧・勤務場所一覧を Service から取得して model に詰める
+        // 部署一覧・勤務場所一覧を Service から取得して model に詰める
         model.addAttribute("departments", adminUserService.getActiveDepartments());
         model.addAttribute("workLocations", adminUserService.getActiveWorkLocations());
 
@@ -413,7 +417,6 @@ public class AdminUserController {
             RedirectAttributes redirectAttributes,
             Locale locale,
             Model model) {
-        // 後で userId を使って勤怠実績を取得・集計する
 
         // ★ 未ログインチェック
         Integer userId = (Integer) session.getAttribute("userId");
