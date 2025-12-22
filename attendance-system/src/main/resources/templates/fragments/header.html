@@ -40,9 +40,9 @@
                 新規ユーザー登録
             </a>
 
-            <a th:href="@{/auth/logout}" class="nav-item logout">
-                ログアウト
-            </a>
+            <form th:action="@{/auth/logout}" method="post">
+                <button type="submit" class="nav-item logout">ログアウト</button>
+            </form>
         </nav>
 
     </div>
