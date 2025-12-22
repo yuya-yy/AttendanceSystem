@@ -104,14 +104,14 @@
                 </thead>
 
                 <tbody>
-                    <tr th:each="user : ${users}" th:attr="
+                    <tr th:each="user : ${users}" th:if="${user != null}" th:attr="
               data-name=${user.displayName},
-              data-department-id=${user.department.id},
+              data-department-id=${user.department != null ? user.department.id : 0},
               data-role=${user.role == 1 ? 'ADMIN' : 'USER'},
               data-location=${user.defaultWorkLocation != null ? user.defaultWorkLocation.code : 'OTHER'}
             ">
                         <td th:text="${user.displayName}">山田 太郎</td>
-                        <td th:text="${user.department.departmentName}">開発部</td>
+                        <td th:text="${user.department != null ? user.department.departmentName : '-'}">開発部</td>
                         <td
                             th:text="${user.defaultWorkLocation != null ? user.defaultWorkLocation.locationName : '未設定'}">
                             会社

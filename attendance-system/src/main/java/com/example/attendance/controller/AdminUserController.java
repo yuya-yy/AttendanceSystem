@@ -56,7 +56,7 @@ public class AdminUserController {
         Integer userId = (Integer) session.getAttribute("userId");
         if (userId == null) {
             String message = messageSource.getMessage(
-                    "error.auth.forbidden",
+                    "error.auth.required",
                     null,
                     locale);
             redirectAttributes.addFlashAttribute("flashError", message);

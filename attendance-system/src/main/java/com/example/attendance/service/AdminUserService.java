@@ -223,7 +223,7 @@ public class AdminUserService {
                 .orElseThrow(() -> new BusinessException("error.user.notFound"));
 
         if (!user.isActive()) {
-            throw new BusinessException("error.user.deleted");
+            throw new BusinessException("error.auth.userDeleted");
         }
         return user;
     }
