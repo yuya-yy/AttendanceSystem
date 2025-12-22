@@ -60,11 +60,6 @@ public class AttendanceController {
 
         Integer role = (Integer) session.getAttribute("role");
         Integer userId = (Integer) session.getAttribute("userId");
-        if (userId == null) {
-            String msg = messageSource.getMessage("error.auth.required", null, locale);
-            redirectAttributes.addFlashAttribute("flashError", msg);
-            return "redirect:/auth/login";
-        }
 
         try {
             LocalDateTime now = LocalDateTime.now(ZoneId.of("Asia/Tokyo"));
@@ -147,11 +142,6 @@ public class AttendanceController {
             Locale locale) {
 
         Integer userId = (Integer) session.getAttribute("userId");
-        if (userId == null) {
-            String msg = messageSource.getMessage("error.auth.required", null, locale);
-            redirectAttributes.addFlashAttribute("flashError", msg);
-            return "redirect:/auth/login";
-        }
 
         try {
             attendanceService.recordClockIn(userId);
@@ -177,11 +167,6 @@ public class AttendanceController {
             Locale locale) {
 
         Integer userId = (Integer) session.getAttribute("userId");
-        if (userId == null) {
-            String msg = messageSource.getMessage("error.auth.required", null, locale);
-            redirectAttributes.addFlashAttribute("flashError", msg);
-            return "redirect:/auth/login";
-        }
 
         try {
             attendanceService.recordClockOut(userId);
@@ -203,16 +188,9 @@ public class AttendanceController {
      */
     @GetMapping("/work-location")
     public String showWorkLocationPage(HttpSession session,
-            Model model,
-            RedirectAttributes redirectAttributes,
-            Locale locale) {
+            Model model) {
 
         Integer userId = (Integer) session.getAttribute("userId");
-        if (userId == null) {
-            String msg = messageSource.getMessage("error.auth.required", null, locale);
-            redirectAttributes.addFlashAttribute("flashError", msg);
-            return "redirect:/auth/login";
-        }
 
         // ラジオに出す候補（会社／在宅／出張／客先／その他）
         model.addAttribute("workLocations", userSettingService.getActiveWorkLocations());
@@ -232,11 +210,6 @@ public class AttendanceController {
             Locale locale) {
 
         Integer userId = (Integer) session.getAttribute("userId");
-        if (userId == null) {
-            String msg = messageSource.getMessage("error.auth.required", null, locale);
-            redirectAttributes.addFlashAttribute("flashError", msg);
-            return "redirect:/auth/login";
-        }
 
         try {
             userSettingService.updateWorkLocation(userId, workLocationId);
@@ -264,11 +237,6 @@ public class AttendanceController {
             Locale locale) {
 
         Integer userId = (Integer) session.getAttribute("userId");
-        if (userId == null) {
-            String msg = messageSource.getMessage("error.auth.required", null, locale);
-            redirectAttributes.addFlashAttribute("flashError", msg);
-            return "redirect:/auth/login";
-        }
 
         try {
             // 現在の連絡先情報を取得
@@ -301,11 +269,6 @@ public class AttendanceController {
             Locale locale) {
 
         Integer userId = (Integer) session.getAttribute("userId");
-        if (userId == null) {
-            String msg = messageSource.getMessage("error.auth.required", null, locale);
-            redirectAttributes.addFlashAttribute("flashError", msg);
-            return "redirect:/auth/login";
-        }
 
         try {
             userSettingService.updateContactInfo(userId, email, phone);
@@ -347,15 +310,7 @@ public class AttendanceController {
             RedirectAttributes redirectAttributes,
             Locale locale) {
 
-        Integer userId = (Integer) session.getAttribute("userId");
         Integer departmentId = (Integer) session.getAttribute("departmentId");
-
-        // 未ログインならログイン画面へ
-        if (userId == null) {
-            String msg = messageSource.getMessage("error.auth.required", null, locale);
-            redirectAttributes.addFlashAttribute("flashError", msg);
-            return "redirect:/auth/login";
-        }
 
         // 部署IDがセッションに無いのは想定外なので、ひとまず勤怠入力画面へ戻す
         if (departmentId == null) {

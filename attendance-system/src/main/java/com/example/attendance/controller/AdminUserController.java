@@ -47,21 +47,8 @@ public class AdminUserController {
      *
      */
     @GetMapping("/users/list")
-    public String showUserListPage(HttpSession session,
-            RedirectAttributes redirectAttributes,
-            Locale locale,
+    public String showUserListPage(
             Model model) {
-
-        // ★ 未ログインチェック
-        Integer userId = (Integer) session.getAttribute("userId");
-        if (userId == null) {
-            String message = messageSource.getMessage(
-                    "error.auth.required",
-                    null,
-                    locale);
-            redirectAttributes.addFlashAttribute("flashError", message);
-            return "redirect:/auth/login";
-        }
 
         // Serviceから取得
         List<User> users = adminUserService.findAllUsers();
@@ -80,32 +67,8 @@ public class AdminUserController {
      * 新規ユーザー登録画面を表示する（GET /users/new）
      */
     @GetMapping("/users/new")
-    public String showUserNewPage(HttpSession session,
-            RedirectAttributes redirectAttributes,
-            Locale locale,
+    public String showUserNewPage(
             Model model) {
-
-        // ★ 未ログインチェック
-        Integer userId = (Integer) session.getAttribute("userId");
-        Integer role = (Integer) session.getAttribute("role");
-        if (userId == null) {
-            String message = messageSource.getMessage(
-                    "error.auth.required",
-                    null,
-                    locale);
-            redirectAttributes.addFlashAttribute("flashError", message);
-            return "redirect:/auth/login";
-        }
-
-        // ★ 権限チェック（管理者のみ）
-        if (role == null || role != 1) { // 1 = 管理者
-            String message = messageSource.getMessage(
-                    "error.auth.forbidden",
-                    null,
-                    locale);
-            redirectAttributes.addFlashAttribute("flashError", message);
-            return "redirect:/attendance";
-        }
 
         // 部署一覧・勤務場所一覧を Service から取得して model に詰める
         model.addAttribute("departments", adminUserService.getActiveDepartments());
@@ -130,29 +93,8 @@ public class AdminUserController {
             @RequestParam(name = "role", required = false) String roleValue,
             @RequestParam(name = "departmentId", required = false) String departmentIdValue,
             @RequestParam(name = "defaultWorkLocationId", required = false) String defaultWorkLocationIdValue,
-            HttpSession session,
             RedirectAttributes redirectAttributes,
             Locale locale) {
-
-        // ===== 1) 未ログイン・権限チェック =====
-        Integer sessionUserId = (Integer) session.getAttribute("userId");
-        Integer sessionRole = (Integer) session.getAttribute("role");
-        if (sessionUserId == null) {
-            String message = messageSource.getMessage(
-                    "error.auth.required",
-                    null,
-                    locale);
-            redirectAttributes.addFlashAttribute("flashError", message);
-            return "redirect:/auth/login";
-        }
-        if (sessionRole == null || sessionRole != 1) {
-            String message = messageSource.getMessage(
-                    "error.auth.forbidden",
-                    null,
-                    locale);
-            redirectAttributes.addFlashAttribute("flashError", message);
-            return "redirect:/attendance";
-        }
 
         // ===== 2) String → Integer 変換（空や変な文字列は null にする） =====
         Integer role = parseIntegerOrNull(roleValue);
@@ -242,22 +184,6 @@ public class AdminUserController {
             Locale locale) {
 
         Integer sessionUserId = (Integer) session.getAttribute("userId");
-        Integer role = (Integer) session.getAttribute("role");
-
-        // 未ログイン → ログイン画面へ
-        if (sessionUserId == null) {
-            String msg = messageSource.getMessage("error.auth.required", null, locale);
-            redirectAttributes.addFlashAttribute("flashError", msg);
-            return "redirect:/auth/login";
-        }
-
-        // 一般ユーザー → 一覧に戻す
-        if (role == null || role != 1) {
-            String msg = messageSource.getMessage("error.auth.forbidden", null, locale);
-            redirectAttributes.addFlashAttribute("flashError", msg);
-            return "redirect:/users/list";
-        }
-
         try {
             User editUser = adminUserService.findUserDetail(userId);
             model.addAttribute("editUser", editUser);
@@ -337,21 +263,6 @@ public class AdminUserController {
             Locale locale) {
 
         Integer sessionUserId = (Integer) session.getAttribute("userId");
-        Integer sessionRole = (Integer) session.getAttribute("role");
-
-        // 未ログイン
-        if (sessionUserId == null) {
-            String msg = messageSource.getMessage("error.auth.required", null, locale);
-            redirectAttributes.addFlashAttribute("flashError", msg);
-            return "redirect:/auth/login";
-        }
-
-        // 一般ユーザーは禁止
-        if (sessionRole == null || sessionRole != 1) {
-            String msg = messageSource.getMessage("error.auth.forbidden", null, locale);
-            redirectAttributes.addFlashAttribute("flashError", msg);
-            return "redirect:/users/list";
-        }
 
         try {
             // ★ String → Integer 変換（空欄は null）
@@ -413,32 +324,9 @@ public class AdminUserController {
     @GetMapping("/reports/{userId}")
     public String showWorkReportPage(
             @PathVariable("userId") Integer targetUserId, // URLの userId → targetUserId
-            HttpSession session,
             RedirectAttributes redirectAttributes,
             Locale locale,
             Model model) {
-
-        // ★ 未ログインチェック
-        Integer userId = (Integer) session.getAttribute("userId");
-        if (userId == null) {
-            String message = messageSource.getMessage(
-                    "error.auth.required",
-                    null,
-                    locale);
-            redirectAttributes.addFlashAttribute("flashError", message);
-            return "redirect:/auth/login";
-        }
-
-        // ★ 権限チェック（管理者のみ）
-        Integer role = (Integer) session.getAttribute("role");
-        if (role == null || role != 1) { // 1 = 管理者
-            String message = messageSource.getMessage(
-                    "error.auth.forbidden",
-                    null,
-                    locale);
-            redirectAttributes.addFlashAttribute("flashError", message);
-            return "redirect:/attendance";
-        }
 
         try {
 
@@ -482,21 +370,6 @@ public class AdminUserController {
             Locale locale) {
 
         Integer currentUserId = (Integer) session.getAttribute("userId");
-        Integer role = (Integer) session.getAttribute("role");
-
-        // 未ログイン → /auth/login
-        if (currentUserId == null) {
-            String msg = messageSource.getMessage("error.auth.required", null, locale);
-            redirectAttributes.addFlashAttribute("flashError", msg);
-            return "redirect:/auth/login";
-        }
-
-        // 一般ユーザーが実行 → /users/list
-        if (role == null || role != 1) {
-            String msg = messageSource.getMessage("error.auth.forbidden", null, locale);
-            redirectAttributes.addFlashAttribute("flashError", msg);
-            return "redirect:/users/list";
-        }
 
         // 自分自身を削除しようとした場合 → /users/list
         if (currentUserId.equals(targetUserId)) {
