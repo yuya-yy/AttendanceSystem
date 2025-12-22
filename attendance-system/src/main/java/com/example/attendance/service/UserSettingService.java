@@ -97,13 +97,19 @@ public class UserSettingService {
      * 連絡先登録画面（S0104）に表示するために、ログインユーザーのメールアドレス・電話番号を取得する。
      *
      * @param userId ログインユーザーID
-     * @return 連絡先情報（メールアドレス、電話番号）を含むユーザー情報。見つからない場合は null
+     * @return 連絡先情報（メールアドレス、電話番号）を含むユーザー情報。
      */
     @Transactional(readOnly = true)
     public User getContactInfo(Integer userId) {
-        return userRepository.findById(userId)
-                .filter(User::isActive) // 論理削除されていないユーザーだけ
-                .orElse(null);
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new BusinessException("error.user.notFound"));
+
+        // 論理削除されていたらエラーにする
+        if (!user.isActive()) {
+            throw new BusinessException("error.auth.userDeleted");
+        }
+
+        return user;
     }
 
     /**

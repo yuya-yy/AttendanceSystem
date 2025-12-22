@@ -5,6 +5,7 @@ import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Set;
 import java.util.Optional;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
@@ -149,7 +150,9 @@ public class AttendanceService {
 
         // user_id の Set に変換（勤務中ユーザーのID一覧）
         return unfinishedList.stream()
-                .map(record -> record.getUser().getId())
+                .map(AttendanceRecord::getUser)
+                .filter(Objects::nonNull) // 念のため null チェック
+                .map(User::getId)
                 .collect(Collectors.toSet());
     }
 

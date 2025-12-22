@@ -66,59 +66,76 @@ public class AttendanceController {
             return "redirect:/auth/login";
         }
 
-        LocalDateTime now = LocalDateTime.now(ZoneId.of("Asia/Tokyo"));
+        try {
+            LocalDateTime now = LocalDateTime.now(ZoneId.of("Asia/Tokyo"));
 
-        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("M月 d日 (E)", Locale.JAPANESE);
-        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("H:mm", Locale.JAPANESE);
+            DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("M月 d日 (E)", Locale.JAPANESE);
+            DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("H:mm", Locale.JAPANESE);
 
-        String todayDateText = now.format(dateFormatter); // 例: 12月 10日 (水)
-        String nowTimeText = now.format(timeFormatter); // 例: 14:35
+            String todayDateText = now.format(dateFormatter); // 例: 12月 10日 (水)
+            String nowTimeText = now.format(timeFormatter); // 例: 14:35
 
-        model.addAttribute("todayDateText", todayDateText);
-        model.addAttribute("nowTimeText", nowTimeText);
+            model.addAttribute("todayDateText", todayDateText);
+            model.addAttribute("nowTimeText", nowTimeText);
 
-        User loginUser = attendanceService.findUserById(userId);
-        String displayName = loginUser.getDisplayName();
-        String departmentName = loginUser.getDepartment().getDepartmentName();
+            User loginUser = attendanceService.findUserById(userId);
+            String displayName = loginUser.getDisplayName();
+            String departmentName = (loginUser.getDepartment() != null)
+                    ? loginUser.getDepartment().getDepartmentName()
+                    : "";
 
-        String roleLabel = (role != null && role == 1) ? "管理者" : "一般";
+            String roleLabel = (role != null && role == 1) ? "管理者" : "一般";
 
-        // 2) 未退勤レコード（あれば「今勤務中」）
-        AttendanceRecord latest = attendanceService.findLatestUnfinished(userId);
+            // 2) 未退勤レコード（あれば「今勤務中」）
+            AttendanceRecord latest = attendanceService.findLatestUnfinished(userId);
 
-        // 3) 直近30日分の履歴（勤務状態ラベル判定にも使う）
-        List<AttendanceRecord> recentRecords = attendanceService.getRecentRecords(userId);
+            // 3) 直近30日分の履歴（勤務状態ラベル判定にも使う）
+            List<AttendanceRecord> recentRecords = attendanceService.getRecentRecords(userId);
 
-        // 4) システム内部用フラグ（勤務中 true / 勤務外 false）
-        boolean workingNow = (latest != null);
+            // 4) システム内部用フラグ（勤務中 true / 勤務外 false）
+            boolean workingNow = (latest != null);
 
-        // 5) 画面表示用ラベル（未出勤／出勤中／退勤済み）
-        String workStatusLabel;
-        if (latest != null) {
-            // 未退勤レコードあり → 出勤中
-            workStatusLabel = "出勤中";
-        } else if (recentRecords.isEmpty()) {
-            // 履歴が1件もない → 今日は一度も出勤していない → 未出勤
-            workStatusLabel = "未出勤";
-        } else {
-            // 履歴はあるが未退勤レコードはない → 今日は出勤済み＆退勤済み
-            workStatusLabel = "退勤済み";
+            // 5) 画面表示用ラベル（未出勤／出勤中／退勤済み）
+            String workStatusLabel;
+            if (latest != null) {
+                // 未退勤レコードあり → 出勤中
+                workStatusLabel = "出勤中";
+            } else if (recentRecords.isEmpty()) {
+                // 履歴が1件もない → 今日は一度も出勤していない → 未出勤
+                workStatusLabel = "未出勤";
+            } else {
+                // 履歴はあるが未退勤レコードはない → 今日は出勤済み＆退勤済み
+                workStatusLabel = "退勤済み";
+            }
+
+            // 6) 現在の勤務場所名（S0103の設定値）
+            String currentWorkLocationName = attendanceService.getCurrentWorkLocationName(userId);
+
+            // 7) 画面に渡す値をセット
+            model.addAttribute("displayName", displayName);
+            model.addAttribute("departmentName", departmentName);
+            model.addAttribute("roleLabel", roleLabel);
+            model.addAttribute("workingNow", workingNow); // true/false（他画面ロジック用）
+            model.addAttribute("workStatusLabel", workStatusLabel); // 「未出勤／出勤中／退勤済み」
+            model.addAttribute("latestRecord", latest); // 必要ならテンプレで使える
+            model.addAttribute("currentWorkLocationName", currentWorkLocationName);
+            model.addAttribute("recentRecords", recentRecords); // テーブル表示用
+
+            return "attendance";
+
+        } catch (BusinessException e) {
+            String msg = messageSource.getMessage(e.getMessageKey(), null, locale);
+            redirectAttributes.addFlashAttribute("flashError", msg);
+
+            return "redirect:/auth/login";
+
+        } catch (Exception e) {
+
+            String msg = messageSource.getMessage("error.system.unexpected", null, locale);
+            redirectAttributes.addFlashAttribute("flashError", msg);
+
+            return "redirect:/auth/login";
         }
-
-        // 6) 現在の勤務場所名（S0103の設定値）
-        String currentWorkLocationName = attendanceService.getCurrentWorkLocationName(userId);
-
-        // 7) 画面に渡す値をセット
-        model.addAttribute("displayName", displayName);
-        model.addAttribute("departmentName", departmentName);
-        model.addAttribute("roleLabel", roleLabel);
-        model.addAttribute("workingNow", workingNow); // true/false（他画面ロジック用）
-        model.addAttribute("workStatusLabel", workStatusLabel); // 「未出勤／出勤中／退勤済み」
-        model.addAttribute("latestRecord", latest); // 必要ならテンプレで使える
-        model.addAttribute("currentWorkLocationName", currentWorkLocationName);
-        model.addAttribute("recentRecords", recentRecords); // テーブル表示用
-
-        return "attendance";
     }
 
     /**
@@ -253,11 +270,21 @@ public class AttendanceController {
             return "redirect:/auth/login";
         }
 
-        // 現在の連絡先情報を取得
-        User contactInfo = userSettingService.getContactInfo(userId);
-        model.addAttribute("contactInfo", contactInfo);
+        try {
+            // 現在の連絡先情報を取得
+            User contactInfo = userSettingService.getContactInfo(userId);
+            model.addAttribute("contactInfo", contactInfo);
 
-        return "contact";
+            return "contact";
+        } catch (BusinessException e) {
+            String msg = messageSource.getMessage(e.getMessageKey(), null, locale);
+            redirectAttributes.addFlashAttribute("flashError", msg);
+            return "redirect:/attendance";
+        } catch (Exception e) {
+            String msg = messageSource.getMessage("error.system.unexpected", null, locale);
+            redirectAttributes.addFlashAttribute("flashError", msg);
+            return "redirect:/attendance";
+        }
     }
 
     /**
@@ -336,17 +363,30 @@ public class AttendanceController {
             redirectAttributes.addFlashAttribute("flashError", msg);
             return "redirect:/attendance";
         }
+        try {
+            // 同じ部署のユーザー一覧
+            List<User> users = attendanceService.getActiveUsersInDepartment(departmentId);
 
-        // 同じ部署のユーザー一覧
-        List<User> users = attendanceService.getActiveUsersInDepartment(departmentId);
+            // 勤務中ユーザーIDの Set（clock_out IS NULL の人）
+            java.util.Set<Integer> workingUserIds = attendanceService.getWorkingUserIdsInDepartment(departmentId);
 
-        // 勤務中ユーザーIDの Set（clock_out IS NULL の人）
-        java.util.Set<Integer> workingUserIds = attendanceService.getWorkingUserIdsInDepartment(departmentId);
+            // 画面に渡す
+            model.addAttribute("users", users);
+            model.addAttribute("workingUserIds", workingUserIds);
 
-        // 画面に渡す
-        model.addAttribute("users", users);
-        model.addAttribute("workingUserIds", workingUserIds);
-        // resources/templates/status_list.html
-        return "status_list";
+            return "status_list";
+
+        } catch (BusinessException e) {
+            String msg = messageSource.getMessage(e.getMessageKey(), null, locale);
+            redirectAttributes.addFlashAttribute("flashError", msg);
+
+            return "redirect:/attendance";
+
+        } catch (Exception e) {
+            String msg = messageSource.getMessage("error.system.unexpected", null, locale);
+            redirectAttributes.addFlashAttribute("flashError", msg);
+
+            return "redirect:/attendance";
+        }
     }
 }
