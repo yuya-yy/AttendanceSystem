@@ -126,7 +126,7 @@ public class AuthController {
      * セッションを破棄して、ログイン画面へ戻す。
      * 成功時には info.auth.loggedOut のメッセージを表示する。
      */
-    @GetMapping("/logout")
+    @PostMapping("/logout")
     public String logout(HttpSession session,
             RedirectAttributes redirectAttributes,
             Locale locale) {
