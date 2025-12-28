@@ -73,7 +73,7 @@ public class AttendanceController {
             model.addAttribute("todayDateText", todayDateText);
             model.addAttribute("nowTimeText", nowTimeText);
 
-            User loginUser = attendanceService.findUserById(userId);
+            User loginUser = attendanceService.requireActiveCurrentUser(userId);
             String displayName = loginUser.getDisplayName();
             String departmentName = (loginUser.getDepartment() != null)
                     ? loginUser.getDepartment().getDepartmentName()

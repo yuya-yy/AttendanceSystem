@@ -75,5 +75,21 @@ public interface UserRepository extends JpaRepository<User, Integer> {
       """)
   List<User> findAllActive();
 
-  Optional<User> findByIdAndDeletedAtIsNull(Integer id);
+  // IDをキーに「有効なユーザー」を1件取得する。
+  @Query("""
+      SELECT user
+      FROM User user
+      WHERE user.id = :id
+        AND user.deletedAt IS NULL
+      """)
+  Optional<User> findByIdAndDeletedAtIsNull(@Param("id") Integer id);
+
+  // IDをキーに「有効なユーザー」が存在するか調べる(true/false)。
+  @Query("""
+      SELECT COUNT(user) > 0
+      FROM User user
+      WHERE user.id = :id
+        AND user.deletedAt IS NULL
+      """)
+  boolean existsByIdAndDeletedAtIsNull(@Param("id") Integer id);
 }

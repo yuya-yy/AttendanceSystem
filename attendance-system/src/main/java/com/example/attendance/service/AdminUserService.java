@@ -219,13 +219,7 @@ public class AdminUserService {
      */
     @Transactional(readOnly = true)
     public User findUserDetail(Integer userId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new BusinessException("error.user.notFound"));
-
-        if (!user.isActive()) {
-            throw new BusinessException("error.auth.userDeleted");
-        }
-        return user;
+        return requireActiveTargetUser(userId);
     }
 
     /**
@@ -323,11 +317,7 @@ public class AdminUserService {
         }
 
         // ===== 3) 対象ユーザー取得 =====
-        User user = userRepository.findById(targetUserId)
-                .orElseThrow(() -> new BusinessException("error.common.invalidParameter"));
-        if (!user.isActive()) {
-            throw new BusinessException("error.auth.userDeleted");
-        }
+        User user = requireActiveTargetUser(targetUserId);
 
         // ===== 4) ユーザー名・メール重複チェック（自分以外） =====
 
@@ -402,12 +392,7 @@ public class AdminUserService {
     public Map<YearMonth, Long> getMonthlyWorkSummary(Integer targetUserId) {
 
         // 1) 対象ユーザー存在チェック（論理削除も含めて確認）
-        if (targetUserId == null) {
-            throw new BusinessException("error.user.notFound");
-        }
-        User targetUser = userRepository.findById(targetUserId)
-                .filter(User::isActive)
-                .orElseThrow(() -> new BusinessException("error.user.notFound"));
+        User targetUser = requireActiveTargetUser(targetUserId);
 
         // 2) 集計対象期間の決定
         // 仕様：当月を含めた直近12か月分
@@ -453,9 +438,7 @@ public class AdminUserService {
     public List<AttendanceRecord> getDailyWorkRecords(Integer targetUserId) {
 
         // 対象ユーザー存在チェック（論理削除も含めて確認）
-        User targetUser = userRepository.findById(targetUserId)
-                .filter(User::isActive)
-                .orElseThrow(() -> new BusinessException("error.user.notFound"));
+        User targetUser = requireActiveTargetUser(targetUserId);
 
         // 直近365日分の期間を計算(未退勤レコードも含めている
         LocalDate toDate = LocalDate.now();
@@ -469,10 +452,18 @@ public class AdminUserService {
 
     @Transactional
     public void softDeleteUser(Integer targetUserId) {
-        User targetUser = userRepository.findByIdAndDeletedAtIsNull(targetUserId)
-                .orElseThrow(() -> new BusinessException("error.user.notFound"));
+        User targetUser = requireActiveTargetUser(targetUserId);
 
         targetUser.setDeletedAt(OffsetDateTime.now());
         userRepository.save(targetUser);
+    }
+
+    // 共通：有効なユーザーであることを確認して取得する。
+    private User requireActiveTargetUser(Integer userId) {
+        if (userId == null) {
+            throw new BusinessException("error.user.notFound");
+        }
+        return userRepository.findByIdAndDeletedAtIsNull(userId)
+                .orElseThrow(() -> new BusinessException("error.user.notFound"));
     }
 }
