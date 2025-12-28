@@ -12,20 +12,23 @@ import org.springframework.web.servlet.FlashMapManager;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.support.RequestContextUtils;
 
+import com.example.attendance.repository.UserRepository;
+
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
 /**
- * 認証・権限チェック用インターセプター
- * 主な処理内容
- * - 認証が必要なURLに対して、セッションにuserIdがあるかを確認
- * - 管理者専用URLに対して、roleが1（管理者）であるかを確認
+ * 認証・認可・削除済み判定（ログインユーザー）のインターセプター
+ * preHandle()で判定を行い、問題があればリダイレクトする。
+ * 問題なければ Controller へ進む。
+ *
  */
 @Component
 public class AuthInterceptor implements HandlerInterceptor {
 
     private final MessageSource messageSource;
+    private final UserRepository userRepository;
     private final AntPathMatcher pathMatcher = new AntPathMatcher();
 
     // 管理者のみ許可するURLパターン（必要に応じて増やす）
@@ -36,8 +39,9 @@ public class AuthInterceptor implements HandlerInterceptor {
             "/users/*/delete",
             "/reports/**");
 
-    public AuthInterceptor(MessageSource messageSource) {
+    public AuthInterceptor(MessageSource messageSource, UserRepository userRepository) {
         this.messageSource = messageSource;
+        this.userRepository = userRepository;
     }
 
     @Override
@@ -58,6 +62,14 @@ public class AuthInterceptor implements HandlerInterceptor {
         if (userId == null) {
             // 未ログイン → ログイン画面へ
             String msg = getMessage(request.getLocale(), "error.auth.required");
+            putFlashErrorAndRedirect(request, response, msg, request.getContextPath() + "/auth/login");
+            return false;
+        }
+
+        // 2-2) 削除済みユーザーならログアウト扱い
+        if (!userRepository.existsByIdAndDeletedAtIsNull(userId)) {
+            session.invalidate();
+            String msg = getMessage(request.getLocale(), "error.auth.userDeleted");
             putFlashErrorAndRedirect(request, response, msg, request.getContextPath() + "/auth/login");
             return false;
         }

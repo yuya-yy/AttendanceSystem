@@ -64,13 +64,7 @@ public class UserSettingService {
     public void updateWorkLocation(Integer userId, Integer workLocationId) {
 
         // 1) ユーザー存在チェック
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new BusinessException("error.user.notFound"));
-
-        // 論理削除されていたらエラーにする（message key はお好みで）
-        if (!user.isActive()) {
-            throw new BusinessException("error.auth.userDeleted");
-        }
+        User user = requireActiveCurrentUser(userId);
 
         // 2) 勤務場所IDは必須（今回の仕様では「必ずどれか選ぶ」想定）
         if (workLocationId == null) {
@@ -101,15 +95,7 @@ public class UserSettingService {
      */
     @Transactional(readOnly = true)
     public User getContactInfo(Integer userId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new BusinessException("error.user.notFound"));
-
-        // 論理削除されていたらエラーにする
-        if (!user.isActive()) {
-            throw new BusinessException("error.auth.userDeleted");
-        }
-
-        return user;
+        return requireActiveCurrentUser(userId);
     }
 
     /**
@@ -127,13 +113,7 @@ public class UserSettingService {
         String trimmedPhone = (phone != null) ? phone.trim() : null;
         String normalizedEmail = (trimmedEmail == null || trimmedEmail.isBlank()) ? null : trimmedEmail;
         // 1) ユーザー存在チェック
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new BusinessException("error.user.notFound"));
-
-        // 論理削除されていたらエラーにする
-        if (!user.isActive()) {
-            throw new BusinessException("error.auth.userDeleted");
-        }
+        User user = requireActiveCurrentUser(userId);
 
         // 2-3) メールアドレス形式（任意入力：入っている場合だけチェック）
         if (trimmedEmail != null && !trimmedEmail.isBlank()) {
@@ -177,6 +157,12 @@ public class UserSettingService {
         user.setUpdatedAt(OffsetDateTime.now());
 
         userRepository.save(user);
+    }
+
+    // 共通：有効なユーザーであることを確認して取得する。
+    private User requireActiveCurrentUser(Integer userId) {
+        return userRepository.findByIdAndDeletedAtIsNull(userId)
+                .orElseThrow(() -> new BusinessException("error.auth.userDeleted"));
     }
 
 }

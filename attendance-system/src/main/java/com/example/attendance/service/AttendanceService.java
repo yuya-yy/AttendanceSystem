@@ -61,8 +61,7 @@ public class AttendanceService {
     public String getCurrentWorkLocationName(Integer userId) {
 
         // ユーザー取得（存在しないのはシステム的におかしいので例外）
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new BusinessException("error.auth.loginFailed"));
+        User user = requireActiveCurrentUser(userId);
 
         // デフォルト勤務場所を参照
         WorkLocation defaultWorkLocation = user.getDefaultWorkLocation();
@@ -84,7 +83,7 @@ public class AttendanceService {
     @Transactional
     public void recordClockIn(Integer userId) {
 
-        User user = loadActiveUser(userId);
+        User user = requireActiveCurrentUser(userId);
 
         // すでに勤務中ならエラー
         Optional<AttendanceRecord> unfinishedOpt = attendanceRecordRepository.findLatestUnfinished(userId);
@@ -118,7 +117,7 @@ public class AttendanceService {
     @Transactional
     public void recordClockOut(Integer userId) {
 
-        loadActiveUser(userId); // 存在チェックだけしておく
+        requireActiveCurrentUser(userId); // 存在チェックだけしておく
 
         AttendanceRecord record = attendanceRecordRepository
                 .findLatestUnfinished(userId)
@@ -156,24 +155,9 @@ public class AttendanceService {
                 .collect(Collectors.toSet());
     }
 
-    // ===== 内部ヘルパー =====
-
-    /**
-     * 有効なユーザーを取得する。
-     * 論理削除済みなら BusinessException を投げる。
-     */
-    private User loadActiveUser(Integer userId) {
-        User user = userRepository.findById(userId)
+    // 共通：有効なユーザーであることを確認して取得する。
+    public User requireActiveCurrentUser(Integer userId) {
+        return userRepository.findByIdAndDeletedAtIsNull(userId)
                 .orElseThrow(() -> new BusinessException("error.auth.userDeleted"));
-
-        if (!user.isActive()) {
-            throw new BusinessException("error.auth.userDeleted");
-        }
-        return user;
-    }
-
-    public User findUserById(Integer userId) {
-        return userRepository.findById(userId)
-                .orElseThrow(() -> new BusinessException("error.common.invalidParameter"));
     }
 }
