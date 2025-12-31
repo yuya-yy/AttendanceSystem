@@ -2,6 +2,7 @@ package com.example.attendance.service;
 
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 import java.util.Optional;
@@ -16,17 +17,21 @@ import com.example.attendance.entity.AttendanceRecord;
 import com.example.attendance.entity.User;
 import com.example.attendance.entity.WorkLocation;
 import com.example.attendance.repository.AttendanceRecordRepository;
+import com.example.attendance.repository.DepartmentRepository;
 import com.example.attendance.repository.UserRepository;
 
 @Service
 public class AttendanceService {
 
     private final AttendanceRecordRepository attendanceRecordRepository;
+    private final DepartmentRepository departmentRepository;
     private final UserRepository userRepository;
 
     public AttendanceService(AttendanceRecordRepository attendanceRecordRepository,
+            DepartmentRepository departmentRepository,
             UserRepository userRepository) {
         this.attendanceRecordRepository = attendanceRecordRepository;
+        this.departmentRepository = departmentRepository;
         this.userRepository = userRepository;
     }
 
@@ -132,22 +137,57 @@ public class AttendanceService {
         attendanceRecordRepository.save(record);
     }
 
-    @Transactional(readOnly = true)
-    public List<User> getActiveUsersInDepartment(Integer departmentId) {
-        return userRepository.findActiveByDepartmentId(departmentId);
+    /**
+     * 勤怠状況一覧画面に渡すデータをまとめる “箱”（Service専用）
+     * - users：表示用ユーザー一覧（並び順込み）
+     * - workingUserIds：勤務中判定用ユーザーID集合
+     */
+    public static record DepartmentStatusView(List<User> users, Set<Integer> workingUserIds) {
+        public boolean isWorking(Integer userId) {
+            return workingUserIds != null && workingUserIds.contains(userId);
+        }
     }
 
     /**
-     * 指定部署で「勤務中（未退勤）」のユーザーID一覧を取得する。
-     * attendance_records.clock_out IS NULL となっているレコードを対象にする。
+     * 部署の勤怠状況（表示用）を取得する。
+     * 「勤務中 → 勤務外 → ID昇順」に並び替えた users と、workingUserIds をまとめて返す。
      */
     @Transactional(readOnly = true)
-    public Set<Integer> getWorkingUserIdsInDepartment(Integer departmentId) {
+    public DepartmentStatusView getDepartmentCurrentStatus(Integer departmentId) {
 
-        // 部署内の未退勤レコード一覧を取得
+        // 部署の存在チェック
+        if (!departmentRepository.existsByIdAndDeletedAtIsNull(departmentId)) {
+            throw new BusinessException("error.user.department.notFound");
+        }
+
+        // ① 部署の有効ユーザー一覧（DBアクセス）
+        List<User> users = userRepository.findActiveByDepartmentId(departmentId);
+
+        // ② 勤務中ユーザーIDの Set（DBアクセス）
+        Set<Integer> workingUserIds = getWorkingUserIdsInDepartment(departmentId);
+
+        // ③ 勤務中 → 勤務外 → ID昇順 にソート
+        users.sort(
+                Comparator
+                        .comparing((User user) -> workingUserIds.contains(user.getId()))
+                        .reversed()
+                        .thenComparing(User::getId));
+
+        // ④ “箱”に詰めて返す
+        return new DepartmentStatusView(users, workingUserIds);
+
+    }
+
+    /**
+     * 指定部署で「勤務中（未退勤）」のユーザーID一覧を取得する（内部用）。
+     * attendance_records.clock_out IS NULL のレコードを対象。
+     *
+     * ※ Controller から直接呼ばせないため internal にしている
+     */
+    private Set<Integer> getWorkingUserIdsInDepartment(Integer departmentId) {
+
         List<AttendanceRecord> unfinishedList = attendanceRecordRepository.findUnfinishedByDepartmentId(departmentId);
 
-        // user_id の Set に変換（勤務中ユーザーのID一覧）
         return unfinishedList.stream()
                 .map(AttendanceRecord::getUser)
                 .filter(Objects::nonNull) // 念のため null チェック

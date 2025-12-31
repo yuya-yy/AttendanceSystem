@@ -107,7 +107,6 @@ public class AuthInterceptor implements HandlerInterceptor {
         // ログイン画面は除外（ここを除外しないと無限リダイレクト）
         if (pathMatcher.match("/auth/login", path))
             return true;
-
         // 例外：エラーページ
         if (pathMatcher.match("/error", path))
             return true;
