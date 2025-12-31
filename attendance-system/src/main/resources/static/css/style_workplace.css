@@ -29,9 +29,37 @@
 .form-card-title {
     font-size: 18px;
     font-weight: 600;
-    margin: 0 0 24px 0;
+    margin: 0;
     padding-left: 8px;
     border-left: 4px solid var(--color-accent);
+}
+
+/* =========================
+   メッセージ枠：高さを確保して表を動かさない
+========================= */
+.workplace-message-area {
+  margin-top: 10px;
+  height: 25px;          /* ← ここが「確保する高さ」 */
+  max-width: 720px;      /* 好みで。長文で横に伸びすぎるのを防ぐ */
+}
+
+/* エラー時 */
+.workplace-message-box.is-error {
+  background: #FEF2F2;
+  border-color: #FCA5A5;
+  color: #B91C1C;
+}
+
+/* 情報時 */
+.workplace-message-box.is-info {
+  background: #EFF6FF;
+  border-color: #93C5FD;
+  color: #1D4ED8;
+}
+
+/* 何もない時：枠だけ確保して表示は消す（テーブルは動かない） */
+.workplace-message-box.is-empty {
+  visibility: hidden;
 }
 
 /* ====== フォーム部品（ラベル・入力欄など） ====== */

@@ -29,11 +29,26 @@
 .form-card-title {
     font-size: 18px;
     font-weight: 600;
-    margin: 0 0 24px 0;
+    margin: 0;
     padding-left: 8px;
     border-left: 4px solid var(--color-accent);
 }
 
+.user-edit-message-area {
+  margin-top: 10px;
+  height: 25px;          /* ← ここが「確保する高さ」 */
+  max-width: 350px;      /* 好みで。長文で横に伸びすぎるのを防ぐ */
+}
+
+.user-edit-message-box.is-error {
+  background: #FEF2F2;
+  border-color: #FCA5A5;
+  color: #B91C1C;
+}
+
+.user-edit-message-box.is-empty {
+  visibility: hidden;
+}
 /* ====== フォーム部品（ラベル・入力） ====== */
 
 .form-field-block {
@@ -44,7 +59,7 @@
     display: block;
     font-size: 14px;
     font-weight: 500;
-    margin-bottom: 6px;
+    margin: 3px 0 6px;
 }
 
 .form-field-input {
@@ -125,9 +140,10 @@
 
 .form-button-row {
     margin-top: 24px;
-    display: flex;
-    justify-content: flex-end;
     gap: 10px;
+    display: flex;              /* 追加：フレックスレイアウトにする */
+    justify-content: center;    /* 追加：横方向で中央寄せ */
+    align-items: center;      /* 追加：縦方向で中央寄せ */
 }
 
 /* メインボタン（更新）とキャンセル共通 */

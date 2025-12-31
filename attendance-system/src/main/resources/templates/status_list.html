@@ -16,60 +16,66 @@
     <div th:replace="~{fragments/header :: header('status')}"></div>
 
     <main class="status-list-main">
+        <div class="status-list-top">
+            <!-- タイトル行 -->
+            <div class="status-list-top-left">
+                <div class="page-title">勤怠状況一覧</div>
 
-        <!-- タイトル行 -->
-        <div class="status-list-title-row">
-            <div class="page-title">勤怠状況一覧</div>
+                <div class="status-list-message-area">
+                    <div class="status-list-message-box"
+                        th:classappend="${flashError} ? ' is-error' : (${flashInfo} ? ' is-info' : ' is-empty')"
+                        th:text="${flashError != null ? flashError : (flashInfo != null ? flashInfo : '')}">
+                    </div>
+                </div>
+            </div>
 
-            <!-- ※部署名を表示したい場合は、Controllerで model に deptName 等を入れて th:text にしてください -->
-            <div class="status-list-dept-badge" title="表示中の部署">
-                〇〇部署
+            <div class="status-list-top-right">
+                <!-- 検索・絞り込み -->
+                <section class="status-list-filter-section">
+                    <!-- 1段目：名前検索 -->
+                    <div class="status-list-filter-row">
+                        <div class="status-list-filter-group">
+                            <span class="status-list-filter-label">ユーザー検索</span>
+                            <!-- ★JSが参照する id はそのまま -->
+                            <input id="keywordInput" type="text" class="status-list-filter-input"
+                                placeholder="氏名を入力してください">
+                        </div>
+                    </div>
+
+                    <!-- 2段目：勤務状況・勤務場所 -->
+                    <div class="status-list-filter-row">
+                        <div class="status-list-filter-group">
+                            <span class="status-list-filter-label">勤務状況　
+                            </span>
+                            <select id="statusFilter" class="status-list-filter-select">
+                                <option value="ALL">すべて</option>
+                                <option value="WORKING">勤務中のみ</option>
+                                <option value="OFF">勤務外のみ</option>
+                            </select>
+                        </div>
+
+                        <div class="status-list-filter-group">
+                            <span class="status-list-filter-label">勤務場所</span>
+                            <select id="locationFilter" class="status-list-filter-select">
+                                <option value="ALL">すべて</option>
+                                <option value="OFFICE">会社</option>
+                                <option value="HOME">在宅</option>
+                                <option value="TRIP">出張</option>
+                                <option value="CLIENT">客先</option>
+                                <option value="OTHER">その他</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- 件数＆0件メッセージ -->
+                    <div class="status-list-result-info">
+                        <!-- ★JSが参照する id はそのまま -->
+                        <span id="resultCount">0件表示中</span>
+                        <span id="resultEmpty" class="status-list-result-empty">条件に一致するユーザーがいません。</span>
+                    </div>
+                </section>
             </div>
         </div>
-
-        <!-- 検索・絞り込み -->
-        <section class="status-list-filter-section">
-            <!-- 1段目：名前検索 -->
-            <div class="status-list-filter-row">
-                <div class="status-list-filter-group">
-                    <span class="status-list-filter-label">ユーザー検索</span>
-                    <!-- ★JSが参照する id はそのまま -->
-                    <input id="keywordInput" type="text" class="status-list-filter-input" placeholder="氏名を入力してください">
-                </div>
-            </div>
-
-            <!-- 2段目：勤務状況・勤務場所 -->
-            <div class="status-list-filter-row">
-                <div class="status-list-filter-group">
-                    <span class="status-list-filter-label">勤務状況　
-                    </span>
-                    <select id="statusFilter" class="status-list-filter-select">
-                        <option value="ALL">すべて</option>
-                        <option value="WORKING">勤務中のみ</option>
-                        <option value="OFF">勤務外のみ</option>
-                    </select>
-                </div>
-
-                <div class="status-list-filter-group">
-                    <span class="status-list-filter-label">勤務場所</span>
-                    <select id="locationFilter" class="status-list-filter-select">
-                        <option value="ALL">すべて</option>
-                        <option value="OFFICE">会社</option>
-                        <option value="HOME">在宅</option>
-                        <option value="TRIP">出張</option>
-                        <option value="CLIENT">客先</option>
-                        <option value="OTHER">その他</option>
-                    </select>
-                </div>
-            </div>
-
-            <!-- 件数＆0件メッセージ -->
-            <div class="status-list-result-info">
-                <!-- ★JSが参照する id はそのまま -->
-                <span id="resultCount">0件表示中</span>
-                <span id="resultEmpty" class="status-list-result-empty">条件に一致するユーザーがいません。</span>
-            </div>
-        </section>
 
         <!-- テーブル枠 -->
         <!-- ※JSがこの id を使っている可能性があるので維持 -->

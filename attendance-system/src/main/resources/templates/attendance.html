@@ -34,10 +34,7 @@
         </div>
 
         <!-- メッセージ表示（エラー／情報） -->
-        <div class="flash-messages">
-            <div th:if="${flashError}" class="alert-error" th:text="${flashError}"></div>
-            <div th:if="${flashInfo}" class="alert-info" th:text="${flashInfo}"></div>
-        </div>
+
 
         <!-- 左右２カラム -->
         <div class="attendance-user-block">
@@ -114,6 +111,12 @@
 
             <!-- 右ブロック：ユーザー情報＋現在時刻＋出勤/退勤ボタン -->
             <aside class="attendance-side">
+                <div class="attendance-message-area">
+                    <div class="attendance-message-box"
+                        th:classappend="${flashError} ? ' is-error' : (${flashInfo} ? ' is-info' : ' is-empty')"
+                        th:text="${flashError != null ? flashError : (flashInfo != null ? flashInfo : '')}">
+                    </div>
+                </div>
                 <!-- 日付と現在時刻（サーバーで用意した文字列を表示する想定） -->
                 <div class="attendance-clock-block">
                     <div class="clock-date" th:text="${todayDateText}">

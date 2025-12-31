@@ -15,12 +15,14 @@
 
     <main class="page-main">
 
-        <section class="form-card wide">
+        <section class="form-card">
             <h2 class="form-card-title">ユーザー情報編集</h2>
 
             <!-- エラーメッセージ -->
-            <div th:if="${flashError}" class="form-error-message">
-                <span th:text="${flashError}"></span>
+            <div class="user-edit-message-area">
+                <div class="user-edit-message-box" th:classappend="${flashError} ? ' is-error' : ' is-empty'"
+                    th:text="${flashError != null ? flashError : ''}">
+                </div>
             </div>
 
             <!-- 情報メッセージ（必要なら） -->
