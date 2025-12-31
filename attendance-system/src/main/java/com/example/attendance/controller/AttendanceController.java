@@ -215,7 +215,7 @@ public class AttendanceController {
             userSettingService.updateWorkLocation(userId, workLocationId);
             String msg = messageSource.getMessage("info.workLocation.saved", null, locale);
             redirectAttributes.addFlashAttribute("flashInfo", msg);
-            return "redirect:/attendance";
+            return "redirect:/attendance/work-location";
         } catch (BusinessException e) {
             String msg = messageSource.getMessage(e.getMessageKey(), null, locale);
             redirectAttributes.addFlashAttribute("flashError", msg);

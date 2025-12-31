@@ -9,11 +9,96 @@
   flex-direction: column;
   padding: 16px 24px 40px;
   box-sizing: border-box;
-  gap: 16px;
   font-size: 14px;
   line-height: 1.5;
   color: #000;
 }
+
+/* =========================
+   上段：左（タイトル＋メッセージ）／右（フィルター）
+========================= */
+.user-list-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+/* 左側は伸びてもOK（右のフィルターを押し出さない範囲で） */
+.user-list-top-left {
+  flex: 1 1 auto;
+  min-width: 280px;
+}
+
+/* 右側はフィルターの幅に合わせる */
+.user-list-top-right {
+  flex: 0 0 auto;
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* フィルターは上段に入ったので margin-bottom は不要 */
+.user-list-filter-section {
+  margin-bottom: 0;
+}
+
+/* =========================
+   メッセージ枠：高さを確保して表を動かさない
+========================= */
+.user-list-message-area {
+  margin-top: 30px;
+  height: 56px;          /* ← ここが「確保する高さ」 */
+  max-width: 720px;      /* 好みで。長文で横に伸びすぎるのを防ぐ */
+}
+
+.user-list-message-box {
+  height: 100%;
+  border-radius: 12px;
+  padding: 10px 12px;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  border: 1px solid rgba(0,0,0,0.08);
+  background: #f9fafb;
+  color: #111827;
+}
+
+/* エラー時 */
+.user-list-message-box.is-error {
+  background: #FEF2F2;
+  border-color: #FCA5A5;
+  color: #B91C1C;
+}
+
+/* 情報時 */
+.user-list-message-box.is-info {
+  background: #EFF6FF;
+  border-color: #93C5FD;
+  color: #1D4ED8;
+}
+
+/* 何もない時：枠だけ確保して表示は消す（テーブルは動かない） */
+.user-list-message-box.is-empty {
+  visibility: hidden;
+}
+
+/* =========================
+   画面が狭いときは上下に並べる（スマホ・小さい画面対策）
+========================= */
+@media (max-width: 900px) {
+  .user-list-top {
+    flex-direction: column;
+  }
+
+  .user-list-top-right {
+    justify-content: flex-start;
+  }
+
+  .user-list-filter-section {
+    width: 100%;
+  }
+}
+
 
 /* ===== 検索・絞り込み（フィルター） ===== */
 .user-list-filter-section {

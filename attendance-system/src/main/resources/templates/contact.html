@@ -18,8 +18,12 @@
             <h2 class="form-card-title">連絡先登録</h2>
 
             <!-- フラッシュメッセージ（エラー／情報） -->
-            <div th:if="${flashError}" class="alert-error" th:text="${flashError}"></div>
-            <div th:if="${flashInfo}" class="alert-info" th:text="${flashInfo}"></div>
+            <div class="contact-message-area">
+                <div class="contact-message-box"
+                    th:classappend="${flashError} ? ' is-error' : (${flashInfo} ? ' is-info' : ' is-empty')"
+                    th:text="${flashError != null ? flashError : (flashInfo != null ? flashInfo : '')}">
+                </div>
+            </div>
 
             <form th:action="@{/attendance/contact}" method="post">
 

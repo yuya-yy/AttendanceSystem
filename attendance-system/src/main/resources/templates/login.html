@@ -23,13 +23,11 @@
             <h2 class="form-card-title">ログイン</h2>
 
             <!-- フラッシュメッセージ（エラー） -->
-            <div th:if="${flashError}" class="flash-message flash-error">
-                <p th:text="${flashError}">エラーメッセージが入ります</p>
-            </div>
-
-            <!-- フラッシュメッセージ（情報） -->
-            <div th:if="${flashInfo}" class="flash-message flash-info">
-                <p th:text="${flashInfo}">お知らせメッセージが入ります</p>
+            <div class="login-message-area">
+                <div class="login-message-box"
+                    th:classappend="${flashError} ? ' is-error' : (${flashInfo} ? ' is-info' : ' is-empty')"
+                    th:text="${flashError != null ? flashError : (flashInfo != null ? flashInfo : '')}">
+                </div>
             </div>
 
             <!-- ログインフォーム -->
@@ -57,7 +55,7 @@
                 <!-- ボタン -->
                 <div class="form-button-row">
                     <button type="submit" class="primary-action-button">
-                        ログインする →
+                        ログインする
                     </button>
                 </div>
 

@@ -30,12 +30,11 @@
 }
 
 /* タイトル（「ログイン」）の位置と余白 */
-.page-title {
+.form-card-title {
     font-size: 22px;
     font-weight: 600;
     letter-spacing: 0.06em;
-    margin: 0 0 24px 0;
-    text-align: center;
+    margin: 0;
 }
 
 /* --------------------------------------
@@ -59,13 +58,21 @@
 }
 
 /* カード内のエラーメッセージがあれば上に出す想定 */
-.login-error-message {
-    margin: 0 0 16px 0;
-    padding: 8px 10px;
-    border-radius: 8px;
-    background-color: var(--color-danger);
-    color: #111827;
-    font-size: var(--font-size-sm);
+.login-message-area {
+    font-size: 14px;
+  margin-top: 10px;
+  height: 25px;          /* ← ここが「確保する高さ」 */
+  max-width: 350px;      /* 好みで。長文で横に伸びすぎるのを防ぐ */
+}
+
+.login-message-box.is-error {
+  background: #FEF2F2;
+  border-color: #FCA5A5;
+  color: #B91C1C;
+}
+
+.login-message-box.is-empty {
+  visibility: hidden;
 }
 
 /* --------------------------------------
@@ -83,6 +90,7 @@
     display: block;
     font-size: var(--font-size-sm);
     color: var(--color-text-muted);
+    margin-top: 5px;
     margin-bottom: 6px;
 }
 

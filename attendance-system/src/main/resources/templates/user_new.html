@@ -15,12 +15,14 @@
 
     <main class="page-main">
 
-        <section class="form-card wide">
+        <section class="form-card">
             <h2 class="form-card-title">新規ユーザー登録</h2>
 
             <!-- ★ 業務エラー（BusinessException）のメッセージを表示 -->
-            <div th:if="${flashError}" class="form-error-message">
-                <span th:text="${flashError}"></span>
+            <div class="user-new-message-area">
+                <div class="user-new-message-box" th:classappend="${flashError} ? ' is-error' : ' is-empty'"
+                    th:text="${flashError != null ? flashError : ''}">
+                </div>
             </div>
 
             <!-- ★ POST先を /users/new に変更 -->

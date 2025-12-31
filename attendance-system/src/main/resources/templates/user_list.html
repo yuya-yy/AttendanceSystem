@@ -17,68 +17,81 @@
 
     <main class="user-list-main">
 
-        <!-- タイトル（page-title は base.css の共通デザインを使う想定） -->
-        <div class="page-title">ユーザー情報一覧</div>
+        <!-- 上段：左（タイトル＋メッセージ）／右（フィルター） -->
+        <div class="user-list-top">
 
-        <!-- フラッシュメッセージ（エラー／情報） -->
-        <div th:if="${flashError}" class="alert-error" th:text="${flashError}"></div>
-        <div th:if="${flashInfo}" class="alert-info" th:text="${flashInfo}"></div>
+            <!-- 左ブロック -->
+            <div class="user-list-top-left">
+                <div class="page-title">ユーザー情報一覧</div>
 
-        <!-- 検索・絞り込み -->
-        <section class="user-list-filter-section">
-            <!-- 1段目：名前検索 -->
-            <div class="user-list-filter-row">
-                <div class="user-list-filter-group">
-                    <span class="user-list-filter-label">ユーザー検索</span>
-                    <!-- ★JSが参照する id はそのまま -->
-                    <input id="keywordInput" type="text" class="user-list-filter-input" placeholder="氏名を入力してください">
-                </div>
-
-                <div class="user-list-filter-group">
-                    <span class="user-list-filter-label">権限</span>
-                    <select id="roleFilter" class="user-list-filter-select">
-                        <option value="ALL">すべて</option>
-                        <option value="ADMIN">管理者のみ</option>
-                        <option value="USER">一般のみ</option>
-                    </select>
+                <!-- エラー/情報メッセージ枠（常に高さ確保して、表が上下に動かないようにする） -->
+                <div class="user-list-message-area">
+                    <div class="user-list-message-box"
+                        th:classappend="${flashError} ? ' is-error' : (${flashInfo} ? ' is-info' : ' is-empty')"
+                        th:text="${flashError != null ? flashError : (flashInfo != null ? flashInfo : '')}">
+                    </div>
                 </div>
             </div>
 
-            <!-- 2段目：所属部署・権限・勤務場所 -->
-            <div class="user-list-filter-row">
-                <div class="user-list-filter-group">
-                    <span class="user-list-filter-label">所属部署　</span>
-                    <select id="departmentFilter" class="user-list-filter-select">
-                        <option value="ALL">すべて</option>
-                        <option th:each="dept : ${departments}" th:value="${dept.id}" th:text="${dept.departmentName}">
-                            開発部
-                        </option>
-                    </select>
-                </div>
+            <div class="user-list-top-right">
+                <!-- 検索・絞り込み -->
+                <section class="user-list-filter-section">
+                    <!-- 1段目：名前検索 -->
+                    <div class="user-list-filter-row">
+                        <div class="user-list-filter-group">
+                            <span class="user-list-filter-label">ユーザー検索</span>
+                            <!-- ★JSが参照する id はそのまま -->
+                            <input id="keywordInput" type="text" class="user-list-filter-input"
+                                placeholder="氏名を入力してください">
+                        </div>
+
+                        <div class="user-list-filter-group">
+                            <span class="user-list-filter-label">権限</span>
+                            <select id="roleFilter" class="user-list-filter-select">
+                                <option value="ALL">すべて</option>
+                                <option value="ADMIN">管理者のみ</option>
+                                <option value="USER">一般のみ</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- 2段目：所属部署・権限・勤務場所 -->
+                    <div class="user-list-filter-row">
+                        <div class="user-list-filter-group">
+                            <span class="user-list-filter-label">所属部署　</span>
+                            <select id="departmentFilter" class="user-list-filter-select">
+                                <option value="ALL">すべて</option>
+                                <option th:each="dept : ${departments}" th:value="${dept.id}"
+                                    th:text="${dept.departmentName}">
+                                    開発部
+                                </option>
+                            </select>
+                        </div>
 
 
 
-                <div class="user-list-filter-group">
-                    <span class="user-list-filter-label">勤務場所</span>
-                    <select id="locationFilter" class="user-list-filter-select">
-                        <option value="ALL">すべて</option>
-                        <option value="OFFICE">会社</option>
-                        <option value="HOME">在宅</option>
-                        <option value="TRIP">出張</option>
-                        <option value="CLIENT">客先</option>
-                        <option value="OTHER">その他</option>
-                    </select>
-                </div>
+                        <div class="user-list-filter-group">
+                            <span class="user-list-filter-label">勤務場所</span>
+                            <select id="locationFilter" class="user-list-filter-select">
+                                <option value="ALL">すべて</option>
+                                <option value="OFFICE">会社</option>
+                                <option value="HOME">在宅</option>
+                                <option value="TRIP">出張</option>
+                                <option value="CLIENT">客先</option>
+                                <option value="OTHER">その他</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- 件数＆0件メッセージ（テーブル外） -->
+                    <div class="user-list-result-info">
+                        <!-- ★JSが参照する id はそのまま -->
+                        <span id="resultCount">0件表示中</span>
+                        <span id="resultEmpty" class="user-list-result-empty">条件に一致するユーザーがいません。</span>
+                    </div>
+                </section>
             </div>
-
-            <!-- 件数＆0件メッセージ（テーブル外） -->
-            <div class="user-list-result-info">
-                <!-- ★JSが参照する id はそのまま -->
-                <span id="resultCount">0件表示中</span>
-                <span id="resultEmpty" class="user-list-result-empty">条件に一致するユーザーがいません。</span>
-            </div>
-        </section>
-
+        </div>
         <!-- 一覧テーブル枠 -->
         <div class="user-list-table-frame">
             <table id="userTable" class="user-list-table">
