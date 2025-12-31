@@ -23,4 +23,7 @@ public interface DepartmentRepository extends JpaRepository<Department, Integer>
             ORDER BY department.id ASC
             """)
     List<Department> findAllActive();
+
+    // 有効な部署が存在するか確認する。
+    boolean existsByIdAndDeletedAtIsNull(Integer id);
 }

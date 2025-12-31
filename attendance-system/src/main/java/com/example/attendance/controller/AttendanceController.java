@@ -319,16 +319,12 @@ public class AttendanceController {
             return "redirect:/attendance";
         }
         try {
-            // 同じ部署のユーザー一覧
-            List<User> users = attendanceService.getActiveUsersInDepartment(departmentId);
+            // ★ Service を1回呼ぶだけ（手順はServiceに隠す）
+            AttendanceService.DepartmentStatusView status = attendanceService.getDepartmentCurrentStatus(departmentId);
 
-            // 勤務中ユーザーIDの Set（clock_out IS NULL の人）
-            java.util.Set<Integer> workingUserIds = attendanceService.getWorkingUserIdsInDepartment(departmentId);
-
-            // 画面に渡す
-            model.addAttribute("users", users);
-            model.addAttribute("workingUserIds", workingUserIds);
-
+            // 画面に箱ごと渡す
+            model.addAttribute("status", status);
+            // resources/templates/status_list.html
             return "status_list";
 
         } catch (BusinessException e) {

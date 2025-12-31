@@ -92,15 +92,15 @@
                 </thead>
 
                 <tbody>
-                    <tr th:each="user : ${users}" th:if="${user != null}" th:attr="
-                data-name=${user.displayName},
-                data-status=${workingUserIds != null and workingUserIds.contains(user.id) ? 'WORKING' : 'OFF'},
-                data-location=${user.defaultWorkLocation != null ? user.defaultWorkLocation.code : 'OTHER'}
-              ">
+                    <tr th:each="user : ${status.users}" th:if="${user != null}"
+                        th:with="working=${status.isWorking(user.id)}" th:attr="data-name=${user.displayName},
+                            data-status=${working ? 'WORKING' : 'OFF'},
+                            data-location=${user.defaultWorkLocation != null ? user.defaultWorkLocation.code : 'OTHER'}
+                        ">
                         <td th:text="${user.displayName}">名前</td>
 
                         <!-- ★Thymeleafの三項演算子は「式の中で」書く -->
-                        <td th:text="${workingUserIds != null and workingUserIds.contains(user.id) ? '勤務中' : '勤務外'}">
+                        <td th:text="${working ? '勤務中' : '勤務外'}">
                             勤務状況
                         </td>
 
