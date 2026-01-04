@@ -1,7 +1,7 @@
 package com.example.attendance.controller;
 
 import java.util.Locale;
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -62,7 +62,8 @@ public class AttendanceController {
         Integer userId = (Integer) session.getAttribute("userId");
 
         try {
-            LocalDateTime now = LocalDateTime.now(ZoneId.of("Asia/Tokyo"));
+
+            ZonedDateTime now = ZonedDateTime.now(ZoneId.of("Asia/Tokyo"));
 
             DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("M月 d日 (E)", Locale.JAPANESE);
             DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("H:mm", Locale.JAPANESE);
@@ -72,6 +73,9 @@ public class AttendanceController {
 
             model.addAttribute("todayDateText", todayDateText);
             model.addAttribute("nowTimeText", nowTimeText);
+
+            // JS用（リアルタイム時計の基準）
+            model.addAttribute("serverEpochMillis", now.toInstant().toEpochMilli());
 
             User loginUser = attendanceService.requireActiveCurrentUser(userId);
             String displayName = loginUser.getDisplayName();

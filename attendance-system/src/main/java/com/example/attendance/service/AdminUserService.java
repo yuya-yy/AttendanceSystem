@@ -194,7 +194,7 @@ public class AdminUserService {
         String passwordHash = passwordEncoder.encode(rawPassword);
 
         // ===== 8) User エンティティを作成 =====
-        OffsetDateTime now = OffsetDateTime.now();
+        OffsetDateTime now = OffsetDateTime.now(ZoneId.of("Asia/Tokyo"));
 
         User user = new User();
         user.setUsername(trimmedUsername);
@@ -441,7 +441,7 @@ public class AdminUserService {
         User targetUser = requireActiveTargetUser(targetUserId);
 
         // 直近365日分の期間を計算(未退勤レコードも含めている
-        LocalDate toDate = LocalDate.now();
+        LocalDate toDate = LocalDate.now(ZoneId.of("Asia/Tokyo"));
         LocalDate fromDate = toDate.minusDays(364);
 
         return attendanceRecordRepository.findByUserIdBetweenDates(
@@ -454,7 +454,7 @@ public class AdminUserService {
     public void softDeleteUser(Integer targetUserId) {
         User targetUser = requireActiveTargetUser(targetUserId);
 
-        targetUser.setDeletedAt(OffsetDateTime.now());
+        targetUser.setDeletedAt(OffsetDateTime.now(ZoneId.of("Asia/Tokyo")));
         userRepository.save(targetUser);
     }
 
