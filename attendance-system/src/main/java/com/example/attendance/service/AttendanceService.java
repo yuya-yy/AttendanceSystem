@@ -2,6 +2,7 @@ package com.example.attendance.service;
 
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
+import java.time.ZoneId;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
@@ -51,7 +52,7 @@ public class AttendanceService {
      */
     @Transactional(readOnly = true)
     public List<AttendanceRecord> getRecentRecords(Integer userId) {
-        LocalDate today = LocalDate.now();
+        LocalDate today = LocalDate.now(ZoneId.of("Asia/Tokyo"));
         LocalDate from = today.minusDays(29); // 当日を含めて30日分
 
         return attendanceRecordRepository.findByUserIdBetweenDates(userId, from, today);
@@ -100,7 +101,7 @@ public class AttendanceService {
         // 現在の勤務場所名（未設定なら「未設定」）
         String workLocationName = getCurrentWorkLocationName(userId);
 
-        OffsetDateTime now = OffsetDateTime.now();
+        OffsetDateTime now = OffsetDateTime.now(ZoneId.of("Asia/Tokyo"));
 
         AttendanceRecord record = new AttendanceRecord();
         record.setUser(user);
@@ -128,7 +129,7 @@ public class AttendanceService {
                 .findLatestUnfinished(userId)
                 .orElseThrow(() -> new BusinessException("error.attendance.alreadyClockOut"));
 
-        OffsetDateTime now = OffsetDateTime.now();
+        OffsetDateTime now = OffsetDateTime.now(ZoneId.of("Asia/Tokyo"));
 
         // ★ ハイブリッド型：退勤処理も Entity 側に任せる
         record.finishWork(now);

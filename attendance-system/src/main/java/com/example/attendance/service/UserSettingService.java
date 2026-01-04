@@ -1,6 +1,7 @@
 package com.example.attendance.service;
 
 import java.time.OffsetDateTime;
+import java.time.ZoneId;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -81,7 +82,7 @@ public class UserSettingService {
 
         // 4) ユーザーに勤務場所を紐づけて保存
         user.setDefaultWorkLocation(workLocation);
-        user.setUpdatedAt(OffsetDateTime.now());
+        user.setUpdatedAt(OffsetDateTime.now(ZoneId.of("Asia/Tokyo")));
 
         userRepository.save(user);
     }
@@ -154,7 +155,7 @@ public class UserSettingService {
         // 2) 連絡先情報の更新
         user.setEmail(normalizedEmail);
         user.setPhone(normalizedPhone);
-        user.setUpdatedAt(OffsetDateTime.now());
+        user.setUpdatedAt(OffsetDateTime.now(ZoneId.of("Asia/Tokyo")));
 
         userRepository.save(user);
     }

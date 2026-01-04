@@ -118,7 +118,8 @@
                     </div>
                 </div>
                 <!-- 日付と現在時刻（サーバーで用意した文字列を表示する想定） -->
-                <div class="attendance-clock-block">
+                <div class="attendance-clock-block" id="attendanceClock"
+                    th:attr="data-server-epoch=${serverEpochMillis}">
                     <div class="clock-date" th:text="${todayDateText}">
                         10月 22日 (水)
                     </div>
@@ -147,6 +148,7 @@
                 </div>
 
             </aside>
+            <script th:src="@{/js/attendance-clock.js}"></script>
         </div>
 
     </main>
