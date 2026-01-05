@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.example.attendance.common.BusinessException;
 import com.example.attendance.entity.AttendanceRecord;
+import com.example.attendance.entity.Department;
 import com.example.attendance.entity.User;
 import com.example.attendance.entity.WorkLocation;
 import com.example.attendance.repository.AttendanceRecordRepository;
@@ -143,7 +144,7 @@ public class AttendanceService {
      * - users：表示用ユーザー一覧（並び順込み）
      * - workingUserIds：勤務中判定用ユーザーID集合
      */
-    public static record DepartmentStatusView(List<User> users, Set<Integer> workingUserIds) {
+    public static record DepartmentStatusView(String departmentName, List<User> users, Set<Integer> workingUserIds) {
         public boolean isWorking(Integer userId) {
             return workingUserIds != null && workingUserIds.contains(userId);
         }
@@ -156,10 +157,11 @@ public class AttendanceService {
     @Transactional(readOnly = true)
     public DepartmentStatusView getDepartmentCurrentStatus(Integer departmentId) {
 
-        // 部署の存在チェック
-        if (!departmentRepository.existsByIdAndDeletedAtIsNull(departmentId)) {
-            throw new BusinessException("error.user.department.notFound");
-        }
+        // ★部署名を取得（存在チェックも兼ねる）
+        Department department = departmentRepository.findByIdAndDeletedAtIsNull(departmentId)
+                .orElseThrow(() -> new BusinessException("error.user.department.notFound"));
+
+        String departmentName = department.getDepartmentName();
 
         // ① 部署の有効ユーザー一覧（DBアクセス）
         List<User> users = userRepository.findActiveByDepartmentId(departmentId);
@@ -175,7 +177,7 @@ public class AttendanceService {
                         .thenComparing(User::getId));
 
         // ④ “箱”に詰めて返す
-        return new DepartmentStatusView(users, workingUserIds);
+        return new DepartmentStatusView(departmentName, users, workingUserIds);
 
     }
 
