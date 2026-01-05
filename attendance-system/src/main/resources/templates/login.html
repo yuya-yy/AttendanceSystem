@@ -6,7 +6,9 @@
     <title>ログイン</title>
     <link rel="stylesheet" th:href="@{/css/base.css}">
     <link rel="stylesheet" th:href="@{/css/style_login.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
+
 
 <body class="page-body">
 
@@ -40,16 +42,18 @@
                         th:value="${loginUsername}" />
                 </div>
 
-                <!-- パスワード + 表示アイコン -->
+                <!-- パスワード + 目アイコン（アイコンのみ） -->
                 <div class="form-field-block">
+                    <label for="loginPass" class="form-field-label">パスワード</label>
                     <div class="password-row">
-                        <label for="loginPass" class="form-field-label" style="margin-bottom:0;">パスワード</label>
-                        <div class="login-visibility-hint">
-                            <span role="img" aria-label="eye">👁</span> 表示
-                        </div>
+                        <input id="loginPass" name="password" type="password" class="form-field-input"
+                            autocomplete="current-password" />
+
+                        <button type="button" class="password-visibility-button js-password-toggle"
+                            data-target="loginPass" aria-label="パスワードを表示" aria-pressed="false">
+                            <i class="fa-regular fa-eye-slash js-eye-icon" aria-hidden="true"></i>
+                        </button>
                     </div>
-                    <input id="loginPass" name="password" type="password" class="form-field-input"
-                        autocomplete="current-password" />
                 </div>
 
                 <!-- ボタン -->
@@ -64,5 +68,7 @@
 
     </main>
 </body>
+
+<script th:src="@{/js/password-toggle.js}" defer></script>
 
 </html>

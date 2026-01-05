@@ -76,6 +76,35 @@
     box-shadow: 0 0 0 1px rgba(81, 125, 153, 0.4);
 }
 
+/* パスワード行（入力 + 表示/非表示ボタン） */
+.password-row {
+    position: relative;
+}
+
+.password-row .form-field-input {
+    padding-right: 44px;
+}
+
+.password-visibility-button {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    font-size: 18px;
+    line-height: 1;
+    color: var(--color-text-muted);
+    padding: 6px 8px;
+    border-radius: 6px;
+}
+
+/* キーボード操作でも分かるように */
+.password-visibility-button:focus-visible {
+    outline: 2px solid #888;
+}
+
 /* 2カラムレイアウト */
 .form-grid-2col {
     display: grid;

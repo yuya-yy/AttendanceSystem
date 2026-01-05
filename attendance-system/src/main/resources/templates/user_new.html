@@ -6,7 +6,9 @@
     <title>新規ユーザー登録</title>
     <link rel="stylesheet" th:href="@{/css/base.css}">
     <link rel="stylesheet" th:href="@{/css/style_user_new.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
+
 
 <body class="page-body">
 
@@ -43,14 +45,18 @@
                             th:value="${displayName}" />
                     </div>
 
-                    <!-- パスワード -->
+                    <!-- パスワード（アイコンだけで表示/非表示） -->
                     <div class="form-grid-item">
                         <label for="password" class="form-field-label">パスワード</label>
                         <div class="password-row" style="margin-bottom:8px;">
-                            <input id="password" name="password" type="password" class="form-field-input" />
-                            <div class="login-visibility-hint">
-                                <span role="img" aria-label="eye">👁</span> 表示
-                            </div>
+                            <input id="password" name="password" type="password" class="form-field-input"
+                                autocomplete="new-password" />
+
+                            <!-- ★ ここをアイコンだけにする -->
+                            <button type="button" class="password-visibility-button js-password-toggle"
+                                data-target="password" aria-label="パスワードを表示" aria-pressed="false">
+                                <i class="fa-regular fa-eye-slash js-eye-icon" aria-hidden="true"></i>
+                            </button>
                         </div>
                     </div>
 
@@ -108,5 +114,7 @@
     </main>
 
 </body>
+
+<script th:src="@{/js/password-toggle.js}" defer></script>
 
 </html>
