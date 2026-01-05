@@ -130,31 +130,40 @@
        </div>
    </div>
 */
+/* パスワード行（入力 + 目ボタン） */
 .password-row {
-    display: flex;
-    align-items: center;
-    gap: 8px;
+    position: relative;
 }
 
-/* パスワードの input はできるだけ広く */
 .password-row .form-field-input {
-    flex: 1;
+    padding-right: 44px; /* 右端のボタン分の余白 */
 }
 
-/* 「👁 表示／非表示」ボタン用 */
-.login-visibility-hint {
+/* ★ 目アイコンボタン（アイコンだけ） */
+.password-visibility-button {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+
     border: none;
     background: transparent;
     cursor: pointer;
-    font-size: 12px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 6px 8px;   /* 押しやすく */
+    font-size: 18px;    /* アイコンサイズ */
+    line-height: 1;
     color: var(--color-text-muted);
-    padding: 4px 6px;
     border-radius: 6px;
 }
 
-/* ホバーしたときに少しだけ背景をつける */
-.login-visibility-hint:hover {
-    background-color: #E5E7EB;
+/* キーボード操作でも分かるように */
+.password-visibility-button:focus-visible {
+    outline: 2px solid #888;
 }
 
 /* --------------------------------------
