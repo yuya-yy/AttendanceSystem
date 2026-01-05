@@ -185,8 +185,16 @@
     border-radius: 18px;
     box-shadow: var(--shadow-soft);
     padding: 10px;
-    width: 100%;
+    margin: 0 auto;
     overflow-x: auto;
+}
+
+.is-admin .user-list-main .user-list-table-frame{
+    width: min(1250px, 92%);
+}
+
+.is-user .user-list-main .user-list-table-frame{
+    width: min(1080px, 92%);
 }
 
 /* テーブル本体 */
@@ -232,7 +240,7 @@
     padding: 8px 10px;
     font-size: 14px;
     vertical-align: middle;
-     word-break: break-word;
+    word-break: break-word;
 }
 
 .user-list-table tbody td:last-child {
@@ -247,51 +255,50 @@
 .user-list-actions-cell {
     display: flex;
     flex-wrap: wrap;
-    gap: 24px;
+    padding-left: 7px;
+    gap: 37px;
 }
 
-/* aタグをボタン見た目にするため */
-.user-list-actions a {
-  text-decoration: none;
-  display: inline-block;
+.btn-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    border: none;
+    text-decoration: none; /* リンクの下線を消す */
+    background-color: #f8f9fa; /* 普段はごく薄いグレー */
+    color: #888; /* 普段のアイコン色 */
+    transition: all 0.25s ease;
+    cursor: pointer;
 }
 
-/* formが変な余白を持たないようにする */
-.user-list-inline-form {
-  margin: 0;
+/* ホバー時の共通アクション */
+.btn-icon:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
 }
 
-/* ボタン共通 */
-.user-list-action-pill {
-  padding: 4px 8px;
-  border-radius: 999px;
-  border: 1px solid #000;
-  background-color: #fff;
-  font-size: 12px;
-  line-height: 1.2;
-  cursor: pointer;
-  font-family: inherit;
-  transition: background-color 120ms ease, color 120ms ease, border-color 120ms ease;
+/* 勤怠実績（ミントグリーン） */
+.btn-report:hover {
+    background-color: #76C8B8;
+    color: white !important;
 }
 
-/* メイン操作（勤怠実績） */
-.user-list-action-pill-main {
-  background-color: var(--color-accent);
-  color: #fff;
-  border-color: transparent;
+/* 編集（ブルーグレー） */
+.btn-edit:hover {
+    background-color: #a0c2e0;
+    color: white !important;
 }
 
-.user-list-action-pill-main:hover {
-  background-color: #3e617c;
+/* 削除（ソフトな赤） */
+.btn-delete:hover {
+    background-color: #ff7675;
+    color: white !important;
 }
 
-/* 危険操作（削除） */
-.user-list-action-danger {
-  border-color: #E2B1B1;
-  color: #B91C1C;
-}
-
-.user-list-action-danger:hover {
-  background-color: #E2B1B1;
-  color: #fff;
+/* アイコン自体のサイズ調整 */
+.btn-icon i {
+    font-size: 14px;
 }
