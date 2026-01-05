@@ -36,7 +36,6 @@
     display: flex;              /* 「flexbox（フレックスボックス）」で横並びにする */
     gap: 24px;                  /* 左右のカードの間隔 */
     align-items: flex-start;    /* 上端をそろえる */
-    align-items: stretch;
     justify-content: center;    /* 中央寄せ */
 }
 
@@ -60,7 +59,7 @@
     margin-bottom: 0;              /* タイトル行の中なので余白は不要 */
     display: flex;
     flex-direction: column;
-    align-items: flex-end;         /* ブロック内を右揃え */
+
 }
 
 /* 「勤務状況：出勤中」など1行分のレイアウト */
@@ -68,6 +67,7 @@
     display: flex;
     gap: 14px;
     font-size: 14px;
+    align-items: flex-end;
 }
 
 /* 「勤務状況」「勤務場所」などラベル側 */

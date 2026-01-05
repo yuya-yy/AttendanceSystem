@@ -3,14 +3,15 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>ユーザー情報一覧</title>
+    <title>ユーザーリスト</title>
     <link rel="stylesheet" th:href="@{/css/base.css}">
     <link rel="stylesheet" th:href="@{/css/style_user_list.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script th:src="@{/js/common.js}" defer></script>
     <script th:src="@{/js/user_list.js}" defer></script>
 </head>
 
-<body class="page-body">
+<body class="page-body" th:classappend="${session.role == 1} ? ' is-admin' : ' is-user'">
 
     <!-- 共通ヘッダー -->
     <div th:replace="~{fragments/header :: header('userList')}"></div>
@@ -22,7 +23,7 @@
 
             <!-- 左ブロック -->
             <div class="user-list-top-left">
-                <div class="page-title">ユーザー情報一覧</div>
+                <div class="page-title">ユーザーリスト</div>
 
                 <!-- エラー/情報メッセージ枠（常に高さ確保して、表が上下に動かないようにする） -->
                 <div class="user-list-message-area">
@@ -102,7 +103,7 @@
                     <col class="col-email">
                     <col class="col-phone">
                     <col class="col-role">
-                    <col class="col-actions">
+                    <col class="col-actions" th:if="${session.role == 1}">
                 </colgroup>
                 <thead>
                     <tr>
@@ -112,7 +113,7 @@
                         <th>メールアドレス</th>
                         <th>電話番号</th>
                         <th>権限</th>
-                        <th>操作</th>
+                        <th th:if="${session.role == 1}">勤怠実績　　編集　　　削除</th>
                     </tr>
                 </thead>
 
@@ -135,25 +136,25 @@
                         <td th:text="${user.phone != null ? user.phone : '-'}">000-0000-0000</td>
 
                         <td th:text="${user.role == 1 ? '管理者' : '一般'}">一般</td>
-                        <td class="user-actions">
+                        <td class="user-actions" th:if="${session.role == 1}">
                             <!-- 管理者だけ操作ボタンをまとめて表示 -->
-                            <div class="user-list-actions-cell" th:if="${session.role == 1}">
+                            <div class="user-list-actions-cell">
                                 <!-- 勤怠実績ボタン（GET /reports/{userId}） -->
-                                <a th:href="@{'/reports/' + ${user.id}}">
-                                    勤怠実績
+                                <a class="btn-icon btn-report" title="勤怠実績" th:href="@{'/reports/' + ${user.id}}">
+                                    <i class="fas fa-chart-bar"></i>
                                 </a>
 
                                 <!-- 編集ボタン（GET /users/{userId}/edit） -->
-                                <a th:href="@{'/users/' + ${user.id} + '/edit'}">
-                                    ✏️
+                                <a class="btn-icon btn-edit" title="編集" th:href="@{'/users/' + ${user.id} + '/edit'}">
+                                    <i class="fas fa-pen"></i>
                                 </a>
 
                                 <!-- 削除ボタン（POST /users/{userId}/delete） -->
                                 <form th:action="@{'/users/' + ${user.id} + '/delete'}" method="post"
-                                    class="inline-delete-form" onsubmit="return confirm('このユーザーを削除します。よろしいですか？');">
+                                    onsubmit="return confirm('このユーザーを削除します。よろしいですか？');">
 
-                                    <button type="submit" aria-label="削除">
-                                        🗑️
+                                    <button type="submit" class="btn-icon btn-delete" title="削除">
+                                        <i class="fas fa-trash-alt"></i>
                                     </button>
                                 </form>
 
