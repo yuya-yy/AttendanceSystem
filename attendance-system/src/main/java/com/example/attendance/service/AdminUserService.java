@@ -95,11 +95,17 @@ public class AdminUserService {
             Integer departmentId,
             Integer defaultWorkLocationId) {
 
-        // ===== 0) 前処理：前後の空白を除去 =====
-        String trimmedUsername = (username != null) ? username.trim() : null;
-        String trimmedDisplayName = (displayName != null) ? displayName.trim() : null;
-        String trimmedEmail = (email != null) ? email.trim() : null;
-        String trimmedPhone = (phone != null) ? phone.trim() : null;
+        // ===== 0) 前処理：トリム・空欄→null =====
+        String trimmedUsername = trimOrNull(username);
+        String trimmedDisplayName = trimOrNull(displayName);
+
+        // 任意項目は「空欄ならnull」に統一（UNIQUEや重複判定が安定します）
+        String trimmedEmail = trimToNull(email);
+        String trimmedPhone = trimToNull(phone);
+        String trimmedPassword = trimToNull(rawPassword);
+
+        // ===== 0-1) 文字数チェック（DB定義＋確定ルール）=====
+        validateUserInputLength(trimmedUsername, trimmedDisplayName, trimmedEmail, trimmedPhone, trimmedPassword);
 
         // ===== 1) 必須項目の簡易チェック =====
         if (trimmedUsername == null || trimmedUsername.isBlank()) {
@@ -251,12 +257,17 @@ public class AdminUserService {
             Integer role,
             String rawPassword) {
 
-        // ===== 0) 前処理：トリム =====
-        String trimmedUsername = (username == null) ? null : username.trim();
-        String trimmedDisplay = (displayName == null) ? null : displayName.trim();
-        String trimmedEmail = (email == null) ? null : email.trim();
-        String trimmedPhone = (phone == null) ? null : phone.trim();
-        String trimmedPassword = (rawPassword == null) ? null : rawPassword.trim();
+        // ===== 0) 前処理：トリム・空欄→null =====
+        String trimmedUsername = trimOrNull(username);
+        String trimmedDisplayName = trimOrNull(displayName);
+
+        // 任意項目は「空欄ならnull」に統一（UNIQUEや重複判定が安定します）
+        String trimmedEmail = trimToNull(email);
+        String trimmedPhone = trimToNull(phone);
+        String trimmedPassword = trimToNull(rawPassword);
+
+        // ===== 0-1) 文字数チェック（DB定義＋確定ルール）=====
+        validateUserInputLength(trimmedUsername, trimmedDisplayName, trimmedEmail, trimmedPhone, trimmedPassword);
 
         // ===== 1) 必須チェック =====
 
@@ -267,7 +278,7 @@ public class AdminUserService {
         }
 
         // 1-1) 氏名（表示名）必須
-        if (trimmedDisplay == null || trimmedDisplay.isBlank()) {
+        if (trimmedDisplayName == null || trimmedDisplayName.isBlank()) {
             throw new BusinessException("validation.displayName.required");
         }
 
@@ -355,7 +366,7 @@ public class AdminUserService {
         // ★ ユーザー名を更新（今回は編集可にする）
         user.setUsername(trimmedUsername);
 
-        user.setDisplayName(trimmedDisplay);
+        user.setDisplayName(trimmedDisplayName);
         user.setDepartment(department);
         user.setRole(role);
 
@@ -466,4 +477,59 @@ public class AdminUserService {
         return userRepository.findByIdAndDeletedAtIsNull(userId)
                 .orElseThrow(() -> new BusinessException("error.user.notFound"));
     }
+
+    // ===== 共通：トリム系 =====
+
+    /**
+     * 前後の空白を除去して返す（null は null のまま）
+     */
+    private String trimOrNull(String value) {
+        return (value == null) ? null : value.trim();
+    }
+
+    /**
+     * 前後の空白を除去し、空欄（"" や " "）なら null を返す
+     * 任意入力項目（email/phone/password）向け
+     */
+    private String trimToNull(String value) {
+        if (value == null) {
+            return null;
+        }
+        String trimmed = value.trim();
+        return trimmed.isBlank() ? null : trimmed;
+    }
+
+    // ===== 共通：文字数チェック =====
+
+    /**
+     * 最大文字数チェック（null はOK）
+     */
+    private void validateMaxLength(String value, int max, String messageKey) {
+        if (value == null) {
+            return;
+        }
+        if (value.length() > max) {
+            throw new BusinessException(messageKey);
+        }
+    }
+
+    /**
+     * ユーザー入力の文字数チェック（DB定義＋確定ルールに合わせる）
+     */
+    private void validateUserInputLength(
+            String username,
+            String displayName,
+            String email,
+            String phone,
+            String password) {
+        // DB定義に合わせる
+        validateMaxLength(username, 50, "validation.username.max50");
+        validateMaxLength(displayName, 100, "validation.displayName.max100");
+        validateMaxLength(email, 255, "validation.email.max255");
+        validateMaxLength(phone, 20, "validation.phone.max20");
+
+        // ★確定ルール：パスワードは72以下（入力がある場合のみチェックされる想定）
+        validateMaxLength(password, 72, "validation.password.max72");
+    }
+
 }

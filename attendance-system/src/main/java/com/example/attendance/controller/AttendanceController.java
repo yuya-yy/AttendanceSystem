@@ -88,24 +88,14 @@ public class AttendanceController {
             // 2) 未退勤レコード（あれば「今勤務中」）
             AttendanceRecord latest = attendanceService.findLatestUnfinished(userId);
 
-            // 3) 直近30日分の履歴（勤務状態ラベル判定にも使う）
+            // 3) 直近30日分の履歴
             List<AttendanceRecord> recentRecords = attendanceService.getRecentRecords(userId);
 
             // 4) システム内部用フラグ（勤務中 true / 勤務外 false）
             boolean workingNow = (latest != null);
 
-            // 5) 画面表示用ラベル（未出勤／出勤中／退勤済み）
-            String workStatusLabel;
-            if (latest != null) {
-                // 未退勤レコードあり → 出勤中
-                workStatusLabel = "出勤中";
-            } else if (recentRecords.isEmpty()) {
-                // 履歴が1件もない → 今日は一度も出勤していない → 未出勤
-                workStatusLabel = "未出勤";
-            } else {
-                // 履歴はあるが未退勤レコードはない → 今日は出勤済み＆退勤済み
-                workStatusLabel = "退勤済み";
-            }
+            // 5) 画面表示用ラベル（出勤中 / 勤務外 の2択）
+            String workStatusLabel = workingNow ? "出勤中" : "勤務外";
 
             // 6) 現在の勤務場所名（S0103の設定値）
             String currentWorkLocationName = attendanceService.getCurrentWorkLocationName(userId);
@@ -115,7 +105,7 @@ public class AttendanceController {
             model.addAttribute("departmentName", departmentName);
             model.addAttribute("roleLabel", roleLabel);
             model.addAttribute("workingNow", workingNow); // true/false（他画面ロジック用）
-            model.addAttribute("workStatusLabel", workStatusLabel); // 「未出勤／出勤中／退勤済み」
+            model.addAttribute("workStatusLabel", workStatusLabel); // 「出勤中／勤務外」
             model.addAttribute("latestRecord", latest); // 必要ならテンプレで使える
             model.addAttribute("currentWorkLocationName", currentWorkLocationName);
             model.addAttribute("recentRecords", recentRecords); // テーブル表示用

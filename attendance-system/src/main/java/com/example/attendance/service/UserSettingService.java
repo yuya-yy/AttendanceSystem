@@ -118,10 +118,13 @@ public class UserSettingService {
 
         // 2-3) メールアドレス形式（任意入力：入っている場合だけチェック）
         if (trimmedEmail != null && !trimmedEmail.isBlank()) {
+            validateMaxLength(normalizedEmail, 255, "validation.email.max255");
+
             String emailPattern = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$";
             if (!trimmedEmail.matches(emailPattern)) {
                 throw new BusinessException("validation.email.format");
             }
+
         }
 
         // 2-4) 電話番号形式（任意入力：入っている場合だけチェック）
@@ -131,6 +134,8 @@ public class UserSettingService {
             if (!digitsOnly.matches("^[0-9]+$")) {
                 throw new BusinessException("validation.phone.numeric");
             }
+
+            validateMaxLength(digitsOnly, 20, "validation.phone.max20");
             normalizedPhone = digitsOnly; // DBには数字だけで保存
         }
 
@@ -164,6 +169,18 @@ public class UserSettingService {
     private User requireActiveCurrentUser(Integer userId) {
         return userRepository.findByIdAndDeletedAtIsNull(userId)
                 .orElseThrow(() -> new BusinessException("error.auth.userDeleted"));
+    }
+
+    /**
+     * 最大文字数チェック（null はOK）
+     */
+    private void validateMaxLength(String value, int max, String messageKey) {
+        if (value == null) {
+            return;
+        }
+        if (value.length() > max) {
+            throw new BusinessException(messageKey);
+        }
     }
 
 }
