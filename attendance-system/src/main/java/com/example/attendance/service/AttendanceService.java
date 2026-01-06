@@ -28,6 +28,7 @@ public class AttendanceService {
     private final AttendanceRecordRepository attendanceRecordRepository;
     private final DepartmentRepository departmentRepository;
     private final UserRepository userRepository;
+    private static final ZoneId TOKYO = ZoneId.of("Asia/Tokyo");
 
     public AttendanceService(AttendanceRecordRepository attendanceRecordRepository,
             DepartmentRepository departmentRepository,
@@ -102,7 +103,7 @@ public class AttendanceService {
         // 現在の勤務場所名（未設定なら「未設定」）
         String workLocationName = getCurrentWorkLocationName(userId);
 
-        OffsetDateTime now = OffsetDateTime.now(ZoneId.of("Asia/Tokyo"));
+        OffsetDateTime now = nowTokyo();
 
         AttendanceRecord record = new AttendanceRecord();
         record.setUser(user);
@@ -114,6 +115,10 @@ public class AttendanceService {
         record.startWork(now, workLocationName);
 
         attendanceRecordRepository.save(record);
+    }
+
+    OffsetDateTime nowTokyo() {
+        return OffsetDateTime.now(TOKYO);
     }
 
     /**
