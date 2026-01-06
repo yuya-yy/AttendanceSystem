@@ -302,3 +302,7 @@
 .btn-icon i {
     font-size: 14px;
 }
+/* ホバー時に下線が出るのを防ぐ */
+.btn-icon:hover {
+  text-decoration: none;
+}
