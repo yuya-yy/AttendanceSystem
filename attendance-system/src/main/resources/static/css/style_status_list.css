@@ -228,3 +228,28 @@
 .status-list-table tbody tr:last-child td {
   border-bottom: none;
 }
+
+/* バッジの基本スタイル */
+.status-badge {
+    display: inline-block;
+    padding: 2px 12px;       /* 上下左右の余白 */
+    font-size: 12px;         /* 文字サイズ */
+    font-weight: 600;        /* 少し太字にすると読みやすい */
+    border-radius: 50px;     /* 完全に角を丸くする */
+    text-align: center;
+    min-width: 70px;         /* 横幅を揃えてガタつきを防止 */
+}
+
+/* 勤務中のスタイル（ミントグリーン系） */
+.status-working {
+    background-color: #E6F7F4; /* 薄いミントグリーン（画像の雰囲気に合わせて） */
+    color: #2D8A7A;            /* 濃い緑の文字 */
+    border: 1px solid #76C8B8; /* 外枠 */
+}
+
+/* 勤務外のスタイル（グレー系） */
+.status-off {
+    background-color: #F0F0F0; /* 薄いグレー */
+    color: #888888;            /* グレーの文字 */
+    border: 1px solid #D1D1D1; /* 外枠 */
+}

@@ -161,6 +161,11 @@
                             </div>
                         </td>
                     </tr>
+                    <tr id="noResultRow" hidden>
+                        <td class="text-muted" th:colspan="${session.role == 1} ? 7 : 6">
+                            条件に一致するユーザーがいません。
+                        </td>
+                    </tr>
                 </tbody>
 
             </table>
