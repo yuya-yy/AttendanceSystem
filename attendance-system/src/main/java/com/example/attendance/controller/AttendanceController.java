@@ -308,7 +308,7 @@ public class AttendanceController {
 
         // 部署IDがセッションに無いのは想定外なので、ひとまず勤怠入力画面へ戻す
         if (departmentId == null) {
-            String msg = messageSource.getMessage("error.system.unexpected", null, locale);
+            String msg = messageSource.getMessage("error.user.department.setting", null, locale);
             redirectAttributes.addFlashAttribute("flashError", msg);
             return "redirect:/attendance";
         }
