@@ -9,6 +9,7 @@
 
   const resultCount = document.getElementById("resultCount");
   const resultEmpty = document.getElementById("resultEmpty");
+  const noResultRow = document.getElementById("noResultRow");
 
   if (!keywordInput || !statusFilter || !locationFilter || !resultCount || !resultEmpty) {
     console.warn("[status_list.js] フィルター要素が見つかりません。HTMLのidを確認してください。");
@@ -59,7 +60,14 @@
     });
 
     resultCount.textContent = `${visibleCount}件表示中`;
-    resultEmpty.style.display = visibleCount === 0 ? "" : "none";
+   
+     if (noResultRow) {
+      noResultRow.hidden = (visibleCount !== 0);
+  }
+
+   if (resultEmpty) {
+      resultEmpty.style.display = "none";
+    }
   }
 
   keywordInput.addEventListener("input", applyFilters);

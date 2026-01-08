@@ -100,8 +100,11 @@
                         <td th:text="${user.displayName}">名前</td>
 
                         <!-- ★Thymeleafの三項演算子は「式の中で」書く -->
-                        <td th:text="${working ? '勤務中' : '勤務外'}">
-                            勤務状況
+                        <td>
+                            <span class="status-badge" th:classappend="${working} ? 'status-working' : 'status-off'"
+                                th:text="${working ? '勤務中' : '勤務外'}">
+                                勤務状況
+                            </span>
                         </td>
 
                         <!-- ★ ${} を入れ子にしない -->
@@ -113,6 +116,12 @@
                         <!-- null対策（見た目を安定） -->
                         <td th:text="${user.email != null ? user.email : '-'}">メール</td>
                         <td th:text="${user.phone != null ? user.phone : '-'}">電話番号</td>
+                    </tr>
+
+                    <tr id="noResultRow" hidden>
+                        <td class="text-muted" th:colspan="5">
+                            条件に一致するユーザーがいません。
+                        </td>
                     </tr>
                 </tbody>
             </table>
