@@ -75,4 +75,15 @@
   locationFilter.addEventListener("change", applyFilters);
 
   applyFilters();
+
+   container.addEventListener("click", (e) => {
+    // 操作系クリックは無視
+    if (e.target.closest("a, button, form")) return;
+
+    const el = e.target.closest(".js-ellipsis");
+    if (!el) return;
+
+    el.classList.toggle("is-expanded");
+  });
+
 })();

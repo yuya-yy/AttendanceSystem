@@ -124,15 +124,34 @@
               data-role=${user.role == 1 ? 'ADMIN' : 'USER'},
               data-location=${user.defaultWorkLocation != null ? user.defaultWorkLocation.code : 'OTHER'}
             ">
-                        <td th:text="${user.displayName}">山田 太郎</td>
-                        <td th:text="${user.department != null ? user.department.departmentName : '-'}">開発部</td>
-                        <td
-                            th:text="${user.defaultWorkLocation != null ? user.defaultWorkLocation.locationName : '未設定'}">
-                            会社
+                        <td>
+                            <span class="cell-ellipsis js-ellipsis" th:text="${user.displayName}"
+                                th:attr="title=${user.displayName}">
+                                山田 太郎
+                            </span>
+                        </td>
+                        <td>
+                            <span class="cell-ellipsis js-ellipsis"
+                                th:text="${user.department != null ? user.department.departmentName : '-'}"
+                                th:attr="title=${user.department != null ? user.department.departmentName : '-'}">
+                                開発部
+                            </span>
+                        </td>
+                        <td>
+                            <span class="cell-ellipsis js-ellipsis"
+                                th:text="${user.defaultWorkLocation != null ? user.defaultWorkLocation.locationName : '未設定'}"
+                                th:attr="title=${user.defaultWorkLocation != null ? user.defaultWorkLocation.locationName : '未設定'}">
+                                会社
+                            </span>
                         </td>
 
                         <!-- null のとき「-」にして見栄えを安定させる -->
-                        <td th:text="${user.email != null ? user.email : '-'}">taro@example.com</td>
+                        <td>
+                            <span class="cell-ellipsis js-ellipsis" th:text="${user.email != null ? user.email : '-'}"
+                                th:attr="title=${user.email != null ? user.email : '-'}">
+                                taro@example.com
+                            </span>
+                        </td>
                         <td th:text="${user.phone != null ? user.phone : '-'}">000-0000-0000</td>
 
                         <td th:text="${user.role == 1 ? '管理者' : '一般'}">一般</td>

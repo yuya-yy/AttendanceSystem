@@ -6,6 +6,7 @@
     <title>勤怠入力</title>
     <link rel="stylesheet" th:href="@{/css/base.css}">
     <link rel="stylesheet" th:href="@{/css/style_attendance.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 
 <body class="page-body">
@@ -17,24 +18,28 @@
     <main class="attendance-main">
 
         <!-- 画面タイトル -->
-        <div class="page-title">
-            <span class="page-title-text">勤怠入力画面</span>
-            <div class="attendance-info-top">
-                <div class="attendance-status-row">
-                    <span class="label-gray">勤務状況</span>
-                    <span class="value-gray" th:text="${workStatusLabel}">勤務状況</span>
-                </div>
+        <div class="attendance-top">
+            <div class="attendance-top-left">
+                <div class="page-title">勤怠入力画面</div>
+            </div>
+            <div class="attendance-top-right">
+                <div class="attendance-info-card">
+                    <div class="attendance-status-row">
+                        <span class="status-badge" th:classappend="${workingNow} ? 'status-working' : 'status-off'"
+                            th:text="${workStatusLabel}">
+                            勤務状況
+                        </span>
 
-                <div class="attendance-status-row">
-                    <span class="label-gray">勤務場所</span>
-                    <!-- デフォルト勤務場所名など（例：会社／在宅） -->
-                    <span class="value-gray" th:text="${currentWorkLocationName}">会社</span>
+                        <div class="value-with-icon">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span th:text="${currentWorkLocationName}">会社</span>
+                        </div>
+
+                    </div>
                 </div>
             </div>
         </div>
-
         <!-- メッセージ表示（エラー／情報） -->
-
 
         <!-- 左右２カラム -->
         <div class="attendance-user-block">

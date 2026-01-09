@@ -14,22 +14,36 @@
 .attendance-main {
     max-width: 100%;          /* 画面幅の上限（他画面とそろえる） */
     margin: 0px;             /* 中央寄せ */
-    padding: 24px 24px 40px;    /* 上左右・下の余白 */
+    padding: 16px 24px 40px;    /* 上左右・下の余白 */
     box-sizing: border-box;
-    /*display: flex;*/
     flex-direction: column;
     gap: 16px;                  /* タイトルとの間などのすき間 */
+    align-items: center; /* 上揃えから中央揃えに変更するとカードが綺麗に見えます */
 }
 
-/* タイトルの下に少し余白を付ける */
-.attendance-main .page-title {
+.attendance-top {
     display: flex;
-    justify-content: space-between; /* 左＝タイトル、右＝勤務状況ブロック */
+    justify-content: space-between;
     align-items: flex-start;
     gap: 16px;
-    margin-bottom: 0;
 }
 
+/* 左側は伸びてもOK（右のフィルターを押し出さない範囲で） */
+.attendance-top-left {
+    flex: 1 1 auto;
+    min-width: 280px;
+}
+
+.attendance-top-right {
+    flex: 0 0 auto;
+    display: flex;
+    justify-content: flex-end;
+}
+
+/* フィルターは上段に入ったので margin-bottom は不要 */
+.status-list-filter-section {
+    margin-bottom: 0;
+}
 
 /* 左右2カラムのレイアウト */
 .attendance-layout {
@@ -55,31 +69,63 @@
 }
 
 /* 勤務状況 / 勤務場所の表示部分 */
-.attendance-info-top {
-    margin-bottom: 0;              /* タイトル行の中なので余白は不要 */
+.attendance-info-card {
     display: flex;
     flex-direction: column;
-
+    gap: 10px;
+    padding: 12px 20px;
+    background: rgba(255, 255, 255, 0.8); /* 透過させて背景に馴染ませる */
+    border: 1px solid rgba(118, 200, 184, 0.4); /* ヘッダー色の薄い線 */
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    min-width: 200px;
 }
 
 /* 「勤務状況：出勤中」など1行分のレイアウト */
 .attendance-status-row {
     display: flex;
-    gap: 14px;
+    justify-content: space-between; /* ラベルと値を左右に振り分ける */
+    align-items: center;
+    gap: 16px;
+    max-width: 51rem;
+}
+
+.status-badge {
+    padding: 3px 14px;
+    font-size: 11px;
+    font-weight: 700;
+    border-radius: 20px;
+    text-align: center;
+    min-width: 75px;
+}
+
+/* 勤務中（ミントグリーン） */
+.status-working {
+    background-color: #E6F7F4;
+    color: #2D8A7A;
+    border: 1px solid #76C8B8;
+}
+
+/* 勤務外（グレー） */
+.status-off {
+    background-color: #F0F0F0;
+    color: #888;
+    border: 1px solid #D1D1D1;
+}
+
+/* 勤務場所（アイコン付き） */
+.value-with-icon {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: #333;
     font-size: 14px;
-    align-items: flex-end;
-}
-
-/* 「勤務状況」「勤務場所」などラベル側 */
-.label-gray {
-    color: #000;
     font-weight: 500;
-    min-width: 80px;
 }
 
-/* 「出勤中」「会社」など値側 */
-.value-gray {
-    color: #000;
+.value-with-icon i {
+    color: #76C8B8; /* アイコンをテーマカラーに */
+    font-size: 12px;
 }
 
 /* 黒枠で囲まれたテーブルの外側のボックス */

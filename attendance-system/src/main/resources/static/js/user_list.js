@@ -80,4 +80,15 @@
   locationFilter.addEventListener("change", applyFilters);
 
   applyFilters();
+
+  tableEl.addEventListener("click", (e) => {
+  // 操作ボタン（a/button/form）をクリックした時は無視
+  if (e.target.closest("a, button, form")) return;
+
+  const el = e.target.closest(".js-ellipsis");
+  if (!el) return;
+
+  el.classList.toggle("is-expanded");
+});
+
 })();
