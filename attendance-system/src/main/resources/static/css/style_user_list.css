@@ -251,6 +251,22 @@
   border-bottom: none;
 }
 
+/* 省略表示（1行...） */
+.cell-ellipsis {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+/* クリックで全文表示（折り返して表示） */
+.cell-ellipsis.is-expanded {
+  white-space: normal;
+  text-overflow: clip;
+  overflow-wrap: anywhere; /* 長い英数字でも折り返す */
+}
+
 /* 操作列の中身（ボタンを横並びに） */
 .user-list-actions-cell {
     display: flex;

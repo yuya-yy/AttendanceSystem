@@ -97,7 +97,12 @@
                             data-status=${working ? 'WORKING' : 'OFF'},
                             data-location=${user.defaultWorkLocation != null ? user.defaultWorkLocation.code : 'OTHER'}
                         ">
-                        <td th:text="${user.displayName}">名前</td>
+                        <td>
+                            <span class="cell-ellipsis js-ellipsis" th:text="${user.displayName}"
+                                th:attr="title=${user.displayName}">
+                                山田 太郎
+                            </span>
+                        </td>
 
                         <!-- ★Thymeleafの三項演算子は「式の中で」書く -->
                         <td>
@@ -108,13 +113,21 @@
                         </td>
 
                         <!-- ★ ${} を入れ子にしない -->
-                        <td
-                            th:text="${user.defaultWorkLocation != null ? user.defaultWorkLocation.locationName : '未設定'}">
-                            勤務場所
+                        <td>
+                            <span class="cell-ellipsis js-ellipsis"
+                                th:text="${user.defaultWorkLocation != null ? user.defaultWorkLocation.locationName : '未設定'}"
+                                th:attr="title=${user.defaultWorkLocation != null ? user.defaultWorkLocation.locationName : '未設定'}">
+                                会社
+                            </span>
                         </td>
 
                         <!-- null対策（見た目を安定） -->
-                        <td th:text="${user.email != null ? user.email : '-'}">メール</td>
+                        <td>
+                            <span class="cell-ellipsis js-ellipsis" th:text="${user.email != null ? user.email : '-'}"
+                                th:attr="title=${user.email != null ? user.email : '-'}">
+                                taro@example.com
+                            </span>
+                        </td>
                         <td th:text="${user.phone != null ? user.phone : '-'}">電話番号</td>
                     </tr>
 
