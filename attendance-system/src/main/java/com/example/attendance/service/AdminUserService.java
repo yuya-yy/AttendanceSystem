@@ -36,6 +36,7 @@ public class AdminUserService {
     private final WorkLocationRepository workLocationRepository;
     private final AttendanceRecordRepository attendanceRecordRepository;
     private final PasswordEncoder passwordEncoder;
+    private static final int MAX_USERS_PER_DEPARTMENT = 50;
 
     public AdminUserService(UserRepository userRepository,
             DepartmentRepository departmentRepository,
@@ -127,6 +128,11 @@ public class AdminUserService {
         if (role == null) {
             // 権限必須
             throw new BusinessException("validation.role.required");
+        }
+
+        // 部署あたりの人数上限チェック
+        if (userRepository.countActiveByDepartmentId(departmentId) >= MAX_USERS_PER_DEPARTMENT) {
+            throw new BusinessException("validation.department.capacity");
         }
 
         // ===== 2) 形式チェック =====
@@ -329,6 +335,12 @@ public class AdminUserService {
 
         // ===== 3) 対象ユーザー取得 =====
         User user = requireActiveTargetUser(targetUserId);
+
+        // 部署あたりの人数上限チェック（自分は除外）
+        if (userRepository.countActiveByDepartmentIdExcludingUser(departmentId,
+                targetUserId) >= MAX_USERS_PER_DEPARTMENT) {
+            throw new BusinessException("validation.department.capacity");
+        }
 
         // ===== 4) ユーザー名・メール重複チェック（自分以外） =====
 

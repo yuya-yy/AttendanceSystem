@@ -92,4 +92,24 @@ public interface UserRepository extends JpaRepository<User, Integer> {
         AND user.deletedAt IS NULL
       """)
   boolean existsByIdAndDeletedAtIsNull(@Param("id") Integer id);
+
+  // 部署ごとの有効ユーザー数を取得する。
+  @Query("""
+      SELECT COUNT(user)
+      FROM User user
+      WHERE user.department.id = :departmentId
+        AND user.deletedAt IS NULL
+      """)
+  long countActiveByDepartmentId(@Param("departmentId") Integer departmentId);
+
+  // 部署ごとの有効ユーザー数（指定ユーザーを除外）を取得する。
+  @Query("""
+      SELECT COUNT(user)
+      FROM User user
+      WHERE user.department.id = :departmentId
+        AND user.deletedAt IS NULL
+        AND user.id <> :excludeUserId
+      """)
+  long countActiveByDepartmentIdExcludingUser(@Param("departmentId") Integer departmentId,
+      @Param("excludeUserId") Integer excludeUserId);
 }
