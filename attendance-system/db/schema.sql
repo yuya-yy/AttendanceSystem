@@ -41,7 +41,7 @@ CREATE TABLE users (
     display_name            VARCHAR(100)    NOT NULL,                 -- 画面表示用の名前
     password_hash           TEXT            NOT NULL,                 -- パスワード（ハッシュ値）
     email                   VARCHAR(255)    UNIQUE,                   -- メールアドレス（一意・NULL許可）
-    phone                   VARCHAR(20),                              -- 電話番号（NULL許可）
+    phone                   VARCHAR(20)     UNIQUE,                   -- 電話番号（NULL許可・一意）
     role                    SMALLINT        NOT NULL DEFAULT 2        -- 権限フラグ 1=admin, 2=user
         CHECK (role IN (1, 2)),
     department_id           INTEGER         NOT NULL                  -- 所属部署ID（departments.id）
