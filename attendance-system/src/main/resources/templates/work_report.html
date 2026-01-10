@@ -50,15 +50,27 @@
                                 </td>
 
                                 <!-- 出勤時刻（未設定なら「-」） -->
-                                <td
-                                    th:text="${record.clockIn != null ? #temporals.format(record.clockIn, 'HH:mm') : '-'}">
+                                <td th:text="${record.clockIn != null
+                                                ? #temporals.format(
+                                                    record.clockIn.withOffsetSameInstant(
+                                                        T(java.time.ZoneOffset).ofHours(9)
+                                                    ),
+                                                    'HH:mm'
+                                                )
+                                            : '-'}">
                                     8:00
                                 </td>
 
 
                                 <!-- 退勤時刻（未設定なら「-」） -->
-                                <td
-                                    th:text="${record.clockOut != null ? #temporals.format(record.clockOut, 'HH:mm') : '-'}">
+                                <td th:text="${record.clockOut != null
+                                                ? #temporals.format(
+                                                    record.clockOut.withOffsetSameInstant(
+                                                        T(java.time.ZoneOffset).ofHours(9)
+                                                    ),
+                                                    'HH:mm'
+                                                )
+                                            : '-'}">
                                     22:00
                                 </td>
 

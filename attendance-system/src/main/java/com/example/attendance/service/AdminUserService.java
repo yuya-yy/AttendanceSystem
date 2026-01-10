@@ -129,6 +129,10 @@ public class AdminUserService {
             // 権限必須
             throw new BusinessException("validation.role.required");
         }
+        // 権限の値チェック
+        if (!isValidRole(role)) {
+            throw new BusinessException("validation.role.invalid");
+        }
 
         // 部署あたりの人数上限チェック
         if (userRepository.countActiveByDepartmentId(departmentId) >= MAX_USERS_PER_DEPARTMENT) {
@@ -296,6 +300,10 @@ public class AdminUserService {
         // 1-3) 権限必須
         if (role == null) {
             throw new BusinessException("validation.role.required");
+        }
+        // 権限の値チェック
+        if (!isValidRole(role)) {
+            throw new BusinessException("validation.role.invalid");
         }
 
         // ===== 2) 形式チェック =====
@@ -523,6 +531,13 @@ public class AdminUserService {
         if (value.length() > max) {
             throw new BusinessException(messageKey);
         }
+    }
+
+    /**
+     * 権限の値チェック
+     */
+    private boolean isValidRole(Integer role) {
+        return role != null && (role == 1 || role == 2);
     }
 
     /**

@@ -198,12 +198,43 @@ public class AttendanceController {
 
     @PostMapping("/work-location")
     public String updateWorkLocation(
-            @RequestParam(name = "workLocationId", required = false) Integer workLocationId,
+            @RequestParam(name = "workLocationId", required = false) String workLocationIdValue,
             HttpSession session,
             RedirectAttributes redirectAttributes,
             Locale locale) {
 
         Integer userId = (Integer) session.getAttribute("userId");
+        Integer workLocationId = null;
+
+        // 1) 入力がある場合だけチェックして Integer に変換
+        if (workLocationIdValue != null && !workLocationIdValue.isBlank()) {
+
+            String trimmed = workLocationIdValue.trim(); // ★空白対策
+
+            // ★数字以外を弾く（aaa / 1,2 / -1 など）
+            if (!trimmed.matches("\\d+")) {
+                String msg = messageSource.getMessage("validation.workLocation.invalid", null, locale);
+                redirectAttributes.addFlashAttribute("flashError", msg);
+                return "redirect:/attendance/work-location";
+            }
+
+            try {
+                workLocationId = Integer.valueOf(trimmed);
+
+                // ★0以下は不正
+                if (workLocationId <= 0) {
+                    String msg = messageSource.getMessage("validation.workLocation.invalid", null, locale);
+                    redirectAttributes.addFlashAttribute("flashError", msg);
+                    return "redirect:/attendance/work-location";
+                }
+
+            } catch (NumberFormatException e) {
+                // 桁が大きすぎる等のケース
+                String msg = messageSource.getMessage("validation.workLocation.invalid", null, locale);
+                redirectAttributes.addFlashAttribute("flashError", msg);
+                return "redirect:/attendance/work-location";
+            }
+        }
 
         try {
             userSettingService.updateWorkLocation(userId, workLocationId);

@@ -22,7 +22,6 @@ public interface UserRepository extends JpaRepository<User, Integer> {
       SELECT user
       FROM User user
       WHERE user.username = :username
-        AND user.deletedAt IS NULL
       """)
   Optional<User> findByUsername(@Param("username") String username);
 
@@ -47,7 +46,6 @@ public interface UserRepository extends JpaRepository<User, Integer> {
       SELECT u
       FROM User u
       WHERE u.email = :email
-        AND u.deletedAt IS NULL
       """)
   Optional<User> findByEmail(@Param("email") String email);
 
@@ -62,7 +60,6 @@ public interface UserRepository extends JpaRepository<User, Integer> {
       SELECT u
       FROM User u
       WHERE u.phone = :phone
-        AND u.deletedAt IS NULL
       """)
   Optional<User> findByPhone(@Param("phone") String phone);
 
