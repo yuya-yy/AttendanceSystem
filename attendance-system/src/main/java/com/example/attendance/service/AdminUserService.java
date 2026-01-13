@@ -134,11 +134,6 @@ public class AdminUserService {
             throw new BusinessException("validation.role.invalid");
         }
 
-        // 部署あたりの人数上限チェック
-        if (userRepository.countActiveByDepartmentId(departmentId) >= MAX_USERS_PER_DEPARTMENT) {
-            throw new BusinessException("validation.department.capacity");
-        }
-
         // ===== 2) 形式チェック =====
 
         // 2-1) ユーザー名：半角英数字のみ
@@ -195,6 +190,11 @@ public class AdminUserService {
         // ===== 4) 所属部署マスタの取得 =====
         Department department = departmentRepository.findById(departmentId)
                 .orElseThrow(() -> new BusinessException("error.user.department.notFound"));
+
+        // 部署あたりの人数上限チェック
+        if (userRepository.countActiveByDepartmentId(departmentId) >= MAX_USERS_PER_DEPARTMENT) {
+            throw new BusinessException("validation.department.capacity");
+        }
 
         // ===== 5) デフォルト勤務場所マスタの取得（null 許可） =====
         WorkLocation defaultWorkLocation = null;
