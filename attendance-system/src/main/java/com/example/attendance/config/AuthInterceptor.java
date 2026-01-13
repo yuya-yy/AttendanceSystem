@@ -57,8 +57,14 @@ public class AuthInterceptor implements HandlerInterceptor {
 
         // 2) ログインチェック
         HttpSession session = request.getSession(false);
-        Integer userId = (session == null) ? null : (Integer) session.getAttribute("userId");
+        if (session == null) {
+            // 未ログイン → ログイン画面へ
+            String msg = getMessage(request.getLocale(), "error.auth.required");
+            putFlashErrorAndRedirect(request, response, msg, request.getContextPath() + "/auth/login");
+            return false;
+        }
 
+        Integer userId = (Integer) session.getAttribute("userId");
         if (userId == null) {
             // 未ログイン → ログイン画面へ
             String msg = getMessage(request.getLocale(), "error.auth.required");
