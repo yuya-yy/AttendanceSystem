@@ -459,7 +459,11 @@ public class AdminUserService {
             // ↑ AttendanceRecord に「勤務時間（分）を返す」メソッドがある前提
 
             // 4-4) 月ごとの合計に加算
-            monthlyMinutesMap.merge(ym, workingMinutes, Long::sum);
+            monthlyMinutesMap.merge(ym, workingMinutes, (left, right) -> {
+                long leftMinutes = (left != null) ? left : 0L;
+                long rightMinutes = (right != null) ? right : 0L;
+                return leftMinutes + rightMinutes;
+            });
         }
 
         return monthlyMinutesMap;

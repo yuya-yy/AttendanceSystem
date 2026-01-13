@@ -35,7 +35,7 @@ class AttendanceControllerUpdateWorkLocationTest {
     @Test
     void updateWorkLocation_whenOk_setsFlashInfo_andRedirects() {
         // Arrange
-        Integer workLocationId = 10;
+        String workLocationId = "10";
         Locale locale = Locale.JAPAN;
 
         HttpSession session = new MockHttpSession();
@@ -62,7 +62,7 @@ class AttendanceControllerUpdateWorkLocationTest {
     @Test
     void updateWorkLocation_whenBusinessException_setsFlashError_andRedirects() {
         // Arrange
-        Integer workLocationId = null; // 未選択ケースなどを想定
+        String workLocationId = null; // 未選択ケースなどを想定
         Locale locale = Locale.JAPAN;
 
         HttpSession session = new MockHttpSession();
@@ -90,7 +90,7 @@ class AttendanceControllerUpdateWorkLocationTest {
     @Test
     void updateWorkLocation_whenUnexpectedException_setsSystemError_andRedirects() {
         // Arrange
-        Integer workLocationId = 10;
+        String workLocationId = "10";
         Locale locale = Locale.JAPAN;
 
         HttpSession session = new MockHttpSession();
