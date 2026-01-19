@@ -381,6 +381,8 @@ public class AdminUserController {
         // 対象ユーザー削除（対象なしもここでBusinessException）
         try {
             adminUserService.softDeleteUser(targetUserId);
+            String msg = messageSource.getMessage("info.user.delete.success", null, locale);
+            redirectAttributes.addFlashAttribute("flashInfo", msg);
             return "redirect:/users/list";
         } catch (BusinessException e) {
             String msg = messageSource.getMessage(e.getMessageKey(), null, locale);

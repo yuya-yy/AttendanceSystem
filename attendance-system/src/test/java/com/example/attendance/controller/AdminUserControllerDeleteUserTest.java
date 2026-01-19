@@ -59,14 +59,16 @@ class AdminUserControllerDeleteUserTest {
         RedirectAttributesModelMap ra = new RedirectAttributesModelMap();
 
         when(session.getAttribute("userId")).thenReturn(999); // 自分以外
+        when(messageSource.getMessage("info.user.delete.success", null, locale)).thenReturn("DELETE_OK");
 
         String view = adminUserController.deleteUser(1, session, ra, locale);
 
         assertEquals("redirect:/users/list", view);
         assertNull(ra.getFlashAttributes().get("flashError"));
+        assertEquals("DELETE_OK", ra.getFlashAttributes().get("flashInfo"));
 
         verify(adminUserService).softDeleteUser(1);
-        verifyNoInteractions(messageSource); // 成功時はメッセージを作ってない実装なので
+        verify(messageSource).getMessage("info.user.delete.success", null, locale);
     }
 
     @Test

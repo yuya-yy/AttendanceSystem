@@ -35,7 +35,7 @@
                 ユーザーリスト
             </a>
 
-            <a th:href="@{/users/new}" class="nav-item"
+            <a th:href="@{/users/new}" class="nav-item" th:if="${session.role == 1}"
                 th:classappend="${currentPage} == 'userNew' ? ' nav-item--active' : ''">
                 新規ユーザー登録
             </a>
